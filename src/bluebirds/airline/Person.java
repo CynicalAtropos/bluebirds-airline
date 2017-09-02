@@ -1,4 +1,4 @@
-package airplane_simulation;
+package bluebirds.airline;
 
 public abstract class Person {
 	protected String name;

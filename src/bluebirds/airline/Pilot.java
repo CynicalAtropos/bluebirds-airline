@@ -1,4 +1,4 @@
-package airplane_simulation;
+package bluebirds.airline;
 
 public class Pilot extends Person{
 	private int pilotId;
