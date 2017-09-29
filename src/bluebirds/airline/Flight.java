@@ -8,7 +8,8 @@ public class Flight {
 	private String route;
 	private Pilot pilot;
         private Reservation[][] firstClass;
-	
+	private Reservation[][] peasantClass;
+        
 	public Flight(String f,String d, String t, String r, Pilot p)
 	{
 		flightCode = f;
