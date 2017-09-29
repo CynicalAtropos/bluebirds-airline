@@ -5,14 +5,18 @@ public class Reservation {
 	private Flight flight;
 	private Customer customer;
 	private String seatNumber;
+        private boolean firstClass;
 	private int cost;
 	
-	public Reservation(Flight f, Customer c, String s, int co)
+	public Reservation(Flight f, Customer c, String s, boolean fc)
 	{
 		flight = f;
 		customer = c;
 		seatNumber = s;
-		cost = co;
+		if (fc)
+                    cost = 850;
+                else
+                    cost = 450;
 		
 	}
 	
