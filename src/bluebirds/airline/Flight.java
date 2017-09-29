@@ -7,6 +7,7 @@ public class Flight {
 	private String time;
 	private String route;
 	private Pilot pilot;
+        private Reservation[][] firstClass;
 	
 	public Flight(String f,String d, String t, String r, Pilot p)
 	{
