@@ -2,16 +2,20 @@ package bluebirds.airline;
 
 public class Pilot extends Person{
 	private int pilotId;
+        
+        public static int num = 300;
 	
-	public Pilot(String name, String address, String phoneNumber, int p)
+	public Pilot(String name, String address, String phoneNumber)
 	{
 		super(name,address,phoneNumber);
-		pilotId = p;
+		pilotId = num;
+                num++;
 	}
 	
 	public Pilot()
 	{
-		
+            pilotId = num;
+            num++;
 	}
 	
 	public String toString()

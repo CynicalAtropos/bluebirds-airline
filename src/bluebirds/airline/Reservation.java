@@ -7,23 +7,55 @@ public class Reservation {
 	private String seatNumber;
         private boolean firstClass;
 	private int cost;
+        
+        private int reservationNum;
 	
+        public static int num = 200;
+        
+        
 	public Reservation(Flight f, Customer c, String s, boolean fc)
 	{
 		flight = f;
 		customer = c;
 		seatNumber = s;
 		if (fc)
+                {
                     cost = 850;
+                }
                 else
+                {
                     cost = 450;
+                }
+                reservationNum = num;
+                num++;
 		
 	}
 	
 	public Reservation()
 	{
+            reservationNum = num;
+            num++;
 		
 	}
+        
+        // for reading from a file
+        public Reservation(Flight f, Customer c, String s, boolean fc, int resNum)
+        {
+            flight = f;
+            customer = c;
+            seatNumber = s;
+            if (fc)
+            {
+                cost = 850;
+            }
+            else
+            {
+                cost = 450;
+            }
+            
+            reservationNum = resNum;
+            
+        }
 	
 	public String toString()
 	{
@@ -61,6 +93,16 @@ public class Reservation {
 	public void setCost(int cost) {
 		this.cost = cost;
 	}
+        
+        public int getReservationNum()
+        {
+            return reservationNum;
+        }
+        
+        public void setReservationNum(int reservationNum)
+        {
+            this.reservationNum = reservationNum;
+        }
 	
 	
 	
