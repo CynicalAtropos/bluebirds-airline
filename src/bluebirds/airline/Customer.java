@@ -37,6 +37,14 @@ public class Customer extends Person{
 	{
 		this.customerId = customerId;
 	}
+        
+        public ArrayList<Reservation> getReservationList(){
+            return this.reservationList;
+        }
+        
+        public void setReservationList(ArrayList<Reservation> rList){
+            this.reservationList = rList;
+        }
 	
         public void addRes(Reservation r) {
             this.reservationList.add(r);
