@@ -67,7 +67,7 @@ public class BluebirdsAirlineDriver {
         		
         	}
         	else if(choice == 10){
-        		
+        		printFlightSeats();
         	}
         	else if(choice == 11){
         		
@@ -349,7 +349,7 @@ public class BluebirdsAirlineDriver {
         NumberFormat nf = NumberFormat.getCurrencyInstance();
         Scanner scan = new Scanner(System.in);
         
-        System.out.println("What is the flight code?");
+        System.out.println("Please Enter the flight code: ");
         String flightCode = scan.nextLine().trim();
         boolean found = false;
         for(int i = 0; i < flights.size(); i++)
@@ -405,7 +405,44 @@ public class BluebirdsAirlineDriver {
     
     public static void printFlightSeats(ArrayList<Flight> flights){
         Scanner scan = new Scanner(System.in);
-        System.out.println("Please enter the flight code: ");
-        String flightCode = scan.nextLine();
+        System.out.println("Please Enter the flight code: ");
+        String flightCode = scan.nextLine().trim();
+        boolean found = false;
+        for(int i = 0; i < flights.size(); i++)
+            {
+                if(flightCode.equals(flights.get(i).getFlightCode())) {
+                    found = true;
+                    System.out.println("Matched Flight: " + flightCode + "\n");
+                    Flight f = flights.get(i);
+                    //For Loop to read seat map
+                    Reservation[][] firstClass = f.getFirstClass();
+                    Reservation[][] peasantClass = f.getPeasantClass();
+                    System.out.println("First Class:");
+                    for(int row = 0; row < firstClass.length; i++){
+                        for(int col = 0; col < firstClass[row].length; col++){
+                           if(firstClass[row][col] == null){
+                               System.out.println("\tEmpty\t");
+                           } else {
+                               System.out.println("\t" + firstClass[row][col].getCustomer().getName() + "\t");
+                           }
+                        }
+                    }
+                    System.out.println("Economy Class:");
+                    for(int row = 0; row < peasantClass.length; i++){
+                        for(int col = 0; col < peasantClass[row].length; col++){
+                           if(peasantClass[row][col] == null){
+                               System.out.println("\tEmpty\t");
+                           } else {
+                               System.out.println("\t" + peasantClass[row][col].getCustomer().getName() + "\t");
+                           }
+                        }
+                    }
+                    
+                }
+            }
+        if(!found) {
+            System.out.println("The flight code provided was invalid.");
+        }
+            
     }
 }
