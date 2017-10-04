@@ -6,6 +6,7 @@
 package bluebirds.airline;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  *
@@ -19,6 +20,8 @@ public class BluebirdsAirlineDriver {
     public static void main(String[] args) {
         // TODO code application logic here
         
+        Scanner scan = new Scanner(System.in);
+        
         ArrayList<Customer> customerAL = new ArrayList<Customer>();
         
         ArrayList<Flight> flightAL = new ArrayList<Flight>();
@@ -30,13 +33,51 @@ public class BluebirdsAirlineDriver {
         primeData(pilotAL, flightAL);
     }
     
-    public static void searchReservID()
+    public static void searchReservID(ArrayList<Reservation> reservations, Scanner scan)
     {
+        System.out.println("What is the reservation number?");
+        int resNum = scan.nextInt();
         
+        boolean found = false;
+        
+        for(int i = 0; i < reservations.size(); i++)
+        {
+            if(resNum == reservations.get(i).getReservationNum())
+            {
+                found = true;
+                System.out.println("We found that reservation:");
+                System.out.println(reservations.get(i).toString());
+                
+            }
+        }
+        
+        if(!found)
+        {
+            System.out.println("That reservation does not exist");
+        }
     }
     
-    public static void searchCustID()
+    public static void searchCustID(ArrayList<Customer> customers, Scanner scan)
     {
+        System.out.println("What is the customer ID?");
+        int custNum = scan.nextInt();
+        boolean found = false;
+        
+        for(int i = 0; i < customers.size(); i++)
+        {
+            if(custNum == customers.get(i).getCustomerId())
+            {
+                found = true;
+                System.out.println("We found that customer:");
+                System.out.println(customers.get(i).toString());
+            }
+            
+        }
+        
+        if(!found)
+        {
+            System.out.println("That customer does not exist");
+        }
         
     }
        

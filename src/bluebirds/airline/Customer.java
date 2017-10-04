@@ -2,16 +2,20 @@ package bluebirds.airline;
 
 public class Customer extends Person{
 	private int customerId;
+        
+        public static int num = 100;
 	
-	public Customer(String name, String address, String phoneNumber, int c)
+	public Customer(String name, String address, String phoneNumber)
 	{
 		super(name,address,phoneNumber);
-		customerId = c;
+		customerId = num;
+                num++;
 	}
 	
 	public Customer()
 	{
-		
+            customerId = num;
+            num++;
 		
 	}
 	
