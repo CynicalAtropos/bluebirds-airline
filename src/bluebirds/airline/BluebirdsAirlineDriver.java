@@ -46,16 +46,16 @@ public class BluebirdsAirlineDriver {
         		
         	}
         	else if(choice == 2){
-        		
+        		searchCustID(customerAL);
         	}
         	else if(choice == 3){
-        		
+        		cancelRes(reservationAL, canceledResAL);
         	}
         	else if(choice == 4){
-        		
+        		grossIncomeEach(flightAL);
         	}
         	else if(choice == 5){
-        		
+        		grossIncomeSpec(flightAL);
         	}
         	else if (choice == 6){
         		
@@ -270,13 +270,29 @@ public class BluebirdsAirlineDriver {
     }
 
     // Cancels a reservation by reservation ID
-    public static void cancelRes(ArrayList<Reservation> resList, ArrayList<Reservation> cancelList, int resID) {
+    public static void cancelRes(ArrayList<Reservation> resList, ArrayList<Reservation> cancelList) {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Please Enter the Reservation Number: ");
+        int resID = scan.nextInt();
+        boolean found = false;
         for (int i = 0; i < resList.size(); i++) {
             if (resList.get(i).getReservationNum() == resID) {
+                found = true;
                 cancelList.add(resList.get(i));
                 resList.remove(resList.get(i));
+                ArrayList<Reservation> custRes = resList.get(i).getCustomer().getReservationList();
+                for(int j = 0; i < custRes.size(); i ++){
+                    if(custRes.get(j).getReservationNum() == resID){
+                        custRes.remove(j);
+                    }
+                }
             }
         }
+        
+        if(!found){
+            System.out.println("There is no reservation under that number.");
+        }
+        
     }
 
     // prints a customers reservation according to the customer ID
@@ -340,10 +356,22 @@ public class BluebirdsAirlineDriver {
         NumberFormat nf = NumberFormat.getCurrencyInstance();
         for(int i = 0; i < flights.size(); i++)
             {
-                
+                int grossIncome = 0;
                 System.out.println("Flight: " + flights.get(i).getFlightCode());
                 //For Loop to read seat maps including getters and setters
-                System.out.println("Gross Income: ");
+                Reservation[][] firstClass = flights.get(i).getFirstClass();
+                Reservation[][] peasantClass = flights.get(i).getPeasantClass();
+                for(int row = 0; row < firstClass.length; row++){
+                    for(int col = 0; col < firstClass.length; col++){
+                        grossIncome = grossIncome + firstClass[row][col].getCost();
+                    }
+                }
+                for(int row = 0; row < peasantClass.length; row++){
+                    for(int col = 0; col < peasantClass.length; col++){
+                        grossIncome = grossIncome + firstClass[row][col].getCost();
+                    }
+                }
+                System.out.println("Gross Income: " + grossIncome);
             }
             
             
@@ -363,7 +391,21 @@ public class BluebirdsAirlineDriver {
                     System.out.println("Matched Flight: ");
                     Flight f = flights.get(i);
                     //For Loop to read seat map
-                    System.out.println("Gross Income: ");
+                    int grossIncome = 0;
+                    System.out.println("Flight: " + flights.get(i).getFlightCode());
+                    Reservation[][] firstClass = f.getFirstClass();
+                    Reservation[][] peasantClass = f.getPeasantClass();
+                    for(int row = 0; row < firstClass.length; row++){
+                        for(int col = 0; col < firstClass.length; col++){
+                        grossIncome = grossIncome + firstClass[row][col].getCost();
+                        }
+                    }
+                    for(int row = 0; row < peasantClass.length; row++){
+                        for(int col = 0; col < peasantClass.length; col++){
+                            grossIncome = grossIncome + firstClass[row][col].getCost();
+                        }
+                    }
+                    System.out.println("Gross Income: " + grossIncome);
                 }
             }
             
