@@ -5,6 +5,7 @@
  */
 package bluebirds.airline;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -196,13 +197,13 @@ public class BluebirdsAirlineDriver {
         System.out.println("1.  Book a Reservation.");
         System.out.println("2.  Search for Customer by their ID Number.");
         System.out.println("3.  Cancel a Reservation.");
-        System.out.println("4.  Print Gross Income (All Flights or Specific).");
-        System.out.println("5.  Print Each Pilots' Weekly Schedule.");
-        System.out.println("6.  Find All Reservations Made Under a Specific Customer ID Number.");
-        System.out.println("7.  Search for Reservation by Reservation Number.");  // make certain not to sell more than you have!
-        System.out.println("8.  Search Canceled Reservations By Reservation Number or Customer Name.");  // either currently there or a new product
-        System.out.println("9.  Print Seat Layout for Specified Flight.");
-        System.out.println("10. --");
+        System.out.println("4.  Print Gross Income for Each Flight.");
+        System.out.println("5.  Print Gross Income for a Specific Flight");
+        System.out.println("6.  Print Each Pilots' Weekly Schedule.");
+        System.out.println("7.  Find All Reservations Made Under a Specific Customer ID Number.");
+        System.out.println("8.  Search for Reservation by Reservation Number.");
+        System.out.println("9.  Search Canceled Reservations By Reservation Number or Customer Name.");
+        System.out.println("10. Print Seat Layout for Specified Flight.");
         System.out.println("11. --");
         System.out.println("12. --");
         System.out.println("13. --");
@@ -225,5 +226,82 @@ public class BluebirdsAirlineDriver {
         	System.out.println("\nThat is not a valid choice!"); 
         	return menu();
         }
+    }
+    
+    public static void grossIncomeEach(ArrayList<Flight> flights){
+        NumberFormat nf = NumberFormat.getCurrencyInstance();
+        for(int i = 0; i < flights.size(); i++)
+            {
+                
+                System.out.println("Flight: " + flights.get(i).getFlightCode());
+                //For Loop to read seat maps including getters and setters
+                System.out.println("Gross Income: ");
+            }
+            
+            
+    }
+    
+    public static void grossIncomeSpec(ArrayList<Flight> flights){
+        NumberFormat nf = NumberFormat.getCurrencyInstance();
+        Scanner scan = new Scanner(System.in);
+        
+        System.out.println("What is the flight code?");
+        String flightCode = scan.nextLine().trim();
+        boolean found = false;
+        for(int i = 0; i < flights.size(); i++)
+            {
+                if(flightCode.equals(flights.get(i).getFlightCode())) {
+                    found = true;
+                    System.out.println("Matched Flight: ");
+                    Flight f = flights.get(i);
+                    //For Loop to read seat map
+                    System.out.println("Gross Income: ");
+                }
+            }
+            
+            
+    }
+    
+    public static void searchCanceledRes(ArrayList<Reservation> res){
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Would you like to search for canceled reservations by reservation number (1) or customer name (2)?");
+        System.out.println("Choice (1|2): ");
+        int choice = scan.nextInt();
+        if(choice == 1){
+            System.out.println("What is the reservation number?");
+            int resNum = scan.nextInt();
+            boolean found = false;
+         
+            for(int i = 0; i < res.size(); i++)
+            {
+                if(resNum == res.get(i).getReservationNum()) {
+                    found = true;
+                    System.out.println("We found that reservation:");
+                    System.out.println(res.get(i).toString());
+                }
+            }
+        } else if(choice == 2){
+            System.out.println("What is the customer's name?");
+            String name = scan.nextLine();
+            boolean found = false;
+         
+            for(int i = 0; i < res.size(); i++)
+            {
+                if(res.get(i).getCustomer().getName().contains(name)) {
+                    found = true;
+                    System.out.println("\nMatching Reservation:\n");
+                    System.out.println(res.get(i).toString());
+                }
+            }
+            if(!found) {
+                System.out.println("There are no matching reservations for the provided name.");
+            }
+        }
+    }
+    
+    public static void printFlightSeats(ArrayList<Flight> flights){
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Please enter the flight code: ");
+        String flightCode = scan.nextLine();
     }
 }
