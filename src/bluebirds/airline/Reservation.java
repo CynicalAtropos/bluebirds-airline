@@ -59,7 +59,7 @@ public class Reservation {
 	
 	public String toString()
 	{
-		return "The reservation for " + customer.getName() + " of seat number" + seatNumber + " on " + flight + " which cost " + cost;
+		return "The reservation " + reservationNum + " for " + customer.getName() + " of seat number " + seatNumber + " on " + flight + " which cost " + cost + ".";
 	}
 
 	public Flight getFlight() {
@@ -76,6 +76,14 @@ public class Reservation {
 
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
+	}
+        
+        public boolean getFirstClass() {
+		return firstClass;
+	}
+
+	public void setFirstClass(boolean firstClass) {
+		this.firstClass = firstClass;
 	}
 
 	public String getSeatNumber() {
