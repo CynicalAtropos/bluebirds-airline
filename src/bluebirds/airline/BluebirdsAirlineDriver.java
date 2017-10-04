@@ -41,6 +41,8 @@ public class BluebirdsAirlineDriver {
         	if(choice == 0){
                         pilotAL = primePilots(pilotAL);
                         flightAL = primeFlights(pilotAL, flightAL);
+                        customerAL = primeCustomers(customerAL);
+                        reservationAL = primeReservations(reservationAL, flightAL, customerAL);
         	}
         	else if(choice == 1){
         		
@@ -189,6 +191,30 @@ public class BluebirdsAirlineDriver {
         
         return flights;
 
+    }
+    
+    public static ArrayList<Customer> primeCustomers(ArrayList<Customer> customers)
+    {
+        customers.add(new Customer("Rick Sanchez","2072 Apperson Dr, Salem, VA 24153", "5407746295"));
+        customers.add(new Customer("Daryl Dixon", "21611 N 26th Ave, Phoenix, AZ 85027", "6235826020"));
+        customers.add(new Customer("Merle Dixon", "3202 E Greenway Rd, Phoenix, AZ 85032", "6024851000"));
+        return customers;
+    }
+    
+    public static ArrayList<Reservation> primeReservations(ArrayList<Reservation> reservations, ArrayList<Flight> flights, ArrayList<Customer> customers)
+    {
+        reservations.add(new Reservation(flights.get(0), customers.get(0), "FC1", true));
+        reservations.add(new Reservation(flights.get(0), customers.get(0), "FC2", true));
+        reservations.add(new Reservation(flights.get(0), customers.get(1), "EC1", false));
+        reservations.add(new Reservation(flights.get(0), customers.get(2), "EC2", false));
+        
+        flights.get(0).getFirstClass()[0][0] = reservations.get(0);
+        flights.get(0).getFirstClass()[0][1] = reservations.get(1);
+        flights.get(0).getPeasantClass()[0][0] = reservations.get(2);
+        flights.get(0).getPeasantClass()[0][1] = reservations.get(3);
+        
+        
+        return reservations;
     }
 
     // Gets paramaters for a flight from the user and passes them to a method
