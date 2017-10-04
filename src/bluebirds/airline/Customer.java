@@ -7,12 +7,12 @@ public class Customer extends Person{
         private ArrayList<Reservation> reservationList;
         public static int num = 100;
 	
-	public Customer(String name, String address, String phoneNumber, ArrayList<Reservation> r)
+	public Customer(String name, String address, String phoneNumber)
 	{
 		super(name,address,phoneNumber);
 		customerId = num;
                 num++;
-                reservationList = r;
+                reservationList = new ArrayList<Reservation>();
 	}
 	
 	public Customer()
