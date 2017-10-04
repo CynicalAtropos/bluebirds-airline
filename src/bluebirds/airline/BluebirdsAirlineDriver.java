@@ -286,6 +286,10 @@ public class BluebirdsAirlineDriver {
                         custRes.remove(j);
                     }
                 }
+                Flight f = resList.get(i).getFlight();
+                if(resList.get(i).getFirstClass()){
+                    
+                }
             }
         }
         
