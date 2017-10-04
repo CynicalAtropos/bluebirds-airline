@@ -1,31 +1,36 @@
 package bluebirds.airline;
 
+import java.time.LocalDate;
+
 public class Flight {
 	
 	private String flightCode;
-	private String date;
+	private LocalDate day;
 	private String time;
 	private String route;
 	private Pilot pilot;
         private Reservation[][] firstClass;
 	private Reservation[][] peasantClass;
         
-	public Flight(String f,String d, String t, String r, Pilot p)
+	public Flight(String f,LocalDate d, String t, String r, Pilot p)
 	{
 		flightCode = f;
-		date = d;
+		day = d;
 		time = t;
 		route = r;
 		pilot = p;
+                firstClass = new Reservation[2][2];
+                peasantClass = new Reservation[2][4];
 	}
 	
 	public Flight(){
-		
+		firstClass = new Reservation[2][2];
+                peasantClass = new Reservation[2][4];
 	}
 	
 	public String toString()
 	{
-		return "Flight Number: " + flightCode + " on " + date + " from " + route + " at " + time + " with " + pilot + " as the pilot.";
+		return "Flight Number: " + flightCode + " on " + day + " from " + route + " at " + time + " with " + pilot + " as the pilot.";
 	}
 
 	public String getFlightCode() 
@@ -38,14 +43,14 @@ public class Flight {
 		this.flightCode = flightCode;
 	}
 
-	public String getDate() 
+	public LocalDate getDate() 
 	{
-		return date;
+		return day;
 	}
 
-	public void setDate(String date) 
+	public void setDate(LocalDate date) 
 	{
-		this.date = date;
+		this.day = date;
 	}
 
 	public String getTime() 
@@ -77,7 +82,22 @@ public class Flight {
 	{
 		this.pilot = pilot;
 	}
+        
+        public Reservation[][] getPeasantClass(){
+            return this.peasantClass;
+        }
+        
+        public void setPeasantClass(Reservation[][] res){
+            this.peasantClass = res;
+        }
 	
+        public Reservation[][] getFirstClass(){
+            return this.firstClass;
+        }
+        
+        public void setFirstClass(Reservation[][] res){
+            this.firstClass = res;
+        }
 	
 	
 	
