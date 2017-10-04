@@ -296,6 +296,7 @@ public class BluebirdsAirlineDriver {
                         fClass++;
                     }
                 }
+            }
                 for (int eCol=0;eCol<searchFlight.getPeasantClass().length;eCol++){
                 for (int eRow=0;eRow<searchFlight.getPeasantClass()[eRow].length;eRow++){
                     if(searchFlight.getPeasantClass()[eCol][eRow]==null){
@@ -303,11 +304,21 @@ public class BluebirdsAirlineDriver {
                     }
                 }
             }
+                if (party < fClass+economy){
+                    if (party <= fClass){
+                        System.out.println("There are first class seats available. Would you like first class? "
+                                + "\n[1] yes"
+                                + "\n[2] no");
+                        int bookClass = scan.nextInt();
+                        
+                    }
+                }
+                    
         }
             
     }
     }
-    }
+    
 
     // Cancels a reservation by reservation ID
     public static void cancelRes(ArrayList<Reservation> resList, ArrayList<Reservation> cancelList) {
