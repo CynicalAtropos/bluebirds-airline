@@ -6,6 +6,7 @@
 package bluebirds.airline;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  *
@@ -27,7 +28,59 @@ public class BluebirdsAirlineDriver {
         
         ArrayList<Reservation> reservationAL = new ArrayList<Reservation>();
         
-        primeData(pilotAL, flightAL);
+        while (true)
+        {
+        	int choice = menu();
+        	if(choice == 0){
+        		primeData(pilotAL, flightAL);
+        	}
+        	else if(choice == 1){
+        		
+        	}
+        	else if(choice == 2){
+        		
+        	}
+        	else if(choice == 3){
+        		
+        	}
+        	else if(choice == 4){
+        		
+        	}
+        	else if(choice == 5){
+        		
+        	}
+        	else if (choice == 6){
+        		
+        	}
+        	else if(choice == 7){
+        		
+        	}
+        	else if(choice == 8){
+        		
+        	}
+        	else if(choice == 9){
+        		
+        	}
+        	else if(choice == 10){
+        		
+        	}
+        	else if(choice == 11){
+        		
+        	}
+        	else if(choice == 12){
+                    
+                }
+        	else if(choice == 13){
+        		
+        	}
+        	else if(choice == 14){
+        		
+        	}
+        	else if(choice == 15){
+        		System.out.println("\nGOOD BYE!!!");
+        		System.exit(0);
+        	}
+        }  
     }
     
     public static void searchReservID()
@@ -94,5 +147,43 @@ public class BluebirdsAirlineDriver {
         
         
         
+    }
+    
+    public static int menu()
+    {
+    	Scanner scan = new Scanner(System.in);
+    	System.out.println("\n0.  Prime the data.");
+        System.out.println("1.  Book a Reservation.");
+        System.out.println("2.  Search for Customer by their ID Number.");
+        System.out.println("3.  Cancel a Reservation.");
+        System.out.println("4.  Print Gross Income (All Flights or Specific).");
+        System.out.println("5.  Print Each Pilots' Weekly Schedule.");
+        System.out.println("6.  Find All Reservations Made Under a Specific Customer ID Number.");
+        System.out.println("7.  Search for Reservation by Reservation Number.");  // make certain not to sell more than you have!
+        System.out.println("8.  Search Canceled Reservations By Reservation Number or Customer Name.");  // either currently there or a new product
+        System.out.println("9.  Print Seat Layout for Specified Flight.");
+        System.out.println("10. --");
+        System.out.println("11. --");
+        System.out.println("12. --");
+        System.out.println("13. --");
+        System.out.println("14. --");
+        System.out.println("15. Exit."); 
+        System.out.print("Choice: ");
+        
+        try{
+        	int choice = scan.nextInt();
+        	
+        	if(choice < 0 || choice > 14){
+            	System.out.println("\nThat is not a valid choice!"); 
+            	return menu();
+            }
+            else{
+            	return choice;
+            }
+        }
+        catch(Exception t){
+        	System.out.println("\nThat is not a valid choice!"); 
+        	return menu();
+        }
     }
 }
