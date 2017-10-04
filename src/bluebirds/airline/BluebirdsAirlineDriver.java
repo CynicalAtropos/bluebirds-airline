@@ -33,6 +33,8 @@ public class BluebirdsAirlineDriver {
 
         ArrayList<Reservation> reservationAL = new ArrayList<Reservation>();
         
+        ArrayList<Reservation> canceledResAL = new ArrayList<Reservation>();
+        
         while (true)
         {
         	int choice = menu();
@@ -68,7 +70,7 @@ public class BluebirdsAirlineDriver {
         		
         	}
         	else if(choice == 10){
-        		printFlightSeats();
+        		printFlightSeats(flightAL);
         	}
         	else if(choice == 11){
         		
