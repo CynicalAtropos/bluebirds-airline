@@ -262,7 +262,47 @@ public class BluebirdsAirlineDriver {
     
     // Searches for a flight based on the customers parameters
     public static void searchFlight(ArrayList<Flight> f, int route, int time, int party, LocalDate day){
+        String flightRoute = "";
+        if(route == 1){
+            flightRoute = "Roanoke to Phoenix";
+        }
+        else if(route == 2){
+            flightRoute = "Phoenix to Roanoke";
+        }
         
+        String flightTime = "";
+        if (time == 1){
+            flightTime = "8:00 a.m.";
+        }
+        else if (time == 2){
+            flightTime = "6:00 p.m.";
+        }
+        
+        for (int i=0;i<f.size();i++){
+        Flight searchFlight = f.get(i);
+        
+        if (searchFlight.getRoute().equals(flightRoute)
+                && searchFlight.getTime().equals(flightTime)
+                && searchFlight.getDate().equals(day)){
+            int fClass = 0;
+            int economy = 0;
+            for (int fCol=0;fCol<searchFlight.getFirstClass().length;fCol++){
+                for (int fRow=0;fRow<searchFlight.getFirstClass()[fRow].length;fRow++){
+                    if(searchFlight.getFirstClass()[fCol][fRow]==null){
+                        fClass++;
+                    }
+                }
+                for (int eCol=0;eCol<searchFlight.getPeasantClass().length;eCol++){
+                for (int eRow=0;eRow<searchFlight.getPeasantClass()[eRow].length;eRow++){
+                    if(searchFlight.getPeasantClass()[eCol][eRow]==null){
+                        economy++;
+                    }
+                }
+            }
+        }
+            
+    }
+    }
     }
 
     // Cancels a reservation by reservation ID
