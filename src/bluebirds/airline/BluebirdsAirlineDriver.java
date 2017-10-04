@@ -6,6 +6,8 @@
 package bluebirds.airline;
 
 import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -21,7 +23,7 @@ public class BluebirdsAirlineDriver {
     public static void main(String[] args) {
         // TODO code application logic here
         
-        Scanner scan = new Scanner(System.in);
+        
         
         ArrayList<Customer> customerAL = new ArrayList<Customer>();
 
@@ -110,8 +112,9 @@ public class BluebirdsAirlineDriver {
         }
     }
     
-    public static void searchCustID(ArrayList<Customer> customers, Scanner scan)
+    public static void searchCustID(ArrayList<Customer> customers)
     {
+        Scanner scan = new Scanner(System.in);
         System.out.println("What is the customer ID?");
         int custNum = scan.nextInt();
         boolean found = false;
