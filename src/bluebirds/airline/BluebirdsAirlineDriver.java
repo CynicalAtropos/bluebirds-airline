@@ -33,26 +33,29 @@ public class BluebirdsAirlineDriver {
 
         ArrayList<Reservation> reservationAL = new ArrayList<Reservation>();
         
+        ArrayList<Reservation> canceledResAL = new ArrayList<Reservation>();
+        
         while (true)
         {
         	int choice = menu();
         	if(choice == 0){
-        		primeData(pilotAL, flightAL);
+                        pilotAL = primePilots(pilotAL);
+                        flightAL = primeFlights(pilotAL, flightAL);
         	}
         	else if(choice == 1){
         		
         	}
         	else if(choice == 2){
-        		
+        		searchCustID(customerAL);
         	}
         	else if(choice == 3){
-        		
+        		cancelRes(reservationAL, canceledResAL);
         	}
         	else if(choice == 4){
-        		
+        		grossIncomeEach(flightAL);
         	}
         	else if(choice == 5){
-        		
+        		grossIncomeSpec(flightAL);
         	}
         	else if (choice == 6){
         		
@@ -67,7 +70,7 @@ public class BluebirdsAirlineDriver {
         		
         	}
         	else if(choice == 10){
-        		
+        		printFlightSeats(flightAL);
         	}
         	else if(choice == 11){
         		
@@ -88,8 +91,9 @@ public class BluebirdsAirlineDriver {
         }  
     }
     
-    public static void searchReservID(ArrayList<Reservation> reservations, Scanner scan)
+    public static void searchReservID(ArrayList<Reservation> reservations)
     {
+        Scanner scan = new Scanner(System.in);
         System.out.println("What is the reservation number?");
         int resNum = scan.nextInt();
         
@@ -137,53 +141,53 @@ public class BluebirdsAirlineDriver {
         
     }
 
-    public static void primeData(ArrayList<Pilot> pilots, ArrayList<Flight> flights) {
-        Pilot a = new Pilot("Chesley Sullenberger", "2801 Franklin Rd SW, Roanoke, VA 24014", "5403454434");
-        Pilot b = new Pilot("Amelia Earhart", "15240 N 32nd St, Phoenix, AZ 85032", "6024937404");
-        Pilot c = new Pilot("Han Solo", "3226 Brandon Ave SW, Roanoke, VA 24018", "5403448200");
-        Pilot d = new Pilot("Orville Wright", "1919 W Deer Valley Rd, Phoenix, AZ 85027", "6237802330");
+    public static ArrayList<Pilot> primePilots(ArrayList<Pilot> pilots)
+    {
+        pilots.add(new Pilot("Chesley Sullenberger", "2801 Franklin Rd SW, Roanoke, VA 24014", "5403454434"));
+        pilots.add(new Pilot("Amelia Earhart", "15240 N 32nd St, Phoenix, AZ 85032", "6024937404"));
+        pilots.add(new Pilot("Han Solo", "3226 Brandon Ave SW, Roanoke, VA 24018", "5403448200"));
+        pilots.add(new Pilot("Orville Wright", "1919 W Deer Valley Rd, Phoenix, AZ 85027", "6237802330"));
+ 
+        return pilots;
+    }
+    public static ArrayList<Flight> primeFlights(ArrayList<Pilot> pilots, ArrayList<Flight> flights) {
 
-        pilots.add(a);
-        pilots.add(b);
-        pilots.add(c);
-        pilots.add(d);
+        flights.add(new Flight("12RPAM", LocalDate.of(2017, Month.NOVEMBER, 12), "8:00 a.m.", "Roanoke to Phoenix", pilots.get(0)));
+        flights.add(new Flight("12PRAM", LocalDate.of(2017, Month.NOVEMBER, 12), "8:00 a.m.", "Phoenix to Roanoke", pilots.get(1)));
+        flights.add(new Flight("12PRPM", LocalDate.of(2017, Month.NOVEMBER, 12), "6:00 p.m.", "Phoenix to Roanoke", pilots.get(0)));
+        flights.add(new Flight("12RPPM", LocalDate.of(2017, Month.NOVEMBER, 12), "6:00 p.m.", "Roanoke to Phoenix", pilots.get(1)));
+
+        flights.add(new Flight("13RPAM", LocalDate.of(2017, Month.NOVEMBER, 13), "8:00 a.m.", "Roanoke to Phoenix", pilots.get(2)));
+        flights.add(new Flight("13PRAM", LocalDate.of(2017, Month.NOVEMBER, 13), "8:00 a.m.", "Phoenix to Roanoke", pilots.get(3)));
+        flights.add(new Flight("13PRPM", LocalDate.of(2017, Month.NOVEMBER, 13), "6:00 p.m.", "Phoenix to Roanoke", pilots.get(2)));
+        flights.add(new Flight("13RPPM", LocalDate.of(2017, Month.NOVEMBER, 13), "6:00 p.m.", "Roanoke to Phoenix", pilots.get(3)));
+
+        flights.add(new Flight("14RPAM", LocalDate.of(2017, Month.NOVEMBER, 14), "8:00 a.m.", "Roanoke to Phoenix", pilots.get(0)));
+        flights.add(new Flight("14PRAM", LocalDate.of(2017, Month.NOVEMBER, 14), "8:00 a.m.", "Phoenix to Roanoke", pilots.get(1)));
+        flights.add(new Flight("14PRPM", LocalDate.of(2017, Month.NOVEMBER, 14), "6:00 p.m.", "Phoenix to Roanoke", pilots.get(0)));
+        flights.add(new Flight("14RPPM", LocalDate.of(2017, Month.NOVEMBER, 14), "6:00 p.m.", "Roanoke to Phoenix", pilots.get(1)));
+
+        flights.add(new Flight("15RPAM", LocalDate.of(2017, Month.NOVEMBER, 15), "8:00 a.m.", "Roanoke to Phoenix", pilots.get(2)));
+        flights.add(new Flight("15PRAM", LocalDate.of(2017, Month.NOVEMBER, 15), "8:00 a.m.", "Phoenix to Roanoke", pilots.get(3)));
+        flights.add(new Flight("15PRPM", LocalDate.of(2017, Month.NOVEMBER, 15), "6:00 p.m.", "Phoenix to Roanoke", pilots.get(2)));
+        flights.add(new Flight("15RPPM", LocalDate.of(2017, Month.NOVEMBER, 15), "6:00 p.m.", "Roanoke to Phoenix", pilots.get(3)));
+
+        flights.add(new Flight("16RPAM", LocalDate.of(2017, Month.NOVEMBER, 16), "8:00 a.m.", "Roanoke to Phoenix", pilots.get(0)));
+        flights.add(new Flight("16PRAM", LocalDate.of(2017, Month.NOVEMBER, 16), "8:00 a.m.", "Phoenix to Roanoke", pilots.get(1)));
+        flights.add(new Flight("16PRPM", LocalDate.of(2017, Month.NOVEMBER, 16), "6:00 p.m.", "Phoenix to Roanoke", pilots.get(0)));
+        flights.add(new Flight("16RPPM", LocalDate.of(2017, Month.NOVEMBER, 16), "6:00 p.m.", "Roanoke to Phoenix", pilots.get(1)));
+
+        flights.add(new Flight("17RPAM", LocalDate.of(2017, Month.NOVEMBER, 17), "8:00 a.m.", "Roanoke to Phoenix", pilots.get(2)));
+        flights.add(new Flight("17PRAM", LocalDate.of(2017, Month.NOVEMBER, 17), "8:00 a.m.", "Phoenix to Roanoke", pilots.get(3)));
+        flights.add(new Flight("17PRPM", LocalDate.of(2017, Month.NOVEMBER, 17), "6:00 p.m.", "Phoenix to Roanoke", pilots.get(2)));
+        flights.add(new Flight("17RPPM", LocalDate.of(2017, Month.NOVEMBER, 17), "6:00 p.m.", "Roanoke to Phoenix", pilots.get(3)));
+
+        flights.add(new Flight("18RPAM", LocalDate.of(2017, Month.NOVEMBER, 18), "8:00 a.m.", "Roanoke to Phoenix", pilots.get(0)));
+        flights.add(new Flight("18PRAM", LocalDate.of(2017, Month.NOVEMBER, 18), "8:00 a.m.", "Phoenix to Roanoke", pilots.get(1)));
+        flights.add(new Flight("18PRPM", LocalDate.of(2017, Month.NOVEMBER, 18), "6:00 p.m.", "Phoenix to Roanoke", pilots.get(0)));
+        flights.add(new Flight("18RPPM", LocalDate.of(2017, Month.NOVEMBER, 18), "6:00 p.m.", "Roanoke to Phoenix", pilots.get(1)));
         
-        
-
-        flights.add(new Flight("12RPAM", LocalDate.of(2017, Month.NOVEMBER, 12), "8:00 a.m.", "Roanoke to Phoenix", a));
-        flights.add(new Flight("12PRAM", LocalDate.of(2017, Month.NOVEMBER, 12), "8:00 a.m.", "Phoenix to Roanoke", b));
-        flights.add(new Flight("12PRPM", LocalDate.of(2017, Month.NOVEMBER, 12), "6:00 p.m.", "Phoenix to Roanoke", a));
-        flights.add(new Flight("12RPPM", LocalDate.of(2017, Month.NOVEMBER, 12), "6:00 p.m.", "Roanoke to Phoenix", b));
-
-        flights.add(new Flight("13RPAM", LocalDate.of(2017, Month.NOVEMBER, 13), "8:00 a.m.", "Roanoke to Phoenix", c));
-        flights.add(new Flight("13PRAM", LocalDate.of(2017, Month.NOVEMBER, 13), "8:00 a.m.", "Phoenix to Roanoke", d));
-        flights.add(new Flight("13PRPM", LocalDate.of(2017, Month.NOVEMBER, 13), "6:00 p.m.", "Phoenix to Roanoke", c));
-        flights.add(new Flight("13RPPM", LocalDate.of(2017, Month.NOVEMBER, 13), "6:00 p.m.", "Roanoke to Phoenix", d));
-
-        flights.add(new Flight("14RPAM", LocalDate.of(2017, Month.NOVEMBER, 14), "8:00 a.m.", "Roanoke to Phoenix", a));
-        flights.add(new Flight("14PRAM", LocalDate.of(2017, Month.NOVEMBER, 14), "8:00 a.m.", "Phoenix to Roanoke", b));
-        flights.add(new Flight("14PRPM", LocalDate.of(2017, Month.NOVEMBER, 14), "6:00 p.m.", "Phoenix to Roanoke", a));
-        flights.add(new Flight("14RPPM", LocalDate.of(2017, Month.NOVEMBER, 14), "6:00 p.m.", "Roanoke to Phoenix", b));
-
-        flights.add(new Flight("15RPAM", LocalDate.of(2017, Month.NOVEMBER, 15), "8:00 a.m.", "Roanoke to Phoenix", c));
-        flights.add(new Flight("15PRAM", LocalDate.of(2017, Month.NOVEMBER, 15), "8:00 a.m.", "Phoenix to Roanoke", d));
-        flights.add(new Flight("15PRPM", LocalDate.of(2017, Month.NOVEMBER, 15), "6:00 p.m.", "Phoenix to Roanoke", c));
-        flights.add(new Flight("15RPPM", LocalDate.of(2017, Month.NOVEMBER, 15), "6:00 p.m.", "Roanoke to Phoenix", d));
-
-        flights.add(new Flight("16RPAM", LocalDate.of(2017, Month.NOVEMBER, 16), "8:00 a.m.", "Roanoke to Phoenix", a));
-        flights.add(new Flight("16PRAM", LocalDate.of(2017, Month.NOVEMBER, 16), "8:00 a.m.", "Phoenix to Roanoke", b));
-        flights.add(new Flight("16PRPM", LocalDate.of(2017, Month.NOVEMBER, 16), "6:00 p.m.", "Phoenix to Roanoke", a));
-        flights.add(new Flight("16RPPM", LocalDate.of(2017, Month.NOVEMBER, 16), "6:00 p.m.", "Roanoke to Phoenix", b));
-
-        flights.add(new Flight("17RPAM", LocalDate.of(2017, Month.NOVEMBER, 17), "8:00 a.m.", "Roanoke to Phoenix", c));
-        flights.add(new Flight("17PRAM", LocalDate.of(2017, Month.NOVEMBER, 17), "8:00 a.m.", "Phoenix to Roanoke", d));
-        flights.add(new Flight("17PRPM", LocalDate.of(2017, Month.NOVEMBER, 17), "6:00 p.m.", "Phoenix to Roanoke", c));
-        flights.add(new Flight("17RPPM", LocalDate.of(2017, Month.NOVEMBER, 17), "6:00 p.m.", "Roanoke to Phoenix", d));
-
-        flights.add(new Flight("18RPAM", LocalDate.of(2017, Month.NOVEMBER, 18), "8:00 a.m.", "Roanoke to Phoenix", a));
-        flights.add(new Flight("18PRAM", LocalDate.of(2017, Month.NOVEMBER, 18), "8:00 a.m.", "Phoenix to Roanoke", b));
-        flights.add(new Flight("18PRPM", LocalDate.of(2017, Month.NOVEMBER, 18), "6:00 p.m.", "Phoenix to Roanoke", a));
-        flights.add(new Flight("18RPPM", LocalDate.of(2017, Month.NOVEMBER, 18), "6:00 p.m.", "Roanoke to Phoenix", b));
+        return flights;
 
     }
 
@@ -306,13 +310,29 @@ public class BluebirdsAirlineDriver {
     }
 
     // Cancels a reservation by reservation ID
-    public static void cancelRes(ArrayList<Reservation> resList, ArrayList<Reservation> cancelList, int resID) {
+    public static void cancelRes(ArrayList<Reservation> resList, ArrayList<Reservation> cancelList) {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Please Enter the Reservation Number: ");
+        int resID = scan.nextInt();
+        boolean found = false;
         for (int i = 0; i < resList.size(); i++) {
             if (resList.get(i).getReservationNum() == resID) {
+                found = true;
                 cancelList.add(resList.get(i));
                 resList.remove(resList.get(i));
+                ArrayList<Reservation> custRes = resList.get(i).getCustomer().getReservationList();
+                for(int j = 0; i < custRes.size(); i ++){
+                    if(custRes.get(j).getReservationNum() == resID){
+                        custRes.remove(j);
+                    }
+                }
             }
         }
+        
+        if(!found){
+            System.out.println("There is no reservation under that number.");
+        }
+        
     }
 
     // prints a customers reservation according to the customer ID
@@ -376,10 +396,22 @@ public class BluebirdsAirlineDriver {
         NumberFormat nf = NumberFormat.getCurrencyInstance();
         for(int i = 0; i < flights.size(); i++)
             {
-                
+                int grossIncome = 0;
                 System.out.println("Flight: " + flights.get(i).getFlightCode());
                 //For Loop to read seat maps including getters and setters
-                System.out.println("Gross Income: ");
+                Reservation[][] firstClass = flights.get(i).getFirstClass();
+                Reservation[][] peasantClass = flights.get(i).getPeasantClass();
+                for(int row = 0; row < firstClass.length; row++){
+                    for(int col = 0; col < firstClass.length; col++){
+                        grossIncome = grossIncome + firstClass[row][col].getCost();
+                    }
+                }
+                for(int row = 0; row < peasantClass.length; row++){
+                    for(int col = 0; col < peasantClass.length; col++){
+                        grossIncome = grossIncome + firstClass[row][col].getCost();
+                    }
+                }
+                System.out.println("Gross Income: " + grossIncome);
             }
             
             
@@ -389,7 +421,7 @@ public class BluebirdsAirlineDriver {
         NumberFormat nf = NumberFormat.getCurrencyInstance();
         Scanner scan = new Scanner(System.in);
         
-        System.out.println("What is the flight code?");
+        System.out.println("Please Enter the flight code: ");
         String flightCode = scan.nextLine().trim();
         boolean found = false;
         for(int i = 0; i < flights.size(); i++)
@@ -399,7 +431,21 @@ public class BluebirdsAirlineDriver {
                     System.out.println("Matched Flight: ");
                     Flight f = flights.get(i);
                     //For Loop to read seat map
-                    System.out.println("Gross Income: ");
+                    int grossIncome = 0;
+                    System.out.println("Flight: " + flights.get(i).getFlightCode());
+                    Reservation[][] firstClass = f.getFirstClass();
+                    Reservation[][] peasantClass = f.getPeasantClass();
+                    for(int row = 0; row < firstClass.length; row++){
+                        for(int col = 0; col < firstClass.length; col++){
+                        grossIncome = grossIncome + firstClass[row][col].getCost();
+                        }
+                    }
+                    for(int row = 0; row < peasantClass.length; row++){
+                        for(int col = 0; col < peasantClass.length; col++){
+                            grossIncome = grossIncome + firstClass[row][col].getCost();
+                        }
+                    }
+                    System.out.println("Gross Income: " + grossIncome);
                 }
             }
             
@@ -445,7 +491,44 @@ public class BluebirdsAirlineDriver {
     
     public static void printFlightSeats(ArrayList<Flight> flights){
         Scanner scan = new Scanner(System.in);
-        System.out.println("Please enter the flight code: ");
-        String flightCode = scan.nextLine();
+        System.out.println("Please Enter the flight code: ");
+        String flightCode = scan.nextLine().trim();
+        boolean found = false;
+        for(int i = 0; i < flights.size(); i++)
+            {
+                if(flightCode.equals(flights.get(i).getFlightCode())) {
+                    found = true;
+                    System.out.println("Matched Flight: " + flightCode + "\n");
+                    Flight f = flights.get(i);
+                    //For Loop to read seat map
+                    Reservation[][] firstClass = f.getFirstClass();
+                    Reservation[][] peasantClass = f.getPeasantClass();
+                    System.out.println("First Class:");
+                    for(int row = 0; row < firstClass.length; i++){
+                        for(int col = 0; col < firstClass[row].length; col++){
+                           if(firstClass[row][col] == null){
+                               System.out.println("\tEmpty\t");
+                           } else {
+                               System.out.println("\t" + firstClass[row][col].getCustomer().getName() + "\t");
+                           }
+                        }
+                    }
+                    System.out.println("Economy Class:");
+                    for(int row = 0; row < peasantClass.length; i++){
+                        for(int col = 0; col < peasantClass[row].length; col++){
+                           if(peasantClass[row][col] == null){
+                               System.out.println("\tEmpty\t");
+                           } else {
+                               System.out.println("\t" + peasantClass[row][col].getCustomer().getName() + "\t");
+                           }
+                        }
+                    }
+                    
+                }
+            }
+        if(!found) {
+            System.out.println("The flight code provided was invalid.");
+        }
+            
     }
 }
