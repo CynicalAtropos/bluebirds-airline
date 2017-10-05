@@ -66,7 +66,7 @@ public class BluebirdsAirlineDriver {
         		
         	}
         	else if(choice == 8){
-        		
+        		searchReservID(reservationAL);
         	}
         	else if(choice == 9){
         		
@@ -215,6 +215,22 @@ public class BluebirdsAirlineDriver {
         
         
         return reservations;
+    }
+    
+    public static ArrayList<Customer> createNewCustomer(ArrayList<Customer> customers)
+    {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("What is your name? ex: First Last");
+        String name = scan.nextLine();
+        System.out.println("What is your address? ex: StreetNumber Street Name, City, ST ZipCode");
+        String address = scan.nextLine();
+        System.out.println("What is your phone number? ex: 5409770923");
+        String phone = scan.nextLine();
+        
+        Customer customer = new Customer(name, address, phone);
+        
+        customers.add(customer);
+        return customers;
     }
 
     // Gets paramaters for a flight from the user and passes them to a method
