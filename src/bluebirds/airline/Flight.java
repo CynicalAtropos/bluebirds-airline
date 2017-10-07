@@ -10,7 +10,7 @@ public class Flight {
 	private String route;
 	private Pilot pilot;
         private Reservation[][] firstClass;
-	private Reservation[][] peasantClass;
+	private Reservation[][] economyClass;
         
 	public Flight(String f,LocalDate d, String t, String r, Pilot p)
 	{
@@ -20,12 +20,12 @@ public class Flight {
 		route = r;
 		pilot = p;
                 firstClass = new Reservation[2][2];
-                peasantClass = new Reservation[2][4];
+                economyClass = new Reservation[2][4];
 	}
 	
 	public Flight(){
 		firstClass = new Reservation[2][2];
-                peasantClass = new Reservation[2][4];
+                economyClass = new Reservation[2][4];
 	}
 	
 	public String toString()
@@ -83,12 +83,12 @@ public class Flight {
 		this.pilot = pilot;
 	}
         
-        public Reservation[][] getPeasantClass(){
-            return this.peasantClass;
+        public Reservation[][] getEconomyClass(){
+            return this.economyClass;
         }
         
-        public void setPeasantClass(Reservation[][] res){
-            this.peasantClass = res;
+        public void setEconomyClass(Reservation[][] res){
+            this.economyClass = res;
         }
 	
         public Reservation[][] getFirstClass(){
