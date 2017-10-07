@@ -470,8 +470,10 @@ public class BluebirdsAirlineDriver {
                                                     while(!booked){
                                                     while (party > 0) {
                                                        
-                                    
-                                                            fList.get(i).getFirstClass()[seatCol][seatRow] = new Reservation(f, c, String.valueOf(seatCol + seatRow), true);
+                                                            String seatNum = "FC";
+                                                            if(seatCol == 0) seatNum += "A" + (seatRow +1);
+                                                            else if (seatCol == 1) seatNum += "B" + (seatRow+1);
+                                                            fList.get(i).getFirstClass()[seatCol][seatRow] = new Reservation(f, c, seatNum, true);
                                                             System.out.println("Reservation Booked. Reservation ID is "+
                                                                     fList.get(i).getFirstClass()[seatCol][seatRow].getReservationNum()+
                                                                     "Seat Number: "+ fList.get(i).getFirstClass()[seatCol][seatRow].getSeatNumber());
@@ -516,27 +518,27 @@ public class BluebirdsAirlineDriver {
                                                 emptySeats++;
                                                 // if there are enough seats for the party
                                                 // book the reservation
-                                                int seatCol = col;
+                                                    int seatCol = col;
                                                     int seatRow = row;
                                                     while(!booked){
-                                                    while (party > 0) {
+                                                        while (party > 0) {
                                                        
-                                    
-                                                            fList.get(i).getEconomyClass()[seatCol][seatRow] = new Reservation(f, c, String.valueOf(seatCol + seatRow), true);
+                                                            String seatNum = "FC";
+                                                            if(seatCol == 0) seatNum += "A" + (seatRow +1);
+                                                            else if (seatCol == 1) seatNum += "B" + (seatRow+1);
+                                                            fList.get(i).getEconomyClass()[seatCol][seatRow] = new Reservation(f, c, seatNum, true);
                                                             System.out.println("Reservation Booked. Reservation ID is "+
                                                                     fList.get(i).getEconomyClass()[seatCol][seatRow].getReservationNum()+
-                                                                    "Seat Number: "+ fList.get(i).getEconomyClass()[seatCol][seatRow].getSeatNumber());
-                                                    party--;
-                                                    seatRow++;
-                                                    if (row>1){
-                                                        seatCol++;
-                                                        seatRow =0;
+                                                                    " Seat Number: "+ fList.get(i).getEconomyClass()[seatCol][seatRow].getSeatNumber());
+                                                            party--;
+                                                            seatRow++;
+                                                            if (seatRow>1){
+                                                                seatCol++;
+                                                                seatRow =0;
+                                                            }
+                                                            booked = true;
+                                                        }
                                                     }
-                                                    
-                                                    
-                                                    booked = true;
-                                                    }
-                                                }
                                             }
                                         }
                                     }
@@ -593,11 +595,14 @@ public class BluebirdsAirlineDriver {
                                 int seatCol = col;
                                 int seatRow = row;
                                 while(party>0){
+                                    String seatNum = "FC";
+                                    if(row == 0) seatNum += "A" + (seatRow +1);
+                                    else if (row == 1) seatNum += "B" + (seatRow+1);
                                     
-                                    fList.get(i).getFirstClass()[col][row] = new Reservation(f, c, String.valueOf(col + row), true);
+                                    fList.get(i).getFirstClass()[col][row] = new Reservation(f, c, seatNum, true);
                                     System.out.println("Reservation Booked. Reservation ID is "+
                                                                     fList.get(i).getFirstClass()[col][row].getReservationNum()+
-                                                                    "Seat Number: "+ fList.get(i).getFirstClass()[col][row].getSeatNumber());
+                                                                    " Seat Number: "+ fList.get(i).getFirstClass()[col][row].getSeatNumber());
                                     party--;
                                 seatCol++;
                                 seatRow++;
@@ -618,13 +623,20 @@ public class BluebirdsAirlineDriver {
                                 while(party>0){
                                     int seatCol = col;
                                     int seatRow = row;
-                                    fList.get(i).getEconomyClass()[seatCol][seatRow] = new Reservation(f, c, String.valueOf(col + row), true);
+                                    String seatNum = "FC";
+                                    if(row == 0) seatNum += "A" + (seatRow +1);
+                                    else if (row == 1) seatNum += "B" + (seatRow+1);
+                                    fList.get(i).getEconomyClass()[seatCol][seatRow] = new Reservation(f, c, seatNum, true);
                                     System.out.println("Reservation Booked. Reservation ID is "+
                                                                     fList.get(i).getEconomyClass()[seatCol][seatRow].getReservationNum()+
                                                                     "Seat Number: "+ fList.get(i).getEconomyClass()[seatCol][seatRow].getSeatNumber());
                                     party--;
-                                    seatCol++;
                                     seatRow++;
+                                    if(seatRow > 3){
+                                        seatCol++;
+                                        seatRow = 0;
+                                    }
+                                    
                                 
                             }
                             }
