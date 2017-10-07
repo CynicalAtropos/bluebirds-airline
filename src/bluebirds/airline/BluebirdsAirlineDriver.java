@@ -198,7 +198,12 @@ public class BluebirdsAirlineDriver {
         flights.get(0).getPeasantClass()[0][0] = reservations.get(2);
         flights.get(0).getPeasantClass()[0][1] = reservations.get(3);
         
+        customers.get(0).addRes(reservations.get(0));
+        customers.get(0).addRes(reservations.get(1));
+        customers.get(1).addRes(reservations.get(2));
+        customers.get(2).addRes(reservations.get(3));
         
+  
         return reservations;
     }
     
@@ -661,11 +666,12 @@ public class BluebirdsAirlineDriver {
                     }
                     f.setPeasantClass(peasantClass);
                 }
+            }
         }
-        
         if(!found){
             System.out.println("There is no reservation under that number.");
-        }
+        } else {
+            System.out.println("Reservation was canceled.");
         }
     }
 
