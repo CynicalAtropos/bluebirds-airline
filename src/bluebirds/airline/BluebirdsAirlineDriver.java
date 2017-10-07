@@ -741,6 +741,7 @@ public class BluebirdsAirlineDriver {
         
         for (int i = 0; i < flight.size(); i++) {
             if (flight.get(i).getPilot().getPilotId() == pilotID) {
+                if(!found)
                 System.out.println("Pilot " + pilotID + " Schedule: ");
                 System.out.println(flight.get(i).getDate() + " " + flight.get(i).getFlightCode()
                         + " " + flight.get(i).getRoute() + " " + flight.get(i).getTime());
