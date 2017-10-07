@@ -60,16 +60,16 @@ public class BluebirdsAirlineDriver {
         		grossIncomeSpec(flightAL);
         	}
         	else if (choice == 6){
-        		
+        		printSchedule(flightAL);
         	}
         	else if(choice == 7){
-        		
+        		printRes(customerAL);
         	}
         	else if(choice == 8){
         		searchReservID(reservationAL);
         	}
         	else if(choice == 9){
-        		
+        		searchCanceledRes(reservationAL);
         	}
         	else if(choice == 10){
         		printFlightSeats(flightAL);
@@ -381,9 +381,24 @@ public class BluebirdsAirlineDriver {
                 }
                 Flight f = resList.get(i).getFlight();
                 if(resList.get(i).getFirstClass()){
-                    
+                    Reservation[][] fc = f.getFirstClass();
+                    for(int row = 0; row < fc.length; i++){
+                        for(int col = 0; col < fc[row].length; col++){
+                           if(fc[row][col].getReservationNum() == resID){
+                               fc[row][col] = null;
+                           }
+                        }
+                    }
+                } else if (!resList.get(i).getFirstClass()){
+                    Reservation[][] peasantClass = f.getPeasantClass();
+                    for(int row = 0; row < peasantClass.length; i++){
+                        for(int col = 0; col < peasantClass[row].length; col++){
+                           if(peasantClass[row][col].getReservationNum() == resID){
+                               peasantClass[row][col] = null;
+                           }
+                        }
+                    }
                 }
-            }
         }
         
         if(!found){
@@ -393,21 +408,45 @@ public class BluebirdsAirlineDriver {
     }
 
     // prints a customers reservation according to the customer ID
-    public static void printRes(ArrayList<Customer> custList, int custID) {
-        for (int i = 0; i < custList.size(); i++) {
-            if (custList.get(i).getCustomerId() == custID) {
+    public static void printRes(ArrayList<Customer> custList) {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("What is the customer ID?");
+        int custNum = scan.nextInt();
+        boolean found = false;
+        
+        for(int i = 0; i < custList.size(); i++)
+        {
+            if(custNum == custList.get(i).getCustomerId())
+            {
+                found = true;
+                System.out.println("We found that customer:");
                 custList.get(i).printRes();
             }
+        } 
+        if(!found)
+        {
+            System.out.println("That customer does not exist");
         }
     }
 
     // prints out a pilots schedule for the week
-    public static void printSchedule(int pilotID, ArrayList<Flight> flight) {
+    public static void printSchedule(ArrayList<Flight> flight) {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("What is the pilot's ID?");
+        int pilotID = scan.nextInt();
+        boolean found = false;
+        
         for (int i = 0; i < flight.size(); i++) {
             if (flight.get(i).getPilot().getPilotId() == pilotID) {
+                System.out.println("Pilot " + pilotID + " Schedule: ");
                 System.out.println(flight.get(i).getDate() + " " + flight.get(i).getFlightCode()
                         + " " + flight.get(i).getRoute() + " " + flight.get(i).getTime());
+                found = true;
             }
+        }
+        if(!found)
+        {
+            System.out.println("That pilot does not exist");
         }
     }
     
@@ -420,7 +459,7 @@ public class BluebirdsAirlineDriver {
         System.out.println("3.  Cancel a Reservation.");
         System.out.println("4.  Print Gross Income for Each Flight.");
         System.out.println("5.  Print Gross Income for a Specific Flight");
-        System.out.println("6.  Print Each Pilots' Weekly Schedule.");
+        System.out.println("6.  Print a Pilot's Weekly Schedule.");
         System.out.println("7.  Find All Reservations Made Under a Specific Customer ID Number.");
         System.out.println("8.  Search for Reservation by Reservation Number.");
         System.out.println("9.  Search Canceled Reservations By Reservation Number or Customer Name.");
@@ -543,6 +582,8 @@ public class BluebirdsAirlineDriver {
             if(!found) {
                 System.out.println("There are no matching reservations for the provided name.");
             }
+        } else {
+            System.out.println("Incorrect Choice.  Returning to menu.");
         }
     }
     
@@ -564,7 +605,7 @@ public class BluebirdsAirlineDriver {
                     for(int row = 0; row < firstClass.length; i++){
                         for(int col = 0; col < firstClass[row].length; col++){
                            if(firstClass[row][col] == null){
-                               System.out.println("\tEmpty\t");
+                               System.out.println("\tOpen\t");
                            } else {
                                System.out.println("\t" + firstClass[row][col].getCustomer().getName() + "\t");
                            }
@@ -574,7 +615,7 @@ public class BluebirdsAirlineDriver {
                     for(int row = 0; row < peasantClass.length; i++){
                         for(int col = 0; col < peasantClass[row].length; col++){
                            if(peasantClass[row][col] == null){
-                               System.out.println("\tEmpty\t");
+                               System.out.println("\tOpen\t");
                            } else {
                                System.out.println("\t" + peasantClass[row][col].getCustomer().getName() + "\t");
                            }
