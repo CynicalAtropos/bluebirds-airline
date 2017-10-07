@@ -617,11 +617,12 @@ public class BluebirdsAirlineDriver {
                     }
                     f.setPeasantClass(peasantClass);
                 }
+            }
         }
-        
         if(!found){
             System.out.println("There is no reservation under that number.");
-        }
+        } else {
+            System.out.println("Reservation was canceled.");
         }
     }
 
