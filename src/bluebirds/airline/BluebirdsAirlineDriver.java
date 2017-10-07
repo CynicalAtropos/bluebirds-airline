@@ -465,8 +465,9 @@ public class BluebirdsAirlineDriver {
                                                 // if there are enough seats for the party
                                                 // book the reservation
                                                 if (emptySeats >= party) {
-                                                    int seatCol = nCol;
-                                                    int seatRow = nRow;
+                                                    int seatCol = col;
+                                                    int seatRow = row;
+                                                    while(!booked){
                                                     while (party > 0) {
                                                        
                                     
@@ -475,10 +476,15 @@ public class BluebirdsAirlineDriver {
                                                                     fList.get(i).getFirstClass()[seatCol][seatRow].getReservationNum()+
                                                                     "Seat Number: "+ fList.get(i).getFirstClass()[seatCol][seatRow].getSeatNumber());
                                                     party--;
-                                                    seatCol++;
                                                     seatRow++;
+                                                    if (row>1){
+                                                        seatCol++;
+                                                        seatRow =0;
+                                                    }
+                                                    
                                                     
                                                     booked = true;
+                                                    }
                                                 }
                                             }
                                         }
@@ -510,22 +516,26 @@ public class BluebirdsAirlineDriver {
                                                 emptySeats++;
                                                 // if there are enough seats for the party
                                                 // book the reservation
-                                                if (emptySeats >= party) {
-                                                    int seatCol = nCol;
-                                                    int seatRow = nRow;
+                                                int seatCol = col;
+                                                    int seatRow = row;
+                                                    while(!booked){
                                                     while (party > 0) {
-                                                       while(party>0){
+                                                       
                                     
                                                             fList.get(i).getPeasantClass()[seatCol][seatRow] = new Reservation(f, c, String.valueOf(seatCol + seatRow), true);
                                                             System.out.println("Reservation Booked. Reservation ID is "+
                                                                     fList.get(i).getPeasantClass()[seatCol][seatRow].getReservationNum()+
                                                                     "Seat Number: "+ fList.get(i).getPeasantClass()[seatCol][seatRow].getSeatNumber());
                                                     party--;
-                                                    seatCol++;
                                                     seatRow++;
+                                                    if (row>1){
+                                                        seatCol++;
+                                                        seatRow =0;
                                                     }
+                                                    
+                                                    
                                                     booked = true;
-                                                }
+                                                    }
                                                 }
                                             }
                                         }
