@@ -17,9 +17,6 @@ import java.util.Scanner;
  */
 public class BluebirdsAirlineDriver {
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
         // TODO code application logic here
         
@@ -626,31 +623,32 @@ public class BluebirdsAirlineDriver {
                 found = true;
                 cancelList.add(resList.get(i));
                 resList.remove(resList.get(i));
-                ArrayList<Reservation> custRes = resList.get(i).getCustomer().getReservationList();
-                for(int j = 0; i < custRes.size(); i ++){
-                    if(custRes.get(j).getReservationNum() == resID){
-                        custRes.remove(j);
-                    }
-                }
+                
                 Flight f = resList.get(i).getFlight();
                 if(resList.get(i).getFirstClass()){
                     Reservation[][] fc = f.getFirstClass();
-                    for(int row = 0; row < fc.length; i++){
+                    for(int row = 0; row < fc.length; row++){
                         for(int col = 0; col < fc[row].length; col++){
-                           if(fc[row][col].getReservationNum() == resID){
-                               fc[row][col] = null;
-                           }
+                            if(fc[row][col] != null){
+                                if(fc[row][col].getReservationNum() == resID){
+                                    fc[row][col] = null;
+                                }
+                            }
                         }
                     }
+                    f.setFirstClass(fc);
                 } else if (!resList.get(i).getFirstClass()){
                     Reservation[][] peasantClass = f.getPeasantClass();
-                    for(int row = 0; row < peasantClass.length; i++){
+                    for(int row = 0; row < peasantClass.length; row++){
                         for(int col = 0; col < peasantClass[row].length; col++){
-                           if(peasantClass[row][col].getReservationNum() == resID){
-                               peasantClass[row][col] = null;
-                           }
+                            if(peasantClass[row][col] != null){
+                                if(peasantClass[row][col].getReservationNum() == resID){
+                                    peasantClass[row][col] = null;
+                                }
+                            }
                         }
                     }
+                    f.setPeasantClass(peasantClass);
                 }
         }
         
@@ -749,12 +747,16 @@ public class BluebirdsAirlineDriver {
                 Reservation[][] peasantClass = flights.get(i).getPeasantClass();
                 for(int row = 0; row < firstClass.length; row++){
                     for(int col = 0; col < firstClass.length; col++){
-                        grossIncome = grossIncome + firstClass[row][col].getCost();
+                        if(firstClass[row][col] != null){
+                            grossIncome = grossIncome + firstClass[row][col].getCost();
+                        }
                     }
                 }
                 for(int row = 0; row < peasantClass.length; row++){
                     for(int col = 0; col < peasantClass.length; col++){
-                        grossIncome = grossIncome + firstClass[row][col].getCost();
+                        if(peasantClass[row][col] != null){
+                            grossIncome = grossIncome + firstClass[row][col].getCost();
+                        }
                     }
                 }
                 System.out.println("Gross Income: " + grossIncome);
@@ -783,12 +785,16 @@ public class BluebirdsAirlineDriver {
                     Reservation[][] peasantClass = f.getPeasantClass();
                     for(int row = 0; row < firstClass.length; row++){
                         for(int col = 0; col < firstClass.length; col++){
-                        grossIncome = grossIncome + firstClass[row][col].getCost();
+                            if(firstClass[row][col] != null){
+                                grossIncome = grossIncome + firstClass[row][col].getCost();
+                            }
                         }
                     }
                     for(int row = 0; row < peasantClass.length; row++){
                         for(int col = 0; col < peasantClass.length; col++){
+                            if(peasantClass[row][col] != null){
                             grossIncome = grossIncome + firstClass[row][col].getCost();
+                            }
                         }
                     }
                     System.out.println("Gross Income: " + grossIncome);
@@ -851,23 +857,27 @@ public class BluebirdsAirlineDriver {
                     //For Loop to read seat map
                     Reservation[][] firstClass = f.getFirstClass();
                     Reservation[][] peasantClass = f.getPeasantClass();
-                    System.out.println("First Class:");
-                    for(int row = 0; row < firstClass.length; i++){
+                    System.out.println("\nFirst Class:");
+                    for(int row = 0; row < firstClass.length; row++){
+                        System.out.print("\n");
                         for(int col = 0; col < firstClass[row].length; col++){
+                            
                            if(firstClass[row][col] == null){
-                               System.out.println("\tOpen\t");
+                               System.out.printf("%-20s" , "Open");
+                               //System.out.print("\tOpen");
                            } else {
-                               System.out.println("\t" + firstClass[row][col].getCustomer().getName() + "\t");
+                               System.out.printf("%-20s",firstClass[row][col].getCustomer().getName());
                            }
                         }
                     }
-                    System.out.println("Economy Class:");
-                    for(int row = 0; row < peasantClass.length; i++){
+                    System.out.println("\n\nEconomy Class:");
+                    for(int row = 0; row < peasantClass.length; row++){
+                        System.out.print("\n");
                         for(int col = 0; col < peasantClass[row].length; col++){
                            if(peasantClass[row][col] == null){
-                               System.out.println("\tOpen\t");
+                               System.out.printf("%-20s","Open");
                            } else {
-                               System.out.println("\t" + peasantClass[row][col].getCustomer().getName() + "\t");
+                               System.out.printf("%-20s",peasantClass[row][col].getCustomer().getName());
                            }
                         }
                     }
