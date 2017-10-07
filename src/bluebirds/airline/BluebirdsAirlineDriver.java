@@ -590,31 +590,32 @@ public class BluebirdsAirlineDriver {
                 found = true;
                 cancelList.add(resList.get(i));
                 resList.remove(resList.get(i));
-                ArrayList<Reservation> custRes = resList.get(i).getCustomer().getReservationList();
-                for(int j = 0; i < custRes.size(); i ++){
-                    if(custRes.get(j).getReservationNum() == resID){
-                        custRes.remove(j);
-                    }
-                }
+                
                 Flight f = resList.get(i).getFlight();
                 if(resList.get(i).getFirstClass()){
                     Reservation[][] fc = f.getFirstClass();
-                    for(int row = 0; row < fc.length; i++){
+                    for(int row = 0; row < fc.length; row++){
                         for(int col = 0; col < fc[row].length; col++){
-                           if(fc[row][col].getReservationNum() == resID){
-                               fc[row][col] = null;
-                           }
+                            if(fc[row][col] != null){
+                                if(fc[row][col].getReservationNum() == resID){
+                                    fc[row][col] = null;
+                                }
+                            }
                         }
                     }
+                    f.setFirstClass(fc);
                 } else if (!resList.get(i).getFirstClass()){
                     Reservation[][] peasantClass = f.getPeasantClass();
-                    for(int row = 0; row < peasantClass.length; i++){
+                    for(int row = 0; row < peasantClass.length; row++){
                         for(int col = 0; col < peasantClass[row].length; col++){
-                           if(peasantClass[row][col].getReservationNum() == resID){
-                               peasantClass[row][col] = null;
-                           }
+                            if(peasantClass[row][col] != null){
+                                if(peasantClass[row][col].getReservationNum() == resID){
+                                    peasantClass[row][col] = null;
+                                }
+                            }
                         }
                     }
+                    f.setPeasantClass(peasantClass);
                 }
         }
         
@@ -823,26 +824,27 @@ public class BluebirdsAirlineDriver {
                     //For Loop to read seat map
                     Reservation[][] firstClass = f.getFirstClass();
                     Reservation[][] peasantClass = f.getPeasantClass();
-                    System.out.println("First Class:");
+                    System.out.println("\nFirst Class:");
                     for(int row = 0; row < firstClass.length; row++){
                         System.out.print("\n");
                         for(int col = 0; col < firstClass[row].length; col++){
                             
                            if(firstClass[row][col] == null){
-                               System.out.print("\tOpen");
+                               System.out.printf("%-20s" , "Open");
+                               //System.out.print("\tOpen");
                            } else {
-                               System.out.print("\t" + firstClass[row][col].getCustomer().getName());
+                               System.out.printf("%-20s",firstClass[row][col].getCustomer().getName());
                            }
                         }
                     }
-                    System.out.println("\nEconomy Class:");
+                    System.out.println("\n\nEconomy Class:");
                     for(int row = 0; row < peasantClass.length; row++){
                         System.out.print("\n");
                         for(int col = 0; col < peasantClass[row].length; col++){
                            if(peasantClass[row][col] == null){
-                               System.out.print("\tOpen");
+                               System.out.printf("%-20s","Open");
                            } else {
-                               System.out.print("\t" + peasantClass[row][col].getCustomer().getName());
+                               System.out.printf("%-20s",peasantClass[row][col].getCustomer().getName());
                            }
                         }
                     }
