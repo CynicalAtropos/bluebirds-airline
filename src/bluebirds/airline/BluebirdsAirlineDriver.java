@@ -66,7 +66,7 @@ public class BluebirdsAirlineDriver {
         		searchReservID(reservationAL);
         	}
         	else if(choice == 9){
-        		searchCanceledRes(reservationAL);
+        		searchCanceledRes(canceledResAL);
         	}
         	else if(choice == 10){
         		printFlightSeats(flightAL);
@@ -649,7 +649,13 @@ public class BluebirdsAirlineDriver {
                 found = true;
                 cancelList.add(resList.get(i));
                 resList.remove(resList.get(i));
+                ArrayList<Reservation> custRes = resList.get(i).getCustomer().getReservationList();
                 
+                for(int j = 0; j < custRes.size(); j ++){
+                    if(custRes.get(j).getReservationNum() == resID){
+                    custRes.remove(j);
+                    }
+                }
                 Flight f = resList.get(i).getFlight();
                 if(resList.get(i).getFirstClass()){
                     Reservation[][] fc = f.getFirstClass();
@@ -836,10 +842,10 @@ public class BluebirdsAirlineDriver {
         System.out.println("Would you like to search for canceled reservations by reservation number (1) or customer name (2)?");
         System.out.println("Choice (1|2): ");
         int choice = scan.nextInt();
+        boolean found = false;
         if(choice == 1){
             System.out.println("What is the reservation number?");
             int resNum = scan.nextInt();
-            boolean found = false;
          
             for(int i = 0; i < res.size(); i++)
             {
@@ -848,11 +854,13 @@ public class BluebirdsAirlineDriver {
                     System.out.println("We found that reservation:");
                     System.out.println(res.get(i).toString());
                 }
+                if (!found){
+                    System.out.println("There is no canceled reservation under that number.");
+                }
             }
         } else if(choice == 2){
             System.out.println("What is the customer's name?");
             String name = scan.nextLine();
-            boolean found = false;
          
             for(int i = 0; i < res.size(); i++)
             {
@@ -863,7 +871,7 @@ public class BluebirdsAirlineDriver {
                 }
             }
             if(!found) {
-                System.out.println("There are no matching reservations for the provided name.");
+                System.out.println("There are no canceled reservations matching the provided name.");
             }
         } else {
             System.out.println("Incorrect Choice.  Returning to menu.");
