@@ -45,7 +45,7 @@ public class BluebirdsAirlineDriver {
                         reservationAL = primeReservations(reservationAL, flightAL, customerAL);
         	}
         	else if(choice == 1){
-        		
+        		selectFlight(flightAL,customerAL);
         	}
         	else if(choice == 2){
         		searchCustID(customerAL);
@@ -75,18 +75,6 @@ public class BluebirdsAirlineDriver {
         		printFlightSeats(flightAL);
         	}
         	else if(choice == 11){
-        		
-        	}
-        	else if(choice == 12){
-                    
-                }
-        	else if(choice == 13){
-        		
-        	}
-        	else if(choice == 14){
-        		
-        	}
-        	else if(choice == 15){
         		System.out.println("\nGOOD BYE!!!");
         		System.exit(0);
         	}
@@ -217,7 +205,7 @@ public class BluebirdsAirlineDriver {
         return reservations;
     }
     
-    public static ArrayList<Customer> createNewCustomer(ArrayList<Customer> customers)
+    public static Customer createNewCustomer(ArrayList<Customer> customers)
     {
         Scanner scan = new Scanner(System.in);
         System.out.println("What is your name? ex: First Last");
@@ -230,136 +218,368 @@ public class BluebirdsAirlineDriver {
         Customer customer = new Customer(name, address, phone);
         
         customers.add(customer);
-        return customers;
+        System.out.println("Your ID is " + customer.getCustomerId());
+        return customer;
+    }
+    
+    // Finds the customer for the reservation
+    public static Customer findCustomer(ArrayList<Customer> c){
+        Scanner scan = new Scanner(System.in);
+
+            System.out.println("Enter your ID number:");
+            int searchID = scan.nextInt();
+            for (int i=0;i<c.size();i++){
+                if (c.get(i).getCustomerId()==searchID)
+                    return c.get(i);
+            }
+                System.out.println("Customer not found. Create new customer please.");
+                return createNewCustomer(c);    
     }
 
     // Gets paramaters for a flight from the user and passes them to a method
-    public static void selectFlight(ArrayList<Flight> f) {
+    public static void selectFlight(ArrayList<Flight> f, ArrayList<Customer> cList) {
         Scanner scan = new Scanner(System.in);
-        
-        int routeAnswer = 0;
+        int group = 0;
+        Customer c = new Customer();
+        // Determines if the customer is new or returning
+        int custAnswer = 0;
         boolean valid = true;
         while (valid) {
-        System.out.println("Please select route: "
-                + "\n[1] Roanoke to Pheonix"
-                + "\n[2] Pheonix to Roanoke");
-        routeAnswer = scan.nextInt();
-       
+            System.out.println("Are you a returning customer?: "
+                    + "\n[1] Yes"
+                    + "\n[2] No");
+            custAnswer = scan.nextInt();
+            if (custAnswer == 1) {
+                c = findCustomer(cList);
+                valid = false;
+            }
+        else if (custAnswer == 2) {
+                c = createNewCustomer(cList);
+                valid = false;
+        }
+        else
+            System.out.println("Please enter 1 or 2.");
+        }
+        
+
+        // Determines the route
+        int routeAnswer = 0;
+        valid = true;
+        while (valid) {
+            System.out.println("Please select route: "
+                    + "\n[1] Roanoke to Pheonix"
+                    + "\n[2] Pheonix to Roanoke");
+            routeAnswer = scan.nextInt();
+
             if (routeAnswer == 1) {
                 System.out.println("You have selected Roanoke to Pheonix.");
                 valid = false;
-                
+
             } else if (routeAnswer == 2) {
                 System.out.println("You have selected Pheonix to Roanoke.");
                 valid = false;
-                
+
             } else {
                 System.out.println("Please enter 1 or 2.");
             }
         }
-        
+
+        // Determines time of flight
         int timeAnswer = 0;
         valid = true;
         while (valid) {
-        System.out.println("Please select time: "
-                + "\n[1] Morning"
-                + "\n[2] Evening");
-        timeAnswer = scan.nextInt();
-       
+            System.out.println("Please select time: "
+                    + "\n[1] Morning"
+                    + "\n[2] Evening");
+            timeAnswer = scan.nextInt();
+
             if (timeAnswer == 1) {
                 System.out.println("You have selected Morning.");
                 valid = false;
-                
+
             } else if (timeAnswer == 2) {
                 System.out.println("You have selected Evening.");
                 valid = false;
-                
+
             } else {
                 System.out.println("Please enter 1 or 2.");
             }
         }
-        
+
+        // Determines party size for the reservation
         int party = 0;
         valid = true;
-        while(valid){
+        while (valid) {
             System.out.println("How many in your party?: ");
             party = scan.nextInt();
-            
-            if (party > 12)
+
+            if (party > 12) {
                 System.out.println("That's too many for one flight.");
-            else
+            } else if (party > 1) {
+                boolean sValid = true;
+                while (sValid) {
+                    // Let's the customer request that the party sit together
+                    System.out.println("Is it mandatory your party sit together? (answering yes will effect flight availability): ");
+                    System.out.println("[1] yes"
+                            + "\n[2] no");
+                    group = scan.nextInt();
+                    if (group == 1 || group == 2) {
+                        sValid = false;
+                        valid = false;
+                    } else {
+                        System.out.println("Please enter 1 or 2. ");
+                    }
+                }
+            } else {
                 valid = false;
-        }
-        
-        int day = 0;
-        valid = true;
-        while(valid){
-            System.out.println("Please select your date of flight for the week of November 12-18 (enter 12-18)");
-            day = scan.nextInt();
-            
-            if (day < 12 || day > 18)
-                System.out.println("Please enter 12-18");
-            else
-                valid = false;
+            }
         }
 
-        searchFlight(f, routeAnswer, timeAnswer, party, LocalDate.of(2017, Month.NOVEMBER, day));
-    }
-    
-    // Searches for a flight based on the customers parameters
-    public static void searchFlight(ArrayList<Flight> f, int route, int time, int party, LocalDate day){
-        String flightRoute = "";
-        if(route == 1){
-            flightRoute = "Roanoke to Phoenix";
+        int day = 0;
+        valid = true;
+        while (valid) {
+            System.out.println("Please select your date of flight for the week of November 12-18 (enter 12-18)");
+            day = scan.nextInt();
+
+            if (day < 12 || day > 18) {
+                System.out.println("Please enter 12-18");
+            } else {
+                valid = false;
+            }
         }
-        else if(route == 2){
+
+        searchFlight(f, routeAnswer, timeAnswer, party, LocalDate.of(2017, Month.NOVEMBER, day), cList, c, group);
+    }
+
+    // Searches for a flight based on the customers parameters
+    public static void searchFlight(ArrayList<Flight> f, int route, int time, int party, LocalDate day, ArrayList<Customer> cList, Customer c, int group) {
+        Scanner scan = new Scanner(System.in);
+        // Converts customer answers to strings so the flight list can be searched
+        String flightRoute = "";
+        if (route == 1) {
+            flightRoute = "Roanoke to Phoenix";
+        } else if (route == 2) {
             flightRoute = "Phoenix to Roanoke";
         }
-        
+
         String flightTime = "";
-        if (time == 1){
+        if (time == 1) {
             flightTime = "8:00 a.m.";
-        }
-        else if (time == 2){
+        } else if (time == 2) {
             flightTime = "6:00 p.m.";
         }
-        
-        for (int i=0;i<f.size();i++){
-        Flight searchFlight = f.get(i);
-        
-        if (searchFlight.getRoute().equals(flightRoute)
-                && searchFlight.getTime().equals(flightTime)
-                && searchFlight.getDate().equals(day)){
-            int fClass = 0;
-            int economy = 0;
-            for (int fCol=0;fCol<searchFlight.getFirstClass().length;fCol++){
-                for (int fRow=0;fRow<searchFlight.getFirstClass()[fRow].length;fRow++){
-                    if(searchFlight.getFirstClass()[fCol][fRow]==null){
-                        fClass++;
-                    }
-                }
+        // searches for a flight matching the customers parameters
+        int fClass = 0;
+        int economy = 0;
+        Flight foundFlight = new Flight();
+        for (int i = 0; i < f.size(); i++) {
+            Flight searchFlight = f.get(i);
+
+            // checks if there are enough first class seats
+            if (searchFlight.getRoute().equals(flightRoute)
+                    && searchFlight.getTime().equals(flightTime)
+                    && searchFlight.getDate().equals(day)) {
+
+                foundFlight = searchFlight;
             }
-                for (int eCol=0;eCol<searchFlight.getPeasantClass().length;eCol++){
-                for (int eRow=0;eRow<searchFlight.getPeasantClass()[eRow].length;eRow++){
-                    if(searchFlight.getPeasantClass()[eCol][eRow]==null){
-                        economy++;
-                    }
-                }
-            }
-                if (party < fClass+economy){
-                    if (party <= fClass){
-                        System.out.println("There are first class seats available. Would you like first class? "
-                                + "\n[1] yes"
-                                + "\n[2] no");
-                        int bookClass = scan.nextInt();
-                        
-                    }
-                }
-                    
         }
-            
+
+        for (int fCol = 0; fCol < foundFlight.getFirstClass().length; fCol++) {
+            for (int fRow = 0; fRow < foundFlight.getFirstClass()[fCol].length; fRow++) {
+                if (foundFlight.getFirstClass()[fCol][fRow] == null) {
+                    fClass++;
+                }
+            }
+        }
+
+        // checks if there enough economy seats
+        for (int eCol = 0; eCol < foundFlight.getPeasantClass().length; eCol++) {
+            for (int eRow = 0; eRow < foundFlight.getPeasantClass()[eCol].length; eRow++) {
+                if (foundFlight.getPeasantClass()[eCol][eRow] == null) {
+                    economy++;
+                }
+            }
+        }
+
+        if (party < fClass + economy) {
+            int bookClass = 0;
+            if (party <= fClass) {
+                boolean valid = true;
+                while (valid) {
+                    System.out.println("There are first class seats available. Would you like first class? "
+                            + "\n[1] yes"
+                            + "\n[2] no");
+                    bookClass = scan.nextInt();
+                    if (bookClass > 0 && bookClass < 3) {
+                        valid = false;
+                    } else {
+                        System.out.println("Please enter 1 or 2. ");
+                    }
+                }
+
+            }
+
+            if (group == 1) {
+                bookTogether(f, cList, foundFlight, bookClass, c, party);
+            } else {
+                bookReservation(f, foundFlight, bookClass, c, party);
+            }
+        } else {
+            System.out.println("The flight for this day is full. Would you like to book a different flight? "
+                    + "\n[1] Yes"
+                    + "\n[2] No");
+            int again = scan.nextInt();
+
+            if (again == 1) {
+                selectFlight(f, cList);
+            } else if (again != 2) {
+                System.out.println("Please enter 1 or 2. ");
+            }
+        }
+
     }
+
+    // Books a reservation for parties that want to sit togeather
+    public static void bookTogether(ArrayList<Flight> fList, ArrayList<Customer> cList, Flight f, int fc, Customer c, int party) {
+        Scanner scan = new Scanner(System.in);
+        
+        boolean booked = false;
+        int emptySeats = 0;
+        if (fc == 1) {
+            // loops to get the desired flight
+            for (int i = 0; i < fList.size(); i++) {
+                if (fList.get(i) == f) {
+                    // finds an empty seat
+                    for (int col = 0; col < fList.get(i).getFirstClass().length; col++) {
+                        for (int row = 0; row < fList.get(i).getFirstClass()[col].length; row++) {
+                            if (fList.get(i).getFirstClass()[col][row] == null) {
+                                // checks to see if there are enough seats
+                                // after the first empty seat for the rest of the party
+                                for (int x = 1; x <= party; x++) {
+                                    for (int nCol = col; nCol < fList.get(i).getFirstClass().length; nCol++) {
+                                        for (int nRow = row; nRow < fList.get(i).getFirstClass()[nCol].length; nRow++) {
+                                            if (fList.get(i).getFirstClass()[nCol][nRow] == null) {
+                                                emptySeats++;
+                                                // if there are enough seats for the party
+                                                // book the reservation
+                                                if (emptySeats >= party) {
+                                                    booked = true;
+                                                    while (party > 0) {
+                                                        fList.get(i).getFirstClass()[nCol][nRow] = new Reservation(f, c, String.valueOf(nCol + nRow), false);
+                                                        party--;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                emptySeats = 0;
+                            
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else if (fc == 2) {
+            // loops to get the desired flight
+            for (int i = 0; i < fList.size(); i++) {
+                if (fList.get(i) == f) {
+                    // finds an empty seat
+                    for (int col = 0; col < fList.get(i).getPeasantClass().length; col++) {
+                        for (int row = 0; row < fList.get(i).getPeasantClass()[col].length; row++) {
+                            if (fList.get(i).getPeasantClass()[col][row] == null) {
+                                // checks to see if there are enough seats
+                                // after the first empty seat for the rest of the party
+                                for (int x = 1; x <= party; x++) {
+                                    for (int nCol = col; nCol < fList.get(i).getPeasantClass().length; nCol++) {
+                                        for (int nRow = row; nRow < fList.get(i).getPeasantClass()[nCol].length; nRow++) {
+                                            if (fList.get(i).getPeasantClass()[nCol][nRow] == null) {
+                                                emptySeats++;
+                                                // if there are enough seats for the party
+                                                // book the reservation
+                                                if (emptySeats >= party) {
+                                                    booked = true;
+                                                    while (party > 0) {
+                                                        fList.get(i).getPeasantClass()[nCol][nRow] = new Reservation(f, c, String.valueOf(nCol + nRow), false);
+                                                        party--;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                emptySeats = 0;
+                            
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (!booked){
+            boolean valid = true;
+            while (valid) {
+                System.out.println("Sorry. Your party will not be able to sit together. Book this flight anyway? "
+                    + "\n[1] Yes"
+                    + "\n[2] No");
+                int answer = scan.nextInt();
+                if (answer == 1) {
+                    bookReservation(fList, f, fc, c, party);
+                    } 
+                else {
+                    while (valid) {
+                        System.out.println("Would you like to try to book a different flight? "
+                            + "\n[1] Yes"
+                            + "\n[2] No");
+                            answer = scan.nextInt();
+                            if (answer == 1) {
+                                selectFlight(fList, cList);
+                            }
+                            else if (answer == 2){
+                                valid = false;
+                            }
+                            else{
+                                System.out.println("Please enter 1 or 2.");
+                        }
+                    }
+                }
+            }
+        }
+}
+
+    //Books a reservation
+    public static void bookReservation(ArrayList<Flight> fList, Flight f, int fc, Customer c, int party) {
+        // adds a first class reservation
+        if (fc == 1) {
+            for (int i = 0; i < fList.size(); i++) {
+                if (fList.get(i) == f) {
+                    for (int col = 0; col < fList.get(i).getFirstClass().length; col++) {
+                        for (int row = 0; row < fList.get(i).getFirstClass()[col].length; row++) {
+                            if (fList.get(i).getFirstClass()[col][row] == null) {
+                                fList.get(i).getFirstClass()[col][row] = new Reservation(f, c, String.valueOf(col + row), true);
+                            }
+                        }
+                    }
+                }
+            }
+        } // adds an economy reservation
+        else {
+            for (int i = 0; i < fList.size(); i++) {
+                if (fList.get(i) == f) {
+                    for (int col = 0; col < fList.get(i).getPeasantClass().length; col++) {
+                        for (int row = 0; row < fList.get(i).getPeasantClass()[col].length; row++) {
+                            if (fList.get(i).getPeasantClass()[col][row] == null) {
+                                fList.get(i).getPeasantClass()[col][row] = new Reservation(f, c, String.valueOf(col + row), false);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
+
+
     
 
     // Cancels a reservation by reservation ID
@@ -404,7 +624,7 @@ public class BluebirdsAirlineDriver {
         if(!found){
             System.out.println("There is no reservation under that number.");
         }
-        
+        }
     }
 
     // prints a customers reservation according to the customer ID
@@ -428,6 +648,7 @@ public class BluebirdsAirlineDriver {
             System.out.println("That customer does not exist");
         }
     }
+
 
     // prints out a pilots schedule for the week
     public static void printSchedule(ArrayList<Flight> flight) {
@@ -464,17 +685,13 @@ public class BluebirdsAirlineDriver {
         System.out.println("8.  Search for Reservation by Reservation Number.");
         System.out.println("9.  Search Canceled Reservations By Reservation Number or Customer Name.");
         System.out.println("10. Print Seat Layout for Specified Flight.");
-        System.out.println("11. --");
-        System.out.println("12. --");
-        System.out.println("13. --");
-        System.out.println("14. --");
-        System.out.println("15. Exit."); 
+        System.out.println("11. Exit."); 
         System.out.print("Choice: ");
         
         try{
         	int choice = scan.nextInt();
         	
-        	if(choice < 0 || choice > 14){
+        	if(choice < 0 || choice > 11){
             	System.out.println("\nThat is not a valid choice!"); 
             	return menu();
             }
