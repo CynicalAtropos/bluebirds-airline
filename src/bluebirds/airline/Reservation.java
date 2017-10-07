@@ -60,7 +60,7 @@ public class Reservation {
 	
 	public String toString()
 	{
-		return "The reservation " + reservationNum + " for " + customer.getName() + " of seat number " + seatNumber + " on " + flight + " which cost " + cost + ".";
+		return "The reservation " + reservationNum + " for " + customer.getName() + " of seat number " + seatNumber + " on " + flight.getFlightCode() + " which cost " + cost + ".";
 	}
 
 	public Flight getFlight() {

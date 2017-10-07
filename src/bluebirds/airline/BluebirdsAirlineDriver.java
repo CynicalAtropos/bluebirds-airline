@@ -870,7 +870,7 @@ public class BluebirdsAirlineDriver {
             {
                 if(resNum == res.get(i).getReservationNum()) {
                     found = true;
-                    System.out.println("We found that reservation:");
+                    System.out.println("We found that canceled reservation:");
                     System.out.println(res.get(i).toString());
                 }
                 if (!found){
@@ -879,13 +879,14 @@ public class BluebirdsAirlineDriver {
             }
         } else if(choice == 2){
             System.out.println("What is the customer's name?");
+            scan.nextLine();
             String name = scan.nextLine();
          
             for(int i = 0; i < res.size(); i++)
             {
                 if(res.get(i).getCustomer().getName().contains(name)) {
                     found = true;
-                    System.out.println("\nMatching Reservation:\n");
+                    System.out.println("\nMatching Canceled Reservation:\n");
                     System.out.println(res.get(i).toString());
                 }
             }
