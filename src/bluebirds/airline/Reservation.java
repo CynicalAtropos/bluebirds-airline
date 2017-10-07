@@ -28,6 +28,7 @@ public class Reservation {
                 }
                 reservationNum = num;
                 num++;
+                firstClass = fc;
 		
 	}
 	
