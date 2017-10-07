@@ -53,9 +53,7 @@ public class Customer extends Person{
         public void printRes(){
             System.out.println("\nReservations for " + this.name);
             for(int i = 0; i < this.reservationList.size(); i++){
-                System.out.println(this.reservationList.get(i).getFlight() + 
-                        this.reservationList.get(i).getSeatNumber() +
-                        this.reservationList.get(i).getCost());
+                System.out.println(this.reservationList.get(i).toString());
             }
         }
 	

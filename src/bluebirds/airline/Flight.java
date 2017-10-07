@@ -30,7 +30,7 @@ public class Flight {
 	
 	public String toString()
 	{
-		return "Flight Number: " + flightCode + " on " + day + " from " + route + " at " + time + " with " + pilot + " as the pilot.";
+		return "Flight Number: " + flightCode + " on " + day + " from " + route + " at " + time + " with " + pilot.getName() + " as the pilot.";
 	}
 
 	public String getFlightCode() 
