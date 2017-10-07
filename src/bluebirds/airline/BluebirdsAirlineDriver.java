@@ -17,9 +17,6 @@ import java.util.Scanner;
  */
 public class BluebirdsAirlineDriver {
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
         // TODO code application logic here
         
@@ -716,12 +713,16 @@ public class BluebirdsAirlineDriver {
                 Reservation[][] peasantClass = flights.get(i).getPeasantClass();
                 for(int row = 0; row < firstClass.length; row++){
                     for(int col = 0; col < firstClass.length; col++){
-                        grossIncome = grossIncome + firstClass[row][col].getCost();
+                        if(firstClass[row][col] != null){
+                            grossIncome = grossIncome + firstClass[row][col].getCost();
+                        }
                     }
                 }
                 for(int row = 0; row < peasantClass.length; row++){
                     for(int col = 0; col < peasantClass.length; col++){
-                        grossIncome = grossIncome + firstClass[row][col].getCost();
+                        if(peasantClass[row][col] != null){
+                            grossIncome = grossIncome + firstClass[row][col].getCost();
+                        }
                     }
                 }
                 System.out.println("Gross Income: " + grossIncome);
@@ -750,12 +751,16 @@ public class BluebirdsAirlineDriver {
                     Reservation[][] peasantClass = f.getPeasantClass();
                     for(int row = 0; row < firstClass.length; row++){
                         for(int col = 0; col < firstClass.length; col++){
-                        grossIncome = grossIncome + firstClass[row][col].getCost();
+                            if(firstClass[row][col] != null){
+                                grossIncome = grossIncome + firstClass[row][col].getCost();
+                            }
                         }
                     }
                     for(int row = 0; row < peasantClass.length; row++){
                         for(int col = 0; col < peasantClass.length; col++){
+                            if(peasantClass[row][col] != null){
                             grossIncome = grossIncome + firstClass[row][col].getCost();
+                            }
                         }
                     }
                     System.out.println("Gross Income: " + grossIncome);
@@ -819,22 +824,25 @@ public class BluebirdsAirlineDriver {
                     Reservation[][] firstClass = f.getFirstClass();
                     Reservation[][] peasantClass = f.getPeasantClass();
                     System.out.println("First Class:");
-                    for(int row = 0; row < firstClass.length; i++){
+                    for(int row = 0; row < firstClass.length; row++){
+                        System.out.print("\n");
                         for(int col = 0; col < firstClass[row].length; col++){
+                            
                            if(firstClass[row][col] == null){
-                               System.out.println("\tOpen\t");
+                               System.out.print("\tOpen");
                            } else {
-                               System.out.println("\t" + firstClass[row][col].getCustomer().getName() + "\t");
+                               System.out.print("\t" + firstClass[row][col].getCustomer().getName());
                            }
                         }
                     }
-                    System.out.println("Economy Class:");
-                    for(int row = 0; row < peasantClass.length; i++){
+                    System.out.println("\nEconomy Class:");
+                    for(int row = 0; row < peasantClass.length; row++){
+                        System.out.print("\n");
                         for(int col = 0; col < peasantClass[row].length; col++){
                            if(peasantClass[row][col] == null){
-                               System.out.println("\tOpen\t");
+                               System.out.print("\tOpen");
                            } else {
-                               System.out.println("\t" + peasantClass[row][col].getCustomer().getName() + "\t");
+                               System.out.print("\t" + peasantClass[row][col].getCustomer().getName());
                            }
                         }
                     }
