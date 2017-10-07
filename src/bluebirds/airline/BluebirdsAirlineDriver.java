@@ -195,8 +195,8 @@ public class BluebirdsAirlineDriver {
         
         flights.get(0).getFirstClass()[0][0] = reservations.get(0);
         flights.get(0).getFirstClass()[0][1] = reservations.get(1);
-        flights.get(0).getPeasantClass()[0][0] = reservations.get(2);
-        flights.get(0).getPeasantClass()[0][1] = reservations.get(3);
+        flights.get(0).getEconomyClass()[0][0] = reservations.get(2);
+        flights.get(0).getEconomyClass()[0][1] = reservations.get(3);
         
         customers.get(0).addRes(reservations.get(0));
         customers.get(0).addRes(reservations.get(1));
@@ -395,9 +395,9 @@ public class BluebirdsAirlineDriver {
         }
 
         // checks if there enough economy seats
-        for (int eCol = 0; eCol < foundFlight.getPeasantClass().length; eCol++) {
-            for (int eRow = 0; eRow < foundFlight.getPeasantClass()[eCol].length; eRow++) {
-                if (foundFlight.getPeasantClass()[eCol][eRow] == null) {
+        for (int eCol = 0; eCol < foundFlight.getEconomyClass().length; eCol++) {
+            for (int eRow = 0; eRow < foundFlight.getEconomyClass()[eCol].length; eRow++) {
+                if (foundFlight.getEconomyClass()[eCol][eRow] == null) {
                     economy++;
                 }
             }
@@ -504,15 +504,15 @@ public class BluebirdsAirlineDriver {
             for (int i = 0; i < fList.size(); i++) {
                 if (fList.get(i) == f) {
                     // finds an empty seat
-                    for (int col = 0; col < fList.get(i).getPeasantClass().length; col++) {
-                        for (int row = 0; row < fList.get(i).getPeasantClass()[col].length; row++) {
-                            if (fList.get(i).getPeasantClass()[col][row] == null) {
+                    for (int col = 0; col < fList.get(i).getEconomyClass().length; col++) {
+                        for (int row = 0; row < fList.get(i).getEconomyClass()[col].length; row++) {
+                            if (fList.get(i).getEconomyClass()[col][row] == null) {
                                 // checks to see if there are enough seats
                                 // after the first empty seat for the rest of the party
                                 for (int x = 1; x <= party; x++) {
-                                    for (int nCol = col; nCol < fList.get(i).getPeasantClass().length; nCol++) {
-                                        for (int nRow = row; nRow < fList.get(i).getPeasantClass()[nCol].length; nRow++) {
-                                            if (fList.get(i).getPeasantClass()[nCol][nRow] == null) {
+                                    for (int nCol = col; nCol < fList.get(i).getEconomyClass().length; nCol++) {
+                                        for (int nRow = row; nRow < fList.get(i).getEconomyClass()[nCol].length; nRow++) {
+                                            if (fList.get(i).getEconomyClass()[nCol][nRow] == null) {
                                                 emptySeats++;
                                                 // if there are enough seats for the party
                                                 // book the reservation
@@ -522,10 +522,10 @@ public class BluebirdsAirlineDriver {
                                                     while (party > 0) {
                                                        
                                     
-                                                            fList.get(i).getPeasantClass()[seatCol][seatRow] = new Reservation(f, c, String.valueOf(seatCol + seatRow), true);
+                                                            fList.get(i).getEconomyClass()[seatCol][seatRow] = new Reservation(f, c, String.valueOf(seatCol + seatRow), true);
                                                             System.out.println("Reservation Booked. Reservation ID is "+
-                                                                    fList.get(i).getPeasantClass()[seatCol][seatRow].getReservationNum()+
-                                                                    "Seat Number: "+ fList.get(i).getPeasantClass()[seatCol][seatRow].getSeatNumber());
+                                                                    fList.get(i).getEconomyClass()[seatCol][seatRow].getReservationNum()+
+                                                                    "Seat Number: "+ fList.get(i).getEconomyClass()[seatCol][seatRow].getSeatNumber());
                                                     party--;
                                                     seatRow++;
                                                     if (row>1){
@@ -611,17 +611,17 @@ public class BluebirdsAirlineDriver {
         else {
             for (int i = 0; i < fList.size(); i++) {
                 if (fList.get(i) == f) {
-                    for (int col = 0; col < fList.get(i).getPeasantClass().length; col++) {
-                        for (int row = 0; row < fList.get(i).getPeasantClass()[col].length; row++) {
+                    for (int col = 0; col < fList.get(i).getEconomyClass().length; col++) {
+                        for (int row = 0; row < fList.get(i).getEconomyClass()[col].length; row++) {
                             
-                            if (fList.get(i).getPeasantClass()[col][row] == null) {
+                            if (fList.get(i).getEconomyClass()[col][row] == null) {
                                 while(party>0){
                                     int seatCol = col;
                                     int seatRow = row;
-                                    fList.get(i).getPeasantClass()[seatCol][seatRow] = new Reservation(f, c, String.valueOf(col + row), true);
+                                    fList.get(i).getEconomyClass()[seatCol][seatRow] = new Reservation(f, c, String.valueOf(col + row), true);
                                     System.out.println("Reservation Booked. Reservation ID is "+
-                                                                    fList.get(i).getPeasantClass()[seatCol][seatRow].getReservationNum()+
-                                                                    "Seat Number: "+ fList.get(i).getPeasantClass()[seatCol][seatRow].getSeatNumber());
+                                                                    fList.get(i).getEconomyClass()[seatCol][seatRow].getReservationNum()+
+                                                                    "Seat Number: "+ fList.get(i).getEconomyClass()[seatCol][seatRow].getSeatNumber());
                                     party--;
                                     seatCol++;
                                     seatRow++;
@@ -670,17 +670,17 @@ public class BluebirdsAirlineDriver {
                     }
                     f.setFirstClass(fc);
                 } else if (!resList.get(i).getFirstClass()){
-                    Reservation[][] peasantClass = f.getPeasantClass();
-                    for(int row = 0; row < peasantClass.length; row++){
-                        for(int col = 0; col < peasantClass[row].length; col++){
-                            if(peasantClass[row][col] != null){
-                                if(peasantClass[row][col].getReservationNum() == resID){
-                                    peasantClass[row][col] = null;
+                    Reservation[][] economyClass = f.getEconomyClass();
+                    for(int row = 0; row < economyClass.length; row++){
+                        for(int col = 0; col < economyClass[row].length; col++){
+                            if(economyClass[row][col] != null){
+                                if(economyClass[row][col].getReservationNum() == resID){
+                                    economyClass[row][col] = null;
                                 }
                             }
                         }
                     }
-                    f.setPeasantClass(peasantClass);
+                    f.setEconomyClass(economyClass);
                 }
             }
         }
@@ -777,7 +777,7 @@ public class BluebirdsAirlineDriver {
                 System.out.println("Flight: " + flights.get(i).getFlightCode());
                 //For Loop to read seat maps including getters and setters
                 Reservation[][] firstClass = flights.get(i).getFirstClass();
-                Reservation[][] peasantClass = flights.get(i).getPeasantClass();
+                Reservation[][] economyClass = flights.get(i).getEconomyClass();
                 for(int row = 0; row < firstClass.length; row++){
                     for(int col = 0; col < firstClass.length; col++){
                         if(firstClass[row][col] != null){
@@ -785,9 +785,9 @@ public class BluebirdsAirlineDriver {
                         }
                     }
                 }
-                for(int row = 0; row < peasantClass.length; row++){
-                    for(int col = 0; col < peasantClass.length; col++){
-                        if(peasantClass[row][col] != null){
+                for(int row = 0; row < economyClass.length; row++){
+                    for(int col = 0; col < economyClass.length; col++){
+                        if(economyClass[row][col] != null){
                             grossIncome = grossIncome + firstClass[row][col].getCost();
                         }
                     }
@@ -815,7 +815,7 @@ public class BluebirdsAirlineDriver {
                     int grossIncome = 0;
                     System.out.println("Flight: " + flights.get(i).getFlightCode());
                     Reservation[][] firstClass = f.getFirstClass();
-                    Reservation[][] peasantClass = f.getPeasantClass();
+                    Reservation[][] economyClass = f.getEconomyClass();
                     for(int row = 0; row < firstClass.length; row++){
                         for(int col = 0; col < firstClass.length; col++){
                             if(firstClass[row][col] != null){
@@ -823,9 +823,9 @@ public class BluebirdsAirlineDriver {
                             }
                         }
                     }
-                    for(int row = 0; row < peasantClass.length; row++){
-                        for(int col = 0; col < peasantClass.length; col++){
-                            if(peasantClass[row][col] != null){
+                    for(int row = 0; row < economyClass.length; row++){
+                        for(int col = 0; col < economyClass.length; col++){
+                            if(economyClass[row][col] != null){
                             grossIncome = grossIncome + firstClass[row][col].getCost();
                             }
                         }
@@ -891,7 +891,7 @@ public class BluebirdsAirlineDriver {
                     Flight f = flights.get(i);
                     //For Loop to read seat map
                     Reservation[][] firstClass = f.getFirstClass();
-                    Reservation[][] peasantClass = f.getPeasantClass();
+                    Reservation[][] economyClass = f.getEconomyClass();
                     System.out.println("\nFirst Class:");
                     for(int row = 0; row < firstClass.length; row++){
                         System.out.print("\n");
@@ -906,13 +906,13 @@ public class BluebirdsAirlineDriver {
                         }
                     }
                     System.out.println("\n\nEconomy Class:");
-                    for(int row = 0; row < peasantClass.length; row++){
+                    for(int row = 0; row < economyClass.length; row++){
                         System.out.print("\n");
-                        for(int col = 0; col < peasantClass[row].length; col++){
-                           if(peasantClass[row][col] == null){
+                        for(int col = 0; col < economyClass[row].length; col++){
+                           if(economyClass[row][col] == null){
                                System.out.printf("%-20s","Open");
                            } else {
-                               System.out.printf("%-20s",peasantClass[row][col].getCustomer().getName());
+                               System.out.printf("%-20s",economyClass[row][col].getCustomer().getName());
                            }
                         }
                     }
