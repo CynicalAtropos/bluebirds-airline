@@ -48,7 +48,7 @@ public class BluebirdsAirlineDriver {
         		searchCustID(customerAL);
         	}
         	else if(choice == 3){
-        		cancelRes(reservationAL, canceledResAL);
+        		cancelRes(reservationAL, canceledResAL, flightAL);
         	}
         	else if(choice == 4){
         		grossIncomeEach(flightAL);
@@ -470,7 +470,7 @@ public class BluebirdsAirlineDriver {
                                                     while(!booked){
                                                     while (party > 0) {
                                                        
-                                                            String seatNum = "FC";
+                                                            String seatNum = "EC";
                                                             if(seatCol == 0) seatNum += "A" + (seatRow +1);
                                                             else if (seatCol == 1) seatNum += "B" + (seatRow+1);
                                                             fList.get(i).getFirstClass()[seatCol][seatRow] = new Reservation(f, c, seatNum, true);
@@ -623,13 +623,13 @@ public class BluebirdsAirlineDriver {
                                 while(party>0){
                                     int seatCol = col;
                                     int seatRow = row;
-                                    String seatNum = "FC";
+                                    String seatNum = "EC";
                                     if(row == 0) seatNum += "A" + (seatRow +1);
                                     else if (row == 1) seatNum += "B" + (seatRow+1);
                                     fList.get(i).getEconomyClass()[seatCol][seatRow] = new Reservation(f, c, seatNum, true);
                                     System.out.println("Reservation Booked. Reservation ID is "+
                                                                     fList.get(i).getEconomyClass()[seatCol][seatRow].getReservationNum()+
-                                                                    "Seat Number: "+ fList.get(i).getEconomyClass()[seatCol][seatRow].getSeatNumber());
+                                                                    " Seat Number: "+ fList.get(i).getEconomyClass()[seatCol][seatRow].getSeatNumber());
                                     party--;
                                     seatRow++;
                                     if(seatRow > 3){
@@ -651,7 +651,7 @@ public class BluebirdsAirlineDriver {
     
 
     // Cancels a reservation by reservation ID
-    public static void cancelRes(ArrayList<Reservation> resList, ArrayList<Reservation> cancelList) {
+    public static void cancelRes(ArrayList<Reservation> resList, ArrayList<Reservation> cancelList, ArrayList<Flight> flights) {
         Scanner scan = new Scanner(System.in);
         System.out.println("Please Enter the Reservation Number: ");
         int resID = scan.nextInt();
@@ -693,6 +693,12 @@ public class BluebirdsAirlineDriver {
                         }
                     }
                     f.setEconomyClass(economyClass);
+                }
+                resList.get(i).setFlight(f);
+                for(int j = 0; j < flights.size(); j++){
+                    if(f.getFlightCode().equals(flights.get(j).getFlightCode())){
+                        flights.set(j, f);
+                    }
                 }
             }
         }
