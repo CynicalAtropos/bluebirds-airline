@@ -424,7 +424,7 @@ public class BluebirdsAirlineDriver {
             if (group == 1) {
                 bookTogether(f, cList, foundFlight, bookClass, c, party);
             } else {
-                bookReservation(f, foundFlight, bookClass, c, party);
+                bookReservation(f, foundFlight, bookClass, c, party, cList);
             }
         } else {
             System.out.println("The flight for this day is full. Would you like to book a different flight? "
@@ -559,7 +559,7 @@ public class BluebirdsAirlineDriver {
                     + "\n[2] No");
                 int answer = scan.nextInt();
                 if (answer == 1) {
-                    bookReservation(fList, f, fc, c, party);
+                    bookReservation(fList, f, fc, c, party, cList);
                     } 
                 else {
                     while (valid) {
@@ -583,7 +583,7 @@ public class BluebirdsAirlineDriver {
 }
 
     //Books a reservation
-    public static void bookReservation(ArrayList<Flight> fList, Flight f, int fc, Customer c, int party) {
+    public static void bookReservation(ArrayList<Flight> fList, Flight f, int fc, Customer c, int party, ArrayList<Customer> custList) {
         // adds a first class reservation
         if (fc == 1) {
             for (int i = 0; i < fList.size(); i++) {
@@ -603,6 +603,13 @@ public class BluebirdsAirlineDriver {
                                     System.out.println("Reservation Booked. Reservation ID is "+
                                                                     fList.get(i).getFirstClass()[col][row].getReservationNum()+
                                                                     " Seat Number: "+ fList.get(i).getFirstClass()[col][row].getSeatNumber());
+                                    for(int num = 0; num < custList.size(); num++){
+                                        if(custList.get(num).getCustomerId() == c.getCustomerId()){
+                                            custList.get(num).addRes(new Reservation(f, c, seatNum, true));
+                                        }
+                                        
+                                    }
+                                    
                                     party--;
                                 seatCol++;
                                 seatRow++;
@@ -626,10 +633,18 @@ public class BluebirdsAirlineDriver {
                                     String seatNum = "EC";
                                     if(row == 0) seatNum += "A" + (seatRow +1);
                                     else if (row == 1) seatNum += "B" + (seatRow+1);
-                                    fList.get(i).getEconomyClass()[seatCol][seatRow] = new Reservation(f, c, seatNum, true);
+                                    fList.get(i).getEconomyClass()[seatCol][seatRow] = new Reservation(f, c, seatNum, false);
                                     System.out.println("Reservation Booked. Reservation ID is "+
                                                                     fList.get(i).getEconomyClass()[seatCol][seatRow].getReservationNum()+
                                                                     " Seat Number: "+ fList.get(i).getEconomyClass()[seatCol][seatRow].getSeatNumber());
+                                    for(int num = 0; num < custList.size(); num++)
+                                    {
+                                        if(custList.get(num).getCustomerId() == c.getCustomerId())
+                                        {
+                                            custList.get(num).addRes(new Reservation(f, c, seatNum, false));
+                                        }
+                                        
+                                    }
                                     party--;
                                     seatRow++;
                                     if(seatRow > 3){
