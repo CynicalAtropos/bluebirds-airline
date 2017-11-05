@@ -81,7 +81,7 @@ public class BluebirdsAirlineDriver {
         		searchCanceledRes(canceledResAL);
         	}
         	else if(choice == 10){
-        		printFlightSeats(flightAL);
+        		printFlightSeats(connect, callSt, resSet);
         	}
         	else if(choice == 11){
         		System.out.println("\nGOOD BYE!!!");
@@ -997,11 +997,86 @@ public class BluebirdsAirlineDriver {
         }
     }
     
-    public static void printFlightSeats(ArrayList<Flight> flights){
+    public static void printFlightSeats(Connection connect, CallableStatement callSt, ResultSet resSet)
+    {
         Scanner scan = new Scanner(System.in);
+        
         System.out.println("Please Enter the flight code: ");
         String flightCode = scan.nextLine().trim();
-        boolean found = false;
+        
+        String procName = "printFirstClass";
+        String procName2 = "printEconomyClass";
+
+
+        String storedProc = "{call " + procName + " ('" + flightCode + "')}";
+        String storedProc2 = "{call " + procName2 + " ('" + flightCode + "')}";
+
+        //Print FirstClass
+        try {
+            callSt = connect.prepareCall(storedProc);
+            resSet = callSt.executeQuery();
+            
+            try {
+                System.out.println(" ");
+
+                ResultSetMetaData meta = resSet.getMetaData();
+                int columns = meta.getColumnCount();
+
+                System.out.println("First Class:");
+                
+                while (resSet.next()) {
+
+                    for (int i = 1; i < columns + 1; i++) {
+                        String s = resSet.getString(i);
+                        System.out.print(s + "  ");
+                    }
+                    System.out.println();
+                }
+            } catch (SQLException e) {
+                System.out.println("SQL Exception");
+            }
+
+        } // end try
+        catch (SQLException e) 
+        {
+            System.out.println("stored proc did not work");
+        }
+        System.out.println();
+        
+        
+        
+        //Print Economy Class
+        try {
+            callSt = connect.prepareCall(storedProc2);
+            resSet = callSt.executeQuery();
+            
+            try {
+                System.out.println(" ");
+
+                ResultSetMetaData meta = resSet.getMetaData();
+                int columns = meta.getColumnCount();
+
+                System.out.println("Economy Class:");
+                
+                while (resSet.next()) {
+
+                    for (int i = 1; i < columns + 1; i++) {
+                        String s = resSet.getString(i);
+                        System.out.print(s + "  ");
+                    }
+                    System.out.println();
+                }
+            } catch (SQLException e) {
+                System.out.println("SQL Exception");
+            }
+
+        } // end try
+        catch (SQLException e) 
+        {
+            System.out.println("stored proc did not work");
+        }
+        System.out.println();
+        /*boolean found = false;
         for(int i = 0; i < flights.size(); i++)
             {
                 if(flightCode.equals(flights.get(i).getFlightCode())) {
@@ -1040,7 +1115,7 @@ public class BluebirdsAirlineDriver {
             }
         if(!found) {
             System.out.println("The flight code provided was invalid.");
-        }
+        }*/
             
     }
 }
