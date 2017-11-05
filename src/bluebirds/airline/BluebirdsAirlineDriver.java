@@ -5,6 +5,12 @@
  */
 package bluebirds.airline;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.Month;
@@ -32,6 +38,12 @@ public class BluebirdsAirlineDriver {
         
         ArrayList<Reservation> canceledResAL = new ArrayList<Reservation>();
         
+        Connection connect = null;
+        CallableStatement callSt = null;
+        ResultSet resSet = null;
+        
+        connect = connect(connect);
+        
         while (true)
         {
         	int choice = menu();
@@ -45,7 +57,7 @@ public class BluebirdsAirlineDriver {
         		selectFlight(flightAL,customerAL);
         	}
         	else if(choice == 2){
-        		searchCustID(customerAL);
+        		searchCustID(connect, callSt, resSet);
         	}
         	else if(choice == 3){
         		cancelRes(reservationAL, canceledResAL, flightAL);
@@ -63,7 +75,7 @@ public class BluebirdsAirlineDriver {
         		printRes(customerAL);
         	}
         	else if(choice == 8){
-        		searchReservID(reservationAL);
+        		searchReservID(connect, callSt, resSet);
         	}
         	else if(choice == 9){
         		searchCanceledRes(canceledResAL);
@@ -78,53 +90,126 @@ public class BluebirdsAirlineDriver {
         }  
     }
     
-    public static void searchReservID(ArrayList<Reservation> reservations)
+    public static Connection connect(Connection connect)
     {
-        Scanner scan = new Scanner(System.in);
-        System.out.println("What is the reservation number?");
-        int resNum = scan.nextInt();
-        
-        boolean found = false;
-        
-        for(int i = 0; i < reservations.size(); i++)
-        {
-            if(resNum == reservations.get(i).getReservationNum())
-            {
-                found = true;
-                System.out.println("We found that reservation:");
-                System.out.println(reservations.get(i).toString());
-                
-            }
-        }
-        
-        if(!found)
-        {
-            System.out.println("That reservation does not exist");
-        }
+	
+	String uid = "itp220";
+	String pass = "itp220";
+
+	String driver = "com.mysql.jdbc.Driver";
+	String url = "jdbc:mysql://localhost:3306/BlueBirdsAirline";
+
+	try 
+	{ 
+	  Class.forName(driver).newInstance();
+	}
+	catch( Exception e ) 
+	{ 
+	  e.printStackTrace();
+	  
+	}
+	try 
+	{
+	  connect = DriverManager.getConnection(url, uid, pass);
+	  System.out.println("Connection successful!");
+	  
+	}
+	catch( SQLException e ) 
+	{
+	  e.printStackTrace();
+	}
+	return connect;
     }
     
-    public static void searchCustID(ArrayList<Customer> customers)
+    public static void searchReservID(Connection connect, CallableStatement callSt, ResultSet resSet)
     {
         Scanner scan = new Scanner(System.in);
+        String procName = "searchReservID";
+        System.out.println("What is the reservation number?");
+        int resNum = scan.nextInt();
+
+        String storedProc = "{call " + procName + " (" + resNum + ")}";
+
+        try {
+            callSt = connect.prepareCall(storedProc);
+            resSet = callSt.executeQuery();
+            
+            try {
+                System.out.println(" ");
+
+                ResultSetMetaData meta = resSet.getMetaData();
+                int columns = meta.getColumnCount();
+                if (!resSet.isBeforeFirst() ) {    
+                    System.out.println("There is no reservation with that id"); 
+                }
+                else
+                {
+                    System.out.println("We found that reservation:");
+                }
+                while (resSet.next()) {
+
+                    for (int i = 1; i < columns + 1; i++) {
+                        String s = resSet.getString(i);
+                        System.out.print(s + "  ");
+                    }
+                    System.out.println();
+                }
+            } catch (SQLException e) {
+                System.out.println("SQL Exception");
+            }
+
+        } // end try
+        catch (SQLException e) 
+        {
+            System.out.println("stored proc did not work");
+        }
+        System.out.println();
+
+    }
+    
+    public static void searchCustID(Connection connect, CallableStatement callSt, ResultSet resSet)
+    {
+        Scanner scan = new Scanner(System.in);
+        String procName = "searchCustID";
         System.out.println("What is the customer ID?");
         int custNum = scan.nextInt();
-        boolean found = false;
-        
-        for(int i = 0; i < customers.size(); i++)
-        {
-            if(custNum == customers.get(i).getCustomerId())
-            {
-                found = true;
-                System.out.println("We found that customer:");
-                System.out.println(customers.get(i).toString());
-            }
+
+        String storedProc = "{call " + procName + " (" + custNum + ")}";
+
+        try {
+            callSt = connect.prepareCall(storedProc);
+            resSet = callSt.executeQuery();
             
-        }
-        
-        if(!found)
+            try {
+                System.out.println(" ");
+
+                ResultSetMetaData meta = resSet.getMetaData();
+                int columns = meta.getColumnCount();
+                if (!resSet.isBeforeFirst() ) {    
+                    System.out.println("That customer does not exist");
+                }
+                else
+                {
+                    System.out.println("We found that customer:");
+                }
+                while (resSet.next()) {
+
+                    for (int i = 1; i < columns + 1; i++) {
+                        String s = resSet.getString(i);
+                        System.out.print(s + "  ");
+                    }
+                    System.out.println();
+                }
+            } catch (SQLException e) {
+                System.out.println("SQL Exception");
+            }
+
+        } // end try
+        catch (SQLException e) 
         {
-            System.out.println("That customer does not exist");
+            System.out.println("stored proc did not work");
         }
+        System.out.println();
         
     }
 
@@ -219,7 +304,6 @@ public class BluebirdsAirlineDriver {
         
         Customer customer = new Customer(name, address, phone);
         
-        customers.add(customer);
         System.out.println("Your ID is " + customer.getCustomerId());
         return customer;
     }
