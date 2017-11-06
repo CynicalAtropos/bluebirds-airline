@@ -1021,16 +1021,20 @@ public class BluebirdsAirlineDriver {
 
                 ResultSetMetaData meta = resSet.getMetaData();
                 int columns = meta.getColumnCount();
-
-                System.out.println("First Class:");
                 
+                System.out.println("First Class:");
+                System.out.println();
                 while (resSet.next()) {
 
                     for (int i = 1; i < columns + 1; i++) {
                         String s = resSet.getString(i);
-                        System.out.print(s + "  ");
+                        if(i == 3)
+                        {
+                            System.out.println();
+                        }
+                        System.out.printf("%-20s", s);
                     }
-                    System.out.println();
+     
                 }
             } catch (SQLException e) {
                 System.out.println("SQL Exception");
@@ -1057,13 +1061,18 @@ public class BluebirdsAirlineDriver {
                 int columns = meta.getColumnCount();
 
                 System.out.println("Economy Class:");
-                
+                System.out.println();
                 while (resSet.next()) {
 
                     for (int i = 1; i < columns + 1; i++) {
                         String s = resSet.getString(i);
-                        System.out.print(s + "  ");
+                        if(i == 5)
+                        {
+                            System.out.println();
+                        }
+                        System.out.printf("%-20s", s);
                     }
+
                     System.out.println();
                 }
             } catch (SQLException e) {
