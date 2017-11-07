@@ -1,5 +1,3 @@
-drop database if exists bluebirds;
-create database bluebirds;
 
 drop table if exists canceledreservations;
 drop table if exists customers;
