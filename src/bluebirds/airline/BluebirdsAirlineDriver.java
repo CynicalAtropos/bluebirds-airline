@@ -11,6 +11,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.Month;
@@ -41,17 +42,17 @@ public class BluebirdsAirlineDriver {
         Connection connect = null;
         CallableStatement callSt = null;
         ResultSet resSet = null;
-        
+        Statement stmt = null;
         connect = connect(connect);
         
         while (true)
         {
         	int choice = menu();
         	if(choice == 0){
-                        pilotAL = primePilots(pilotAL);
-                        flightAL = primeFlights(pilotAL, flightAL);
-                        customerAL = primeCustomers(customerAL);
-                        reservationAL = primeReservations(reservationAL, flightAL, customerAL);
+                        pilotAL = primePilots(connect, stmt, pilotAL);
+                        flightAL = primeFlights(connect, stmt, pilotAL, flightAL);
+                        customerAL = primeCustomers(connect, stmt, customerAL);
+                        reservationAL = primeReservations(connect, stmt, reservationAL, flightAL, customerAL);
         	}
         	else if(choice == 1){
         		selectFlight(flightAL,customerAL);
@@ -213,16 +214,30 @@ public class BluebirdsAirlineDriver {
         
     }
 
-    public static ArrayList<Pilot> primePilots(ArrayList<Pilot> pilots)
+    public static ArrayList<Pilot> primePilots(Connection con, Statement stmt, ArrayList<Pilot> pilots)
     {
         pilots.add(new Pilot("Chesley Sullenberger", "2801 Franklin Rd SW, Roanoke, VA 24014", "5403454434"));
         pilots.add(new Pilot("Amelia Earhart", "15240 N 32nd St, Phoenix, AZ 85032", "6024937404"));
         pilots.add(new Pilot("Han Solo", "3226 Brandon Ave SW, Roanoke, VA 24018", "5403448200"));
         pilots.add(new Pilot("Orville Wright", "1919 W Deer Valley Rd, Phoenix, AZ 85027", "6237802330"));
- 
+        
+        try{
+            stmt = con.createStatement();
+            for (Pilot p : pilots){
+                stmt.executeUpdate("INSERT INTO pilots"
+                        + " VALUES (" + p.getPilotId() + ", '"
+                                      + p.getName() + "', '"
+                                      + p.getAddress() + "', '"
+                                      + p.getPhoneNumber() + "')" );
+            }
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        
         return pilots;
     }
-    public static ArrayList<Flight> primeFlights(ArrayList<Pilot> pilots, ArrayList<Flight> flights) {
+    public static ArrayList<Flight> primeFlights(Connection con, Statement stmt, ArrayList<Pilot> pilots, ArrayList<Flight> flights) {
 
         flights.add(new Flight("12RPAM", LocalDate.of(2017, Month.NOVEMBER, 12), "8:00 a.m.", "Roanoke to Phoenix", pilots.get(0)));
         flights.add(new Flight("12PRAM", LocalDate.of(2017, Month.NOVEMBER, 12), "8:00 a.m.", "Phoenix to Roanoke", pilots.get(1)));
@@ -259,20 +274,51 @@ public class BluebirdsAirlineDriver {
         flights.add(new Flight("18PRPM", LocalDate.of(2017, Month.NOVEMBER, 18), "6:00 p.m.", "Phoenix to Roanoke", pilots.get(0)));
         flights.add(new Flight("18RPPM", LocalDate.of(2017, Month.NOVEMBER, 18), "6:00 p.m.", "Roanoke to Phoenix", pilots.get(1)));
         
+        try{
+            stmt = con.createStatement();
+            for (Flight f : flights){
+                stmt.executeUpdate("INSERT INTO flights"
+                        + " VALUES ('" + f.getFlightCode() + "', '"
+                                      + f.getDate().toString()+ "', '"
+                                      + f.getTime()+ "', '"
+                                      + f.getRoute() + "', '"
+                                      + f.getPilot().getPilotId() + "')" );
+            }
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        
         return flights;
 
     }
     
-    public static ArrayList<Customer> primeCustomers(ArrayList<Customer> customers)
+    public static ArrayList<Customer> primeCustomers(Connection con, Statement stmt, ArrayList<Customer> customers)
     {
         customers.add(new Customer("Rick Sanchez","2072 Apperson Dr, Salem, VA 24153", "5407746295"));
         customers.add(new Customer("Daryl Dixon", "21611 N 26th Ave, Phoenix, AZ 85027", "6235826020"));
         customers.add(new Customer("Merle Dixon", "3202 E Greenway Rd, Phoenix, AZ 85032", "6024851000"));
+        
+        try{
+            stmt = con.createStatement();
+            for (Customer c : customers){
+                stmt.executeUpdate("INSERT INTO customers"
+                        + " VALUES (" + c.getCustomerId() + ", '"
+                                      + c.getName()+ "', '"
+                                      + c.getAddress()+ "', '"
+                                      + c.getPhoneNumber() + "')" );
+            }
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        
         return customers;
     }
     
-    public static ArrayList<Reservation> primeReservations(ArrayList<Reservation> reservations, ArrayList<Flight> flights, ArrayList<Customer> customers)
+    public static ArrayList<Reservation> primeReservations(Connection con, Statement stmt, ArrayList<Reservation> reservations, ArrayList<Flight> flights, ArrayList<Customer> customers)
     {
+        int fc = 0;
         reservations.add(new Reservation(flights.get(0), customers.get(0), "FCA1", true));
         reservations.add(new Reservation(flights.get(0), customers.get(0), "FCA2", true));
         reservations.add(new Reservation(flights.get(0), customers.get(1), "ECA1", false));
@@ -287,7 +333,24 @@ public class BluebirdsAirlineDriver {
         customers.get(0).addRes(reservations.get(1));
         customers.get(1).addRes(reservations.get(2));
         customers.get(2).addRes(reservations.get(3));
-        
+        try{
+            stmt = con.createStatement();
+            for (Reservation r : reservations){
+                if(r.getFirstClass()){
+                    fc = 1;
+                }
+                stmt.executeUpdate("INSERT INTO reservations"
+                        + " VALUES (" + r.getReservationNum() + ", '"
+                                      + r.getCustomer().getCustomerId() + "', '"
+                                      + r.getSeatNumber() + "', '"
+                                      + fc + "', '"
+                                      + r.getFlight().getFlightCode() + "', '"
+                                      + r.getCost() + "')" );
+            }
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
   
         return reservations;
     }
