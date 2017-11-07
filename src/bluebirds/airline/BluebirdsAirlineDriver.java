@@ -504,19 +504,32 @@ public class BluebirdsAirlineDriver {
     public static void searchFlight(ArrayList<Flight> f, int route, int time, int party, LocalDate day, ArrayList<Customer> cList, Customer c, int group) {
         Scanner scan = new Scanner(System.in);
         // Converts customer answers to strings so the flight list can be searched
-        String flightRoute = "";
+        //12RPAM
+        String flightCode = "" + day.getDayOfMonth();
         if (route == 1) {
-            flightRoute = "Roanoke to Phoenix";
+            flightCode.concat("RP");
         } else if (route == 2) {
-            flightRoute = "Phoenix to Roanoke";
+            flightCode.concat("PR");
         }
-
-        String flightTime = "";
         if (time == 1) {
-            flightTime = "8:00 a.m.";
+            flightCode.concat("AM");
         } else if (time == 2) {
-            flightTime = "6:00 p.m.";
+            flightCode.concat("PM");
         }
+        
+//        String flightRoute = "";
+//        if (route == 1) {
+//            flightRoute = "Roanoke to Phoenix";
+//        } else if (route == 2) {
+//            flightRoute = "Phoenix to Roanoke";
+//        }
+
+//        String flightTime = "";
+//        if (time == 1) {
+//            flightTime = "8:00 a.m.";
+//        } else if (time == 2) {
+//            flightTime = "6:00 p.m.";
+//        }
         // searches for a flight matching the customers parameters
         int fClass = 0;
         int economy = 0;
@@ -950,70 +963,75 @@ public class BluebirdsAirlineDriver {
         }
     }
     
-    public static void grossIncomeEach(ArrayList<Flight> flights){
+    public static void grossIncomeEach(Connection con){
         NumberFormat nf = NumberFormat.getCurrencyInstance();
-        for(int i = 0; i < flights.size(); i++)
-            {
-                int grossIncome = 0;
-                System.out.println("Flight: " + flights.get(i).getFlightCode());
-                //For Loop to read seat maps including getters and setters
-                Reservation[][] firstClass = flights.get(i).getFirstClass();
-                Reservation[][] economyClass = flights.get(i).getEconomyClass();
-                for(int row = 0; row < firstClass.length; row++){
-                    for(int col = 0; col < firstClass.length; col++){
-                        if(firstClass[row][col] != null){
-                            grossIncome = grossIncome + firstClass[row][col].getCost();
-                        }
-                    }
-                }
-                for(int row = 0; row < economyClass.length; row++){
-                    for(int col = 0; col < economyClass.length; col++){
-                        if(economyClass[row][col] != null){
-                            grossIncome = grossIncome + economyClass[row][col].getCost();
-                        }
-                    }
-                }
-                System.out.println("Gross Income: " + grossIncome);
-            }
+        CallableStatement stmt;
+        ResultSet resSet;
+        String procName = "GrossIncomeEach";
+        String storedProc = "{call " + procName +"}";
+        System.out.println("\n");
+        try {
+           stmt = con.prepareCall(storedProc);
+           resSet = stmt.executeQuery();
+
+           try {
+               System.out.println();
+
+               ResultSetMetaData meta = resSet.getMetaData();
+               int columns = meta.getColumnCount();
+               while (resSet.next()) {
+                   String flightCode = resSet.getString(1);
+                   int grossIncome = resSet.getInt(2);
+                   System.out.println("Flight Code: "+ flightCode + "  Gross Income: " + nf.format(grossIncome));
+               }
+           } catch (SQLException e) {
+               System.out.println("SQL Exception");
+           }
+
+       } // end try
+       catch (SQLException e) 
+       {
+           System.out.println("Stored proc did not work");
+       }
             
             
     }
     
-    public static void grossIncomeSpec(ArrayList<Flight> flights){
+    public static void grossIncomeSpec(Connection con){
         NumberFormat nf = NumberFormat.getCurrencyInstance();
         Scanner scan = new Scanner(System.in);
         
         System.out.println("Please Enter the flight code: ");
         String flightCode = scan.nextLine().trim();
-        boolean found = false;
-        for(int i = 0; i < flights.size(); i++)
-            {
-                if(flightCode.equals(flights.get(i).getFlightCode())) {
-                    found = true;
-                    System.out.println("Matched Flight: ");
-                    Flight f = flights.get(i);
-                    //For Loop to read seat map
-                    int grossIncome = 0;
-                    System.out.println("Flight: " + flights.get(i).getFlightCode());
-                    Reservation[][] firstClass = f.getFirstClass();
-                    Reservation[][] economyClass = f.getEconomyClass();
-                    for(int row = 0; row < firstClass.length; row++){
-                        for(int col = 0; col < firstClass.length; col++){
-                            if(firstClass[row][col] != null){
-                                grossIncome = grossIncome + firstClass[row][col].getCost();
-                            }
-                        }
-                    }
-                    for(int row = 0; row < economyClass.length; row++){
-                        for(int col = 0; col < economyClass.length; col++){
-                            if(economyClass[row][col] != null){
-                            grossIncome = grossIncome + firstClass[row][col].getCost();
-                            }
-                        }
-                    }
-                    System.out.println("Gross Income: " + grossIncome);
-                }
-            }
+        CallableStatement stmt;
+        ResultSet resSet;
+        String procName = "GrossIncomeSpec";
+        String storedProc = "{call " + procName + " (" + flightCode + ")}";
+        System.out.println("\n");
+        try {
+           stmt = con.prepareCall(storedProc);
+           resSet = stmt.executeQuery();
+
+           try {
+               System.out.println();
+
+               ResultSetMetaData meta = resSet.getMetaData();
+               if(resSet.next()) {
+                   flightCode = resSet.getString(1);
+                   int grossIncome = resSet.getInt(2);
+                   System.out.println("Flight Code: "+ flightCode + "  Gross Income: " + nf.format(grossIncome));
+               } else {
+                   System.out.println("No flight found.");
+               }
+           } catch (SQLException e) {
+               System.out.println("SQL Exception");
+           }
+
+       } // end try
+       catch (SQLException e) 
+       {
+           System.out.println("Stored proc did not work");
+       }
             
             
     }

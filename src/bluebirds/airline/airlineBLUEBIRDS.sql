@@ -89,28 +89,28 @@ ALTER TABLE `seatmap`
 
 DROP PROCEDURE IF EXISTS searchReservID;
 CREATE PROCEDURE searchReservID(resNum INT(3))
-SELECT r.ResID, c.Name, r.SeatNum, r.FlightCode, r.Cost
-FROM Reservation AS r, Customer AS c
-WHERE r.ResID = resNum
-AND r.CustID = c.CustID;
+SELECT r.resID, c.customerName, r.seatNumber, r.flightCode, r.cost
+FROM reservations AS r, customers AS c
+WHERE r.resID = resNum
+AND r.custID = c.custID;
 
 DROP PROCEDURE IF EXISTS searchCustID;
 CREATE PROCEDURE searchCustID(custNum INT(3))
 SELECT * FROM
-FROM Customer AS c
-WHERE c.CustID = custNum;
+FROM customers AS c
+WHERE c.custID = custNum;
 
 DROP PROCEDURE IF EXISTS printFirstClass;
-CREATE PROCEDURE printFirstClass(flightCode VARCHAR(6))
+CREATE PROCEDURE printFirstClass(flightNum VARCHAR(6))
 SELECT CASE WHEN FCA1 IS NULL THEN 'Open' ELSE FCA1 END AS 'FCA1', 
 CASE WHEN FCA2 IS NULL THEN 'Open' ELSE FCA2 END AS 'FCA2', 
 CASE WHEN FCB1 IS NULL THEN 'Open' ELSE FCB1 END AS 'FCB1', 
 CASE WHEN FCB2 IS NULL THEN 'Open' ELSE FCB2 END AS 'FCB2' 
-FROM SeatMap AS sm
-WHERE sm.FlightCode = flightCode;
+FROM seatmap AS sm
+WHERE sm.flightCode = flightNum;
 
 DROP PROCEDURE IF EXISTS printEconomyClass;
-CREATE PROCEDURE printEconomyClass(flightCode VARCHAR(6))
+CREATE PROCEDURE printEconomyClass(flightNum VARCHAR(6))
 SELECT CASE WHEN ECA1 IS NULL THEN 'Open' ELSE ECA1 END AS 'ECA1', 
 CASE WHEN ECA2 IS NULL THEN 'Open' ELSE ECA2 END AS 'ECA2', 
 CASE WHEN ECA3 IS NULL THEN 'Open' ELSE ECA3 END AS 'ECA3',
@@ -119,8 +119,8 @@ CASE WHEN ECB1 IS NULL THEN 'Open' ELSE ECB1 END AS 'ECB1',
 CASE WHEN ECB2 IS NULL THEN 'Open' ELSE ECB2 END AS 'ECB2', 
 CASE WHEN ECB3 IS NULL THEN 'Open' ELSE ECB3 END AS 'ECB3',
 CASE WHEN ECB4 IS NULL THEN 'Open' ELSE ECB4 END AS 'ECB4'  
-FROM SeatMap AS sm
-WHERE sm.FlightCode = flightCode;
+FROM seatmap AS sm
+WHERE sm.flightCode = flightNum;
 
 
 
