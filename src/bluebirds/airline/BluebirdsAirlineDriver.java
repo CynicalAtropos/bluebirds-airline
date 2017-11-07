@@ -53,6 +53,7 @@ public class BluebirdsAirlineDriver {
                         flightAL = primeFlights(connect, stmt, pilotAL, flightAL);
                         customerAL = primeCustomers(connect, stmt, customerAL);
                         reservationAL = primeReservations(connect, stmt, reservationAL, flightAL, customerAL);
+                        primeSeatMap(connect, stmt, flightAL);
         	}
         	else if(choice == 1){
         		selectFlight(flightAL,customerAL);
@@ -338,6 +339,10 @@ public class BluebirdsAirlineDriver {
             for (Reservation r : reservations){
                 if(r.getFirstClass()){
                     fc = 1;
+                    
+                }
+                else{
+                    fc = 0;
                 }
                 stmt.executeUpdate("INSERT INTO reservations"
                         + " VALUES (" + r.getReservationNum() + ", '"
@@ -353,6 +358,36 @@ public class BluebirdsAirlineDriver {
         }
   
         return reservations;
+    }
+    
+    public static void primeSeatMap(Connection connect, Statement stmt, ArrayList<Flight> flights)
+    {
+        try{
+            stmt = connect.createStatement();
+            for (Flight f : flights){
+                stmt.executeUpdate("INSERT INTO seatmap(flightCode)"
+                        + " VALUES ('" + f.getFlightCode() + "')" );
+            }
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+
+        try{
+            stmt = connect.createStatement();
+            
+            stmt.executeUpdate("UPDATE seatmap\n" +
+                               "SET \n" +
+                               "FCA1 = " + flights.get(0).getFirstClass()[0][0].getReservationNum() + ",\n" +
+                               "FCA2 = " + flights.get(0).getFirstClass()[0][1].getReservationNum() + ",\n" +
+                               "ECA1 = " + flights.get(0).getEconomyClass()[0][0].getReservationNum() + ",\n" +
+                               "ECA2 = " + flights.get(0).getEconomyClass()[0][1].getReservationNum() + "\n" +
+                               "WHERE flightCode = '12RPAM'");
+            
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
     }
     
     public static Customer createNewCustomer(ArrayList<Customer> customers)

@@ -1,5 +1,6 @@
 drop database if exists BlueBirdsAirline;
 create database BlueBirdsAirline;
+USE BlueBirdsAirline;
 
 drop table if exists canceledreservations;
 drop table if exists customers;
@@ -99,7 +100,7 @@ AND r.custID = c.custID;
 DROP PROCEDURE IF EXISTS searchCustID;
 CREATE PROCEDURE searchCustID(custNum INT(3))
 SELECT * FROM
-FROM customers AS c
+customers AS c
 WHERE c.custID = custNum;
 
 DROP PROCEDURE IF EXISTS printFirstClass;
