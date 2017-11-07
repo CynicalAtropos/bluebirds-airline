@@ -1,3 +1,5 @@
+drop database if exists BlueBirdsAirline;
+create database BlueBirdsAirline;
 
 drop table if exists canceledreservations;
 drop table if exists customers;
@@ -9,9 +11,9 @@ drop table if exists seatmap;
 CREATE TABLE IF NOT EXISTS `canceledreservations` (
   `resID` int(3) NOT NULL,
   `custID` int(3) NOT NULL,
-  `seatNumber` varchar(10) NOT NULL,
+  `seatNumber` varchar(4) NOT NULL,
   `firstClass` int(1) NOT NULL,
-  `flightCode` varchar(15) NOT NULL,
+  `flightCode` varchar(6) NOT NULL,
   `cost` int(10) NOT NULL,
   PRIMARY KEY (`resID`),
   KEY `custID` (`custID`),
@@ -27,9 +29,9 @@ CREATE TABLE IF NOT EXISTS `customers` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `flights` (
-  `flightCode` varchar(15) NOT NULL,
+  `flightCode` varchar(6) NOT NULL,
   `flightDay` date NOT NULL,
-  `flightTime` varchar(5) NOT NULL,
+  `flightTime` varchar(10) NOT NULL,
   `route` varchar(50) NOT NULL,
   `pilotID` int(3) NOT NULL,
   PRIMARY KEY (`flightCode`),
@@ -47,9 +49,9 @@ CREATE TABLE IF NOT EXISTS `pilots` (
 CREATE TABLE IF NOT EXISTS `reservations` (
   `resID` int(3) NOT NULL,
   `custID` int(3) NOT NULL,
-  `seatNumber` varchar(10) NOT NULL,
+  `seatNumber` varchar(4) NOT NULL,
   `firstClass` int(1) NOT NULL,
-  `flightCode` varchar(15) NOT NULL,
+  `flightCode` varchar(6) NOT NULL,
   `cost` int(10) NOT NULL,
   PRIMARY KEY (`resID`),
   KEY `custID` (`custID`),
