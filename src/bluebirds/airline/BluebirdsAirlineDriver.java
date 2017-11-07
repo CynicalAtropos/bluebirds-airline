@@ -16,6 +16,8 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -408,7 +410,7 @@ public class BluebirdsAirlineDriver {
                     // Let's the customer request that the party sit together
                     System.out.println("Is it mandatory your party sit together? (answering yes will effect flight availability): ");
                     System.out.println("[1] yes"
-                            + "\n[2] no");
+                                    + "\n[2] no");
                     group = scan.nextInt();
                     if (group == 1 || group == 2) {
                         sValid = false;
@@ -439,7 +441,7 @@ public class BluebirdsAirlineDriver {
     }
 
     // Searches for a flight based on the customers parameters
-    public static void searchFlight(ArrayList<Flight> f, int route, int time, int party, LocalDate day, ArrayList<Customer> cList, Customer c, int group) {
+    public static void searchFlight(ArrayList<Flight> f, int route, int time, int party, LocalDate day, ArrayList<Customer> cList, Customer c, int group,Connection con) {
         Scanner scan = new Scanner(System.in);
         // Converts customer answers to strings so the flight list can be searched
         //12RPAM
@@ -455,56 +457,41 @@ public class BluebirdsAirlineDriver {
             flightCode.concat("PM");
         }
         
-//        String flightRoute = "";
-//        if (route == 1) {
-//            flightRoute = "Roanoke to Phoenix";
-//        } else if (route == 2) {
-//            flightRoute = "Phoenix to Roanoke";
-//        }
-
-//        String flightTime = "";
-//        if (time == 1) {
-//            flightTime = "8:00 a.m.";
-//        } else if (time == 2) {
-//            flightTime = "6:00 p.m.";
-//        }
         // searches for a flight matching the customers parameters
         int fClass = 0;
         int economy = 0;
-        Flight foundFlight = new Flight();
-        for (int i = 0; i < f.size(); i++) {
-            Flight searchFlight = f.get(i);
+        CallableStatement stmt;
+        ResultSet resSet;
+        String procName = "findSeatAvailability";
+        String storedProc = "{call " + procName + " (" + flightCode + ")}";
+        try 
+        {
+           stmt = con.prepareCall(storedProc);
+           resSet = stmt.executeQuery();
 
-            // checks if there are enough first class seats
-            if (searchFlight.getRoute().equals(flightRoute)
-                    && searchFlight.getTime().equals(flightTime)
-                    && searchFlight.getDate().equals(day)) {
+           try 
+           {
+               System.out.println();
 
-                foundFlight = searchFlight;
-            }
-        }
+               ResultSetMetaData meta = resSet.getMetaData();
+               int columns = meta.getColumnCount();
+               fClass = resSet.getInt(1);
+               economy = resSet.getInt(2);
+               
+           } catch (SQLException e) {
+               System.out.println("SQL Exception");
+           }
 
-        for (int fCol = 0; fCol < foundFlight.getFirstClass().length; fCol++) {
-            for (int fRow = 0; fRow < foundFlight.getFirstClass()[fCol].length; fRow++) {
-                if (foundFlight.getFirstClass()[fCol][fRow] == null) {
-                    fClass++;
-                }
-            }
-        }
-
-        // checks if there enough economy seats
-        for (int eCol = 0; eCol < foundFlight.getEconomyClass().length; eCol++) {
-            for (int eRow = 0; eRow < foundFlight.getEconomyClass()[eCol].length; eRow++) {
-                if (foundFlight.getEconomyClass()[eCol][eRow] == null) {
-                    economy++;
-                }
-            }
-        }
-
+       } // end try
+       catch (SQLException e) 
+       {
+           System.out.println("Stored proc did not work");
+       }
         if (party < fClass + economy) {
             int bookClass = 0;
             if (party <= fClass) {
                 boolean valid = true;
+                if(party < 3 || group == 2){
                 while (valid) {
                     System.out.println("There are first class seats available. Would you like first class? "
                             + "\n[1] yes"
@@ -516,13 +503,14 @@ public class BluebirdsAirlineDriver {
                         System.out.println("Please enter 1 or 2. ");
                     }
                 }
+                }
 
             }
 
             if (group == 1) {
-                bookTogether(f, cList, foundFlight, bookClass, c, party);
+                bookTogether(flightCode, bookClass, custID, party);
             } else {
-                bookReservation(f, foundFlight, bookClass, c, party, cList);
+                bookReservation(flightCode, bookClass, custID, party);
             }
         } else {
             System.out.println("The flight for this day is full. Would you like to book a different flight? "
@@ -540,64 +528,13 @@ public class BluebirdsAirlineDriver {
     }
 
     // Books a reservation for parties that want to sit togeather
-    public static void bookTogether(ArrayList<Flight> fList, ArrayList<Customer> cList, Flight f, int fc, Customer c, int party) {
+    public static void bookTogether(String flightCode, int fc, int custID, int party) {
         Scanner scan = new Scanner(System.in);
         
         boolean booked = false;
         int emptySeats = 0;
         if (fc == 1) {
-            // loops to get the desired flight
-            for (int i = 0; i < fList.size(); i++) {
-                if (fList.get(i) == f) {
-                    // finds an empty seat
-                    for (int col = 0; col < fList.get(i).getFirstClass().length; col++) {
-                        for (int row = 0; row < fList.get(i).getFirstClass()[col].length; row++) {
-                            if (fList.get(i).getFirstClass()[col][row] == null) {
-                                // checks to see if there are enough seats
-                                // after the first empty seat for the rest of the party
-                                for (int x = 1; x <= party; x++) {
-                                    for (int nCol = col; nCol < fList.get(i).getFirstClass().length; nCol++) {
-                                        for (int nRow = row; nRow < fList.get(i).getFirstClass()[nCol].length; nRow++) {
-                                            if (fList.get(i).getFirstClass()[nCol][nRow] == null) {
-                                                emptySeats++;
-                                                // if there are enough seats for the party
-                                                // book the reservation
-                                                if (emptySeats >= party) {
-                                                    int seatCol = col;
-                                                    int seatRow = row;
-                                                    while(!booked){
-                                                    while (party > 0) {
-                                                       
-                                                            String seatNum = "FC";
-                                                            if(seatCol == 0) seatNum += "A" + (seatRow +1);
-                                                            else if (seatCol == 1) seatNum += "B" + (seatRow+1);
-                                                            fList.get(i).getFirstClass()[seatCol][seatRow] = new Reservation(f, c, seatNum, true);
-                                                            System.out.println("Reservation Booked. Reservation ID is "+
-                                                                    fList.get(i).getFirstClass()[seatCol][seatRow].getReservationNum()+
-                                                                    " Seat Number: "+ fList.get(i).getFirstClass()[seatCol][seatRow].getSeatNumber());
-                                                    party--;
-                                                    seatRow++;
-                                                    if (row>1){
-                                                        seatCol++;
-                                                        seatRow =0;
-                                                    }
-                                                    
-                                                    
-                                                    booked = true;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                emptySeats = 0;
-                            
-                            }
-                        }
-                    }
-                }
-            }
-            }
+            
         }
         else if (fc == 2) {
             // loops to get the desired flight
@@ -681,40 +618,47 @@ public class BluebirdsAirlineDriver {
 }
 
     //Books a reservation
-    public static void bookReservation(ArrayList<Flight> fList, Flight f, int fc, Customer c, int party, ArrayList<Customer> custList) {
+    public static void bookReservation(String flightCode, int fc, int custID, int party, Connection con) {
         // adds a first class reservation
         if (fc == 1) {
-            for (int i = 0; i < fList.size(); i++) {
-                if (fList.get(i) == f) {
-                    for (int col = 0; col < fList.get(i).getFirstClass().length; col++) {
-                        for (int row = 0; row < fList.get(i).getFirstClass()[col].length; row++) {
-                            
-                            if (fList.get(i).getFirstClass()[col][row] == null) {
-                                int seatCol = col;
-                                int seatRow = row;
-                                while(party>0){
-                                    String seatNum = "FC";
-                                    if(row == 0) seatNum += "A" + (seatRow +1);
-                                    else if (row == 1) seatNum += "B" + (seatRow+1);
-                                    
-                                    fList.get(i).getFirstClass()[col][row] = new Reservation(f, c, seatNum, true);
-                                    System.out.println("Reservation Booked. Reservation ID is "+
-                                                                    fList.get(i).getFirstClass()[col][row].getReservationNum()+
-                                                                    " Seat Number: "+ fList.get(i).getFirstClass()[col][row].getSeatNumber());
-                                    for(int num = 0; num < custList.size(); num++){
-                                        if(custList.get(num).getCustomerId() == c.getCustomerId()){
-                                            custList.get(num).addRes(new Reservation(f, c, seatNum, true));
-                                        }
-                                        
-                                    }
-                                    
-                                    party--;
-                                seatCol++;
-                                seatRow++;
-                            }
-                            }
-                        }
-                    }
+            CallableStatement stmt;
+            ResultSet resSet;
+            String procName = "getFirstClassSeats";
+            String storedProc = "{call " + procName + " (" + flightCode + ")}";
+            System.out.println("\n");
+            try {
+               stmt = con.prepareCall(storedProc);
+               resSet = stmt.executeQuery();
+
+               try {
+                   System.out.println();
+
+                   ResultSetMetaData meta = resSet.getMetaData();
+                   int columns = meta.getColumnCount();
+                   Map<String, Integer> fcSeats = new HashMap<>();
+                   fcSeats.put(meta.getColumnName(1):resSet.getInt(1));
+                   //fcSeatsmeta.getColumnName(2):resSet.getInt(2),
+                   //meta.getColumnName(3):resSet.getInt(3),meta.getColumnName(4):resSet.getInt(4)};
+                   if(resSet.next()) {
+                       //int[] fcSeats = {resSet.getInt(1),resSet.getInt(2),resSet.getInt(3),resSet.getInt(4)};
+                       
+                   }
+               } catch (SQLException e) {
+                   System.out.println("SQL Exception");
+               }
+
+           } // end try
+           catch (SQLException e) 
+           {
+               System.out.println("Stored proc did not work");
+           }
+            boolean Found = false;
+            int count = 0;
+   
+            while(!Found){
+                if(fcSeats[count] == 0){
+                    Found = true;
+                    seatNum = 
                 }
             }
         } // adds an economy reservation
