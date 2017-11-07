@@ -1,3 +1,6 @@
+drop database if exists BlueBirdsAirline;
+create database BlueBirdsAirline;
+
 drop table if exists canceledreservations;
 drop table if exists customers;
 drop table if exists flights;
@@ -6,11 +9,11 @@ drop table if exists reservations;
 drop table if exists seatmap;
 
 CREATE TABLE IF NOT EXISTS `canceledreservations` (
-  `resID` int(11) NOT NULL,
-  `custID` int(11) NOT NULL,
-  `seatNumber` varchar(10) NOT NULL,
+  `resID` int(3) NOT NULL,
+  `custID` int(3) NOT NULL,
+  `seatNumber` varchar(4) NOT NULL,
   `firstClass` int(1) NOT NULL,
-  `flightCode` varchar(15) NOT NULL,
+  `flightCode` varchar(6) NOT NULL,
   `cost` int(10) NOT NULL,
   PRIMARY KEY (`resID`),
   KEY `custID` (`custID`),
@@ -18,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `canceledreservations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `customers` (
-  `custID` int(11) NOT NULL,
+  `custID` int(3) NOT NULL,
   `customerName` varchar(32) NOT NULL,
   `address` varchar(50) NOT NULL,
   `phone` varchar(20) NOT NULL,
@@ -26,17 +29,17 @@ CREATE TABLE IF NOT EXISTS `customers` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `flights` (
-  `flightCode` varchar(15) NOT NULL,
+  `flightCode` varchar(6) NOT NULL,
   `flightDay` date NOT NULL,
-  `flightTime` varchar(5) NOT NULL,
+  `flightTime` varchar(10) NOT NULL,
   `route` varchar(50) NOT NULL,
-  `pilotID` int(11) NOT NULL,
+  `pilotID` int(3) NOT NULL,
   PRIMARY KEY (`flightCode`),
   KEY `pilotID` (`pilotID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `pilots` (
-  `pilotID` int(11) NOT NULL,
+  `pilotID` int(3) NOT NULL,
   `pilot` varchar(32) NOT NULL,
   `address` varchar(50) NOT NULL,
   `phone` varchar(20) NOT NULL,
@@ -44,11 +47,11 @@ CREATE TABLE IF NOT EXISTS `pilots` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `reservations` (
-  `resID` int(11) NOT NULL,
-  `custID` int(11) NOT NULL,
-  `seatNumber` varchar(10) NOT NULL,
+  `resID` int(3) NOT NULL,
+  `custID` int(3) NOT NULL,
+  `seatNumber` varchar(4) NOT NULL,
   `firstClass` int(1) NOT NULL,
-  `flightCode` varchar(15) NOT NULL,
+  `flightCode` varchar(6) NOT NULL,
   `cost` int(10) NOT NULL,
   PRIMARY KEY (`resID`),
   KEY `custID` (`custID`),
