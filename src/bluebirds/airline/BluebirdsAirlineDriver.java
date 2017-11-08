@@ -140,6 +140,7 @@ public class BluebirdsAirlineDriver {
                 System.out.println(" ");
 
                 ResultSetMetaData meta = resSet.getMetaData();
+                
                 int columns = meta.getColumnCount();
                 if (!resSet.isBeforeFirst() ) {    
                     System.out.println("There is no reservation with that id"); 
@@ -148,13 +149,15 @@ public class BluebirdsAirlineDriver {
                 {
                     System.out.println("We found that reservation:");
                 }
+                System.out.println();
                 while (resSet.next()) {
 
                     for (int i = 1; i < columns + 1; i++) {
-                        String s = resSet.getString(i);
-                        System.out.print(s + "  ");
+                        System.out.printf("%-20s", meta.getColumnLabel(i) + ": ");
+                        System.out.printf("%-20s", resSet.getString(i));
+                        System.out.println();
                     }
-                    System.out.println();
+                    
                 }
             } catch (SQLException e) {
                 System.out.println("SQL Exception");
@@ -194,13 +197,15 @@ public class BluebirdsAirlineDriver {
                 {
                     System.out.println("We found that customer:");
                 }
+                System.out.println();
                 while (resSet.next()) {
 
                     for (int i = 1; i < columns + 1; i++) {
-                        String s = resSet.getString(i);
-                        System.out.print(s + "  ");
+                        System.out.printf("%-20s", meta.getColumnLabel(i) + ": ");
+                        System.out.printf("%-20s", resSet.getString(i));
+                        System.out.println();
                     }
-                    System.out.println();
+                    
                 }
             } catch (SQLException e) {
                 System.out.println("SQL Exception");
@@ -1122,6 +1127,7 @@ public class BluebirdsAirlineDriver {
         
         String procName = "printFirstClass";
         String procName2 = "printEconomyClass";
+        String procName3 = "getSeatName";
 
 
         String storedProc = "{call " + procName + " ('" + flightCode + "')}";
@@ -1137,18 +1143,43 @@ public class BluebirdsAirlineDriver {
 
                 ResultSetMetaData meta = resSet.getMetaData();
                 int columns = meta.getColumnCount();
+                if (!resSet.isBeforeFirst() ) {    
+                    System.out.println("There is no flight with that code"); 
+                }
+                else
+                {
+                    System.out.println("First Class:");
+                }
                 
-                System.out.println("First Class:");
                 System.out.println();
                 while (resSet.next()) {
 
                     for (int i = 1; i < columns + 1; i++) {
-                        String s = resSet.getString(i);
+                        String seat = "";
+                        if(resSet.getString(i) == null)
+                        {
+                            seat = "Open";
+                        }
+                        else
+                        {
+                            String storedProc3 = "{call " + procName3 + " (" + Integer.parseInt(resSet.getString(i)) + ")}";
+                            try{
+                                CallableStatement callSt2 = connect.prepareCall(storedProc3);
+                                ResultSet resSet2 = callSt2.executeQuery();
+                                while(resSet2.next()){
+                                    seat = resSet2.getString("customerName");
+                                }
+                            }
+                            catch (SQLException e) 
+                            {
+                                  System.out.println("get SeatName did not work");
+                            }
+                        }
                         if(i == 3)
                         {
                             System.out.println();
                         }
-                        System.out.printf("%-20s", s);
+                        System.out.printf("%-20s", seat);
                     }
      
                 }
@@ -1164,7 +1195,6 @@ public class BluebirdsAirlineDriver {
         System.out.println();
         
         
-        
         //Print Economy Class
         try {
             callSt = connect.prepareCall(storedProc2);
@@ -1175,18 +1205,39 @@ public class BluebirdsAirlineDriver {
 
                 ResultSetMetaData meta = resSet.getMetaData();
                 int columns = meta.getColumnCount();
-
-                System.out.println("Economy Class:");
+                if (resSet.isBeforeFirst() ) {    
+                    System.out.println("Economy Class:");
+                }
+                
                 System.out.println();
                 while (resSet.next()) {
 
                     for (int i = 1; i < columns + 1; i++) {
-                        String s = resSet.getString(i);
+                        String seat = "";
+                        if(resSet.getString(i) == null)
+                        {
+                            seat = "Open";
+                        }
+                        else
+                        {
+                            String storedProc3 = "{call " + procName3 + " (" + Integer.parseInt(resSet.getString(i)) + ")}";
+                            try{
+                                CallableStatement callSt2 = connect.prepareCall(storedProc3);
+                                ResultSet resSet2 = callSt2.executeQuery();
+                                while(resSet2.next()){
+                                    seat = resSet2.getString("customerName");
+                                }
+                            }
+                            catch (SQLException e) 
+                            {
+                                  System.out.println("get SeatName did not work");
+                            }
+                        }
                         if(i == 5)
                         {
                             System.out.println();
                         }
-                        System.out.printf("%-20s", s);
+                        System.out.printf("%-20s", seat);
                     }
 
                     System.out.println();
@@ -1201,46 +1252,6 @@ public class BluebirdsAirlineDriver {
             System.out.println("stored proc did not work");
         }
         System.out.println();
-        /*boolean found = false;
-        for(int i = 0; i < flights.size(); i++)
-            {
-                if(flightCode.equals(flights.get(i).getFlightCode())) {
-                    found = true;
-                    System.out.println("Matched Flight: " + flightCode + "\n");
-                    Flight f = flights.get(i);
-                    //For Loop to read seat map
-                    Reservation[][] firstClass = f.getFirstClass();
-                    Reservation[][] economyClass = f.getEconomyClass();
-                    System.out.println("\nFirst Class:");
-                    for(int row = 0; row < firstClass.length; row++){
-                        System.out.print("\n");
-                        for(int col = 0; col < firstClass[row].length; col++){
-                            
-                           if(firstClass[row][col] == null){
-                               System.out.printf("%-20s" , "Open");
-                               //System.out.print("\tOpen");
-                           } else {
-                               System.out.printf("%-20s",firstClass[row][col].getCustomer().getName());
-                           }
-                        }
-                    }
-                    System.out.println("\n\nEconomy Class:");
-                    for(int row = 0; row < economyClass.length; row++){
-                        System.out.print("\n");
-                        for(int col = 0; col < economyClass[row].length; col++){
-                           if(economyClass[row][col] == null){
-                               System.out.printf("%-20s","Open");
-                           } else {
-                               System.out.printf("%-20s",economyClass[row][col].getCustomer().getName());
-                           }
-                        }
-                    }
-                    
-                }
-            }
-        if(!found) {
-            System.out.println("The flight code provided was invalid.");
-        }*/
-            
+
     }
 }
