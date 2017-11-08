@@ -61,7 +61,7 @@ public class BluebirdsAirlineDriver {
         		searchCustID(connect, callSt, resSet);
         	}
         	else if(choice == 3){
-        		cancelRes(reservationAL, canceledResAL, flightAL);
+        		cancelRes(connect, callSt, reservationAL, canceledResAL, flightAL);
         	}
         	else if(choice == 4){
         		grossIncomeEach(flightAL);
@@ -70,7 +70,7 @@ public class BluebirdsAirlineDriver {
         		grossIncomeSpec(flightAL);
         	}
         	else if (choice == 6){
-        		printSchedule(flightAL);
+        		printSchedule(connect, callSt, resSet, flightAL);
         	}
         	else if(choice == 7){
         		printRes(customerAL);
@@ -79,7 +79,7 @@ public class BluebirdsAirlineDriver {
         		searchReservID(connect, callSt, resSet);
         	}
         	else if(choice == 9){
-        		searchCanceledRes(canceledResAL);
+        		searchCanceledRes(connect, callSt, resSet, canceledResAL);
         	}
         	else if(choice == 10){
         		printFlightSeats(connect, callSt, resSet);
@@ -826,62 +826,28 @@ public class BluebirdsAirlineDriver {
     
 
     // Cancels a reservation by reservation ID
-    public static void cancelRes(ArrayList<Reservation> resList, ArrayList<Reservation> cancelList, ArrayList<Flight> flights) {
+    public static void cancelRes(Connection con, CallableStatement cState, ArrayList<Reservation> resList, ArrayList<Reservation> cancelList, ArrayList<Flight> flights) {
         Scanner scan = new Scanner(System.in);
         System.out.println("Please Enter the Reservation Number: ");
         int resID = scan.nextInt();
-        boolean found = false;
-        for (int i = 0; i < resList.size(); i++) {
-            if (resList.get(i).getReservationNum() == resID) {
-                found = true;
-                cancelList.add(resList.get(i));
-                resList.remove(resList.get(i));
-                ArrayList<Reservation> custRes = resList.get(i).getCustomer().getReservationList();
-                
-                for(int j = 0; j < custRes.size(); j ++){
-                    if(custRes.get(j).getReservationNum() == resID){
-                    custRes.remove(j);
-                    }
-                }
-                Flight f = resList.get(i).getFlight();
-                if(resList.get(i).getFirstClass()){
-                    Reservation[][] fc = f.getFirstClass();
-                    for(int row = 0; row < fc.length; row++){
-                        for(int col = 0; col < fc[row].length; col++){
-                            if(fc[row][col] != null){
-                                if(fc[row][col].getReservationNum() == resID){
-                                    fc[row][col] = null;
-                                }
-                            }
-                        }
-                    }
-                    f.setFirstClass(fc);
-                } else if (!resList.get(i).getFirstClass()){
-                    Reservation[][] economyClass = f.getEconomyClass();
-                    for(int row = 0; row < economyClass.length; row++){
-                        for(int col = 0; col < economyClass[row].length; col++){
-                            if(economyClass[row][col] != null){
-                                if(economyClass[row][col].getReservationNum() == resID){
-                                    economyClass[row][col] = null;
-                                }
-                            }
-                        }
-                    }
-                    f.setEconomyClass(economyClass);
-                }
-                resList.get(i).setFlight(f);
-                for(int j = 0; j < flights.size(); j++){
-                    if(f.getFlightCode().equals(flights.get(j).getFlightCode())){
-                        flights.set(j, f);
-                    }
-                }
-            }
+        String storedProc1 = "{call cancelRes('" + resID + "')}";
+        String storedProc2 = "{call deleteRes('" + resID + "')}";
+        
+        try{
+           cState = con.prepareCall(storedProc1);
+           
+           cState.executeQuery();
+           
+           cState = con.prepareCall(storedProc2);
+           
+           cState.executeQuery();
+           
+           System.out.println("Reservation canceled");
         }
-        if(!found){
-            System.out.println("There is no reservation under that number.");
-        } else {
-            System.out.println("Reservation was canceled.");
+        catch(Exception e){
+            e.printStackTrace();
         }
+        
     }
 
     // prints a customers reservation according to the customer ID
@@ -908,25 +874,38 @@ public class BluebirdsAirlineDriver {
 
 
     // prints out a pilots schedule for the week
-    public static void printSchedule(ArrayList<Flight> flight) {
+    public static void printSchedule(Connection con, CallableStatement cState, ResultSet rSet, ArrayList<Flight> flight) {
         Scanner scan = new Scanner(System.in);
         System.out.println("What is the pilot's ID?");
         int pilotID = scan.nextInt();
-        boolean found = false;
         
-        for (int i = 0; i < flight.size(); i++) {
-            if (flight.get(i).getPilot().getPilotId() == pilotID) {
-                if(!found)
-                System.out.println("Pilot " + pilotID + " Schedule: ");
-                System.out.println(flight.get(i).getDate() + " " + flight.get(i).getFlightCode()
-                        + " " + flight.get(i).getRoute() + " " + flight.get(i).getTime());
-                found = true;
-            }
+        String storedProc = "{call getSchedule('" + pilotID + "')}";
+        try{
+           cState = con.prepareCall(storedProc);
+           
+           rSet = cState.executeQuery();
+           
+           try{
+               ResultSetMetaData meta = rSet.getMetaData();
+               int columns = meta.getColumnCount();
+               System.out.println("Flights for this pilot: ");
+             
+               while(rSet.next()){
+                  
+                   for(int i=1;i<columns+1;i++){
+                       System.out.print(rSet.getString(i) + " ");
+                   }
+                   System.out.println("\n");
+               }
+           }
+           catch(SQLException e){
+               System.out.println("Something went wrong with the SQL");
+           }
         }
-        if(!found)
-        {
-            System.out.println("That pilot does not exist");
+        catch(SQLException e){
+            System.out.println("Something went wrong with the SQL");
         }
+        
     }
     
     public static int menu()
@@ -1036,7 +1015,7 @@ public class BluebirdsAirlineDriver {
             
     }
     
-    public static void searchCanceledRes(ArrayList<Reservation> res){
+    public static void searchCanceledRes(Connection con, CallableStatement cState, ResultSet rSet, ArrayList<Reservation> res){
         Scanner scan = new Scanner(System.in);
         System.out.println("Would you like to search for canceled reservations by reservation number (1) or customer name (2)?");
         System.out.println("Choice (1|2): ");
@@ -1045,34 +1024,66 @@ public class BluebirdsAirlineDriver {
         if(choice == 1){
             System.out.println("What is the reservation number?");
             int resNum = scan.nextInt();
+            
+            String storedProc = "{call getCanceledByID(" + resNum + ")}";
+        try{
+           cState = con.prepareCall(storedProc);
+           
+           rSet = cState.executeQuery();
+           
+           try{
+               ResultSetMetaData meta = rSet.getMetaData();
+               int columns = meta.getColumnCount();
+               System.out.println("Canceled reservation for this ID: ");
+             
+               while(rSet.next()){
+                  
+                   for(int i=1;i<columns+1;i++){
+                       System.out.print(rSet.getString(i) + " ");
+                   }
+                   System.out.println("\n");
+               }
+           }
+           catch(SQLException e){
+               System.out.println("Something went wrong with the SQL");
+           }
+        }
+        catch(Exception e){
+            System.out.println("Something went wrong with the SQL");
+        }
          
-            for(int i = 0; i < res.size(); i++)
-            {
-                if(resNum == res.get(i).getReservationNum()) {
-                    found = true;
-                    System.out.println("We found that canceled reservation:");
-                    System.out.println(res.get(i).toString());
-                }
-                if (!found){
-                    System.out.println("There is no canceled reservation under that number.");
-                }
-            }
+            
         } else if(choice == 2){
             System.out.println("What is the customer's name?");
             scan.nextLine();
             String name = scan.nextLine();
          
-            for(int i = 0; i < res.size(); i++)
-            {
-                if(res.get(i).getCustomer().getName().contains(name)) {
-                    found = true;
-                    System.out.println("\nMatching Canceled Reservation:\n");
-                    System.out.println(res.get(i).toString());
-                }
-            }
-            if(!found) {
-                System.out.println("There are no canceled reservations matching the provided name.");
-            }
+            String storedProc = "{call getCanceledByName('" + name + "')}";
+        try{
+           cState = con.prepareCall(storedProc);
+           
+           rSet = cState.executeQuery();
+           
+           try{
+               ResultSetMetaData meta = rSet.getMetaData();
+               int columns = meta.getColumnCount();
+               System.out.println("Canceled reservations for this customer: ");
+             
+               while(rSet.next()){
+                  
+                   for(int i=1;i<columns+1;i++){
+                       System.out.print(rSet.getString(i) + " ");
+                   }
+                   System.out.println("\n");
+               }
+           }
+           catch(SQLException e){
+               System.out.println("Something went wrong with the SQL");
+           }
+        }
+        catch(Exception e){
+            System.out.println("Something went wrong with the SQL");
+        }
         } else {
             System.out.println("Incorrect Choice.  Returning to menu.");
         }
