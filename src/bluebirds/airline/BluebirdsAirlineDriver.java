@@ -411,6 +411,7 @@ public class BluebirdsAirlineDriver {
             Statement stmt = con.createStatement();
             stmt.executeUpdate(insert);
             ResultSet resSet = stmt.getGeneratedKeys();
+            System.out.println(resSet.getMetaData().getColumnName(1));
             custID = resSet.getInt(1);
            } // end try
         catch (SQLException e) 
@@ -455,7 +456,7 @@ public class BluebirdsAirlineDriver {
     // Gets paramaters for a flight from the user and passes them to a method
     public static void selectFlight(Connection con) {
         Scanner scan = new Scanner(System.in);
-        int group = 0;
+        int group = 2;
         int custID = 0;
         // Determines if the customer is new or returning
         int custAnswer = 0;
@@ -582,7 +583,7 @@ public class BluebirdsAirlineDriver {
         CallableStatement stmt;
         ResultSet resSet;
         String procName = "findSeatAvailability";
-        String storedProc = "{call " + procName + " (" + flightCode + ")}";
+        String storedProc = "{call " + procName + " ('" + flightCode + "')}";
         try 
         {
            stmt = con.prepareCall(storedProc);
@@ -591,9 +592,6 @@ public class BluebirdsAirlineDriver {
            try 
            {
                System.out.println();
-
-               ResultSetMetaData meta = resSet.getMetaData();
-               int columns = meta.getColumnCount();
                fClass = resSet.getInt(1);
                economy = resSet.getInt(2);
                
@@ -1132,7 +1130,7 @@ public class BluebirdsAirlineDriver {
         CallableStatement stmt;
         ResultSet resSet;
         String procName = "GrossIncomeSpec";
-        String storedProc = "{call " + procName + " (" + flightCode + ")}";
+        String storedProc = "{call " + procName + " ('" + flightCode + "')}";
         System.out.println("\n");
         try {
            stmt = con.prepareCall(storedProc);

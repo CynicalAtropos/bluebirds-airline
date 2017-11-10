@@ -2,8 +2,6 @@ drop database if exists BlueBirdsAirline;
 create database BlueBirdsAirline;
 USE BlueBirdsAirline;
 
-use BlueBirdsAirline;
-
 drop table if exists canceledreservations;
 drop table if exists customers;
 drop table if exists flights;
@@ -185,7 +183,7 @@ WHERE reservations.flightCode = flightCodeIn
 GROUP BY flightCode;
 
 DROP PROCEDURE IF EXISTS findSeatAvailability;
-CREATE PROCEDURE findSeatAvailability(flightCode Varchar(6))
+CREATE PROCEDURE findSeatAvailability(flightCodeIn Varchar(6))
 SELECT ((CASE WHEN FCA1 IS NULL THEN 1 ELSE 0 END) + (CASE WHEN FCA2 IS NULL THEN 1 ELSE 0 END) + 
         (CASE WHEN FCB1 IS NULL THEN 1 ELSE 0 END) + (CASE WHEN FCB2 IS NULL THEN 1 ELSE 0 END)) AS fcAvail,
 
@@ -194,19 +192,19 @@ SELECT ((CASE WHEN FCA1 IS NULL THEN 1 ELSE 0 END) + (CASE WHEN FCA2 IS NULL THE
         (CASE WHEN ECB1 IS NULL THEN 1 ELSE 0 END) + (CASE WHEN ECB2 IS NULL THEN 1 ELSE 0 END) + 
         (CASE WHEN ECB3 IS NULL THEN 1 ELSE 0 END) + (CASE WHEN ECB4 IS NULL THEN 1 ELSE 0 END)) AS ecAvail
 FROM seatmap
-WHERE FlightID = flightCode;
+WHERE seatmap.flightCode = flightCodeIn;
 
 DROP PROCEDURE IF EXISTS getFirstClassSeats;
-CREATE PROCEDURE getFirstClassSeats(flightCode Varchar(6))
+CREATE PROCEDURE getFirstClassSeats(flightCodeIn Varchar(6))
 SELECT CASE WHEN FCA1 IS NULL THEN 0 ELSE FCA1 END AS 'FCA1', 
        CASE WHEN FCA2 IS NULL THEN 0 ELSE FCA2 END AS 'FCA2', 
        CASE WHEN FCB1 IS NULL THEN 0 ELSE FCB1 END AS 'FCB1', 
        CASE WHEN FCB2 IS NULL THEN 0 ELSE FCB2 END AS 'FCB2'
 FROM seatmap
-WHERE FlightID = flightCode;
+WHERE seatmap.flightCode = flightCodeIn;
 
 DROP PROCEDURE IF EXISTS getEconomySeats;
-CREATE PROCEDURE getEconomySeats(flightCode Varchar(6))
+CREATE PROCEDURE getEconomySeats(flightCodeIn Varchar(6))
 SELECT CASE WHEN ECA1 IS NULL THEN 0 ELSE ECA1 END AS 'ECA1', 
        CASE WHEN ECA2 IS NULL THEN 0 ELSE ECA2 END AS 'ECA2', 
        CASE WHEN ECA3 IS NULL THEN 0 ELSE ECA3 END AS 'ECA3',
@@ -216,4 +214,4 @@ SELECT CASE WHEN ECA1 IS NULL THEN 0 ELSE ECA1 END AS 'ECA1',
        CASE WHEN ECB3 IS NULL THEN 0 ELSE ECB3 END AS 'ECB3',
        CASE WHEN ECB4 IS NULL THEN 0 ELSE ECB4 END AS 'ECB4'  
 FROM seatmap
-WHERE FlightID = flightCode;
+WHERE seatmap.flightCode = flightCodeIn;
