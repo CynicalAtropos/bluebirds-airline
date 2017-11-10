@@ -1,6 +1,8 @@
 drop database if exists BlueBirdsAirline;
 create database BlueBirdsAirline;
 
+use BlueBirdsAirline;
+
 drop table if exists canceledreservations;
 drop table if exists customers;
 drop table if exists flights;
@@ -124,5 +126,41 @@ CASE WHEN ECB4 IS NULL THEN 'Open' ELSE ECB4 END AS 'ECB4'
 FROM seatmap AS sm
 WHERE sm.flightCode = flightNum;
 
+DROP PROCEDURE IF EXISTS getSchedule;
+CREATE PROCEDURE  getSchedule ( IN  `enteredID` INT(3) )  
+SELECT flightCode, route, flightTime, flightDay
+FROM flights, pilots
+WHERE flights.pilotID = pilots.pilotID
+AND pilots.pilotID = enteredID;
 
+DROP PROCEDURE IF EXISTS cancelRes;
+CREATE PROCEDURE  cancelRes ( IN  `enteredID` INT(3) ) 
+insert into canceledreservations
+(select * 
+from reservations
+where resID = enteredID);
 
+drop procedure if exists deleteRes;
+create procedure deleteRes(in enteredID int(3) )
+delete from reservations
+where resID = enteredID;
+
+drop procedure if exists getCanceledByName;
+CREATE PROCEDURE  getCanceledByName ( IN  `enteredName` VARCHAR( 32 ) ) 
+SELECT customerName, cost, canceledreservations.custID, firstClass, flightCode, resID, seatNumber
+FROM customers, canceledreservations
+WHERE customers.custID = canceledreservations.custID
+AND customers.customerName = enteredName;
+
+drop procedure if exists getCanceledByID;
+CREATE PROCEDURE  `getCanceledByID` ( IN  `enteredID` INT ) 
+SELECT customerName, cost, canceledreservations.custID, firstClass, flightCode, resID, seatNumber
+FROM customers, canceledreservations
+WHERE customers.custID = canceledreservations.custID
+AND resID = enteredID;
+
+drop procedure if exists getCustomerRes;
+create procedure getCustomerRes(in enteredID int)
+select *
+from reservations
+where custID = enteredID;
