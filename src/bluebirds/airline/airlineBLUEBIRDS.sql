@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `canceledreservations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `customers` (
-  `custID` int(3) NOT NULL,
+  `custID` int(3) NOT NULL AUTO_INCREMENT,
   `customerName` varchar(32) NOT NULL,
   `address` varchar(50) NOT NULL,
   `phone` varchar(20) NOT NULL,
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `pilots` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `reservations` (
-  `resID` int(3) NOT NULL,
+  `resID` int(3) NOT NULL AUTO_INCREMENT,
   `custID` int(3) NOT NULL,
   `seatNumber` varchar(4) NOT NULL,
   `firstClass` int(1) NOT NULL,
@@ -172,7 +172,7 @@ from reservations
 where custID = enteredID;
 
 DROP PROCEDURE IF EXISTS grossIncomeEach;
-CREATE PROCEDURE grossIncomeEach
+CREATE PROCEDURE grossIncomeEach()
 SELECT flightCode, SUM(cost) AS GrossIncome
 FROM reservations
 GROUP BY flightCode;
