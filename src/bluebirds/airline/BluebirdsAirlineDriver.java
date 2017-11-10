@@ -58,7 +58,7 @@ public class BluebirdsAirlineDriver {
                         primeSeatMap(connect, stmt, flightAL);
         	}
         	else if(choice == 1){
-        		selectFlight(flightAL,customerAL);
+        		selectFlight(connect));
         	}
         	else if(choice == 2){
         		searchCustID(connect, callSt, resSet);
@@ -67,10 +67,10 @@ public class BluebirdsAirlineDriver {
         		cancelRes(connect, callSt, reservationAL, canceledResAL, flightAL);
         	}
         	else if(choice == 4){
-        		grossIncomeEach(flightAL);
+        		grossIncomeEach(connect);
         	}
         	else if(choice == 5){
-        		grossIncomeSpec(flightAL);
+        		grossIncomeSpec(connect);
         	}
         	else if (choice == 6){
         		printSchedule(connect, callSt, resSet, flightAL);
