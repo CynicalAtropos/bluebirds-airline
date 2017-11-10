@@ -73,7 +73,7 @@ public class BluebirdsAirlineDriver {
         		printSchedule(connect, callSt, resSet, flightAL);
         	}
         	else if(choice == 7){
-        		printRes(customerAL);
+        		printRes(connect, callSt, resSet, customerAL);
         	}
         	else if(choice == 8){
         		searchReservID(connect, callSt, resSet);
@@ -338,6 +338,9 @@ public class BluebirdsAirlineDriver {
             for (Reservation r : reservations){
                 if(r.getFirstClass()){
                     fc = 1;
+                }
+                else{
+                    fc = 0;
                 }
                 stmt.executeUpdate("INSERT INTO reservations"
                         + " VALUES (" + r.getReservationNum() + ", '"
@@ -851,10 +854,38 @@ public class BluebirdsAirlineDriver {
     }
 
     // prints a customers reservation according to the customer ID
-    public static void printRes(ArrayList<Customer> custList) {
+    public static void printRes(Connection con, CallableStatement cState, ResultSet rSet, ArrayList<Customer> custList) {
         Scanner scan = new Scanner(System.in);
         System.out.println("What is the customer ID?");
         int custNum = scan.nextInt();
+        
+        String storedProc = "{call getCustomerRes(" + custNum + ")}";
+        try{
+           cState = con.prepareCall(storedProc);
+           
+           rSet = cState.executeQuery();
+           
+           try{
+               ResultSetMetaData meta = rSet.getMetaData();
+               int columns = meta.getColumnCount();
+               System.out.println("Reservations found for this customer: ");
+             
+               while(rSet.next()){
+                  
+                   for(int i=1;i<columns+1;i++){
+                       System.out.print(rSet.getString(i) + " ");
+                   }
+                   System.out.println("\n");
+               }
+           }
+           catch(SQLException e){
+               System.out.println("Something went wrong with the SQL");
+           }
+        }
+        catch(Exception e){
+            System.out.println("Something went wrong with the SQL");
+        }
+        
         boolean found = false;
         
         for(int i = 0; i < custList.size(); i++)
