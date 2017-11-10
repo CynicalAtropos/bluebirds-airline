@@ -58,13 +58,13 @@ public class BluebirdsAirlineDriver {
                         primeSeatMap(connect, stmt, flightAL);
         	}
         	else if(choice == 1){
-        		selectFlight(connect));
+        		selectFlight(connect);
         	}
         	else if(choice == 2){
         		searchCustID(connect, callSt, resSet);
         	}
         	else if(choice == 3){
-        		cancelRes(connect, callSt, reservationAL, canceledResAL, flightAL);
+        		cancelRes(connect, callSt);
         	}
         	else if(choice == 4){
         		grossIncomeEach(connect);
@@ -73,16 +73,16 @@ public class BluebirdsAirlineDriver {
         		grossIncomeSpec(connect);
         	}
         	else if (choice == 6){
-        		printSchedule(connect, callSt, resSet, flightAL);
+        		printSchedule(connect, callSt, resSet);
         	}
         	else if(choice == 7){
-        		printRes(connect, callSt, resSet, customerAL);
+        		printRes(connect, callSt, resSet);
         	}
         	else if(choice == 8){
         		searchReservID(connect, callSt, resSet);
         	}
         	else if(choice == 9){
-        		searchCanceledRes(connect, callSt, resSet, canceledResAL);
+        		searchCanceledRes(connect, callSt, resSet);
         	}
         	else if(choice == 10){
         		printFlightSeats(connect, callSt, resSet);
@@ -679,7 +679,7 @@ public class BluebirdsAirlineDriver {
                     seat.add(resSet.getInt(2));
                     seat.add(resSet.getInt(3));
                     seat.add(resSet.getInt(4));
-                    if((seat.get(0) == 0 && seat.get(1) == 0) || (seat.get(2) == 0 && seat.get(3) == 0)){
+                    if((seat.get(0) == null && seat.get(1) == null) || (seat.get(2) == null && seat.get(3) == null)){
                         while(party > 0){
                             int count = 0;
                             boolean found = false;
@@ -852,7 +852,7 @@ public class BluebirdsAirlineDriver {
                        int count = 0;
                        boolean found = false;
                        while(!found){
-                           if(seat.get(count) == 0){
+                           if(seat.get(count) == null){
                                 String insert = "INSERT INTO reservations" + " VALUES (" + custID + ", '" + seatNames.get(count) + "', 1, '" + flightCode + "', 850)" ;
                                 try {
                                     Statement stmt2 = con.createStatement();
@@ -924,7 +924,7 @@ public class BluebirdsAirlineDriver {
                        int count = 0;
                        boolean found = false;
                        while(!found){
-                           if(seat.get(count) == 0){
+                           if(seat.get(count) == null){
                                 String insert = "INSERT INTO reservations" + " VALUES (" + custID + ", '" + seatNames.get(count) + "', 0, '" + flightCode + "', 450)" ;
                                 try {
                                     Statement stmt2 = con.createStatement();
@@ -961,7 +961,7 @@ public class BluebirdsAirlineDriver {
     
 
     // Cancels a reservation by reservation ID
-    public static void cancelRes(Connection con, CallableStatement cState, ArrayList<Reservation> resList, ArrayList<Reservation> cancelList, ArrayList<Flight> flights) {
+    public static void cancelRes(Connection con, CallableStatement cState) {
         Scanner scan = new Scanner(System.in);
         System.out.println("Please Enter the Reservation Number: ");
         int resID = scan.nextInt();
@@ -986,7 +986,7 @@ public class BluebirdsAirlineDriver {
     }
 
     // prints a customers reservation according to the customer ID
-    public static void printRes(Connection con, CallableStatement cState, ResultSet rSet, ArrayList<Customer> custList) {
+    public static void printRes(Connection con, CallableStatement cState, ResultSet rSet) {
         Scanner scan = new Scanner(System.in);
         System.out.println("What is the customer ID?");
         int custNum = scan.nextInt();
@@ -1017,27 +1017,11 @@ public class BluebirdsAirlineDriver {
         catch(Exception e){
             System.out.println("Something went wrong with the SQL");
         }
-        
-        boolean found = false;
-        
-        for(int i = 0; i < custList.size(); i++)
-        {
-            if(custNum == custList.get(i).getCustomerId())
-            {
-                found = true;
-                System.out.println("We found that customer:");
-                custList.get(i).printRes();
-            }
-        } 
-        if(!found)
-        {
-            System.out.println("That customer does not exist");
-        }
     }
 
 
     // prints out a pilots schedule for the week
-    public static void printSchedule(Connection con, CallableStatement cState, ResultSet rSet, ArrayList<Flight> flight) {
+    public static void printSchedule(Connection con, CallableStatement cState, ResultSet rSet) {
         Scanner scan = new Scanner(System.in);
         System.out.println("What is the pilot's ID?");
         int pilotID = scan.nextInt();
@@ -1178,7 +1162,7 @@ public class BluebirdsAirlineDriver {
             
     }
     
-    public static void searchCanceledRes(Connection con, CallableStatement cState, ResultSet rSet, ArrayList<Reservation> res){
+    public static void searchCanceledRes(Connection con, CallableStatement cState, ResultSet rSet){
         Scanner scan = new Scanner(System.in);
         System.out.println("Would you like to search for canceled reservations by reservation number (1) or customer name (2)?");
         System.out.println("Choice (1|2): ");
