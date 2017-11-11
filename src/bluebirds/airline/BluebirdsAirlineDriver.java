@@ -64,7 +64,7 @@ public class BluebirdsAirlineDriver {
         		searchCustID(connect, callSt, resSet);
         	}
         	else if(choice == 3){
-        		cancelRes(connect, callSt);
+        		cancelRes(connect, callSt, stmt);
         	}
         	else if(choice == 4){
         		grossIncomeEach(connect);
@@ -961,7 +961,7 @@ public class BluebirdsAirlineDriver {
     
 
     // Cancels a reservation by reservation ID
-    public static void cancelRes(Connection con, CallableStatement cState) {
+    public static void cancelRes(Connection con, CallableStatement cState, Statement stmt) {
         Scanner scan = new Scanner(System.in);
         System.out.println("Please Enter the Reservation Number: ");
         int resID = scan.nextInt();
