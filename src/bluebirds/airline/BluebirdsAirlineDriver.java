@@ -156,7 +156,24 @@ public class BluebirdsAirlineDriver {
 
                     for (int i = 1; i < columns + 1; i++) {
                         System.out.printf("%-20s", meta.getColumnLabel(i) + ": ");
-                        System.out.printf("%-20s", resSet.getString(i));
+                        String col = "";
+                        if(meta.getColumnLabel(i).equals("Seat Type"))
+                        {
+                            if(resSet.getString(i).equals("1")){
+                                col = "First Class";
+                            }
+                            else
+                            {
+                                col = "Economy Class";
+                            }
+                               
+                        }
+                        else
+                        {
+                            col = resSet.getString(i);
+                        }
+                        
+                        System.out.printf("%-20s", col);
                         System.out.println();
                     }
                     
@@ -398,6 +415,7 @@ public class BluebirdsAirlineDriver {
     
     public static int createNewCustomer(Connection con)
     {
+        Statement stmt;
         Scanner scan = new Scanner(System.in);
         System.out.println("What is your name? ex: First Last");
         String name = scan.nextLine();
@@ -405,13 +423,15 @@ public class BluebirdsAirlineDriver {
         String address = scan.nextLine();
         System.out.println("What is your phone number? ex: 5409770923");
         String phone = scan.nextLine();
-        String insert = "INSERT INTO customers" + " VALUES ('" + name + "', '" + address + "', '" + phone + "')" ;
+        String insert = "INSERT INTO customers (customerName, address, phone)" + " VALUES ('" + name + "', '" + address + "', '" + phone + "')";
         int custID = 0;
         try {
-            Statement stmt = con.createStatement();
+            stmt = con.createStatement();
             stmt.executeUpdate(insert);
-            ResultSet resSet = stmt.getGeneratedKeys();
-            custID = resSet.getInt(1);
+            System.out.println("hey");
+            //ResultSet resSet = stmt.getGeneratedKeys();
+            //System.out.println(resSet.getMetaData().getColumnName(1));
+            //custID = resSet.getInt(1);
            } // end try
         catch (SQLException e) 
         {
@@ -455,7 +475,7 @@ public class BluebirdsAirlineDriver {
     // Gets paramaters for a flight from the user and passes them to a method
     public static void selectFlight(Connection con) {
         Scanner scan = new Scanner(System.in);
-        int group = 0;
+        int group = 2;
         int custID = 0;
         // Determines if the customer is new or returning
         int custAnswer = 0;
@@ -582,7 +602,7 @@ public class BluebirdsAirlineDriver {
         CallableStatement stmt;
         ResultSet resSet;
         String procName = "findSeatAvailability";
-        String storedProc = "{call " + procName + " (" + flightCode + ")}";
+        String storedProc = "{call " + procName + " ('" + flightCode + "')}";
         try 
         {
            stmt = con.prepareCall(storedProc);
@@ -591,9 +611,6 @@ public class BluebirdsAirlineDriver {
            try 
            {
                System.out.println();
-
-               ResultSetMetaData meta = resSet.getMetaData();
-               int columns = meta.getColumnCount();
                fClass = resSet.getInt(1);
                economy = resSet.getInt(2);
                
@@ -679,7 +696,7 @@ public class BluebirdsAirlineDriver {
                     seat.add(resSet.getInt(2));
                     seat.add(resSet.getInt(3));
                     seat.add(resSet.getInt(4));
-                    if((seat.get(0) == null && seat.get(1) == null) || (seat.get(2) == null && seat.get(3) == null)){
+                    if((seat.get(0) == 0 && seat.get(1) == 0) || (seat.get(2) == 0 && seat.get(3) == 0)){
                         while(party > 0){
                             int count = 0;
                             boolean found = false;
@@ -824,7 +841,7 @@ public class BluebirdsAirlineDriver {
             CallableStatement stmt;
             ResultSet resSet;
             String procName = "getFirstClassSeats";
-            String storedProc = "{call " + procName + " (" + flightCode + ")}";
+            String storedProc = "{call " + procName + " ('" + flightCode + "')}";
             System.out.println("\n");
             try {
                stmt = con.prepareCall(storedProc);
@@ -852,7 +869,7 @@ public class BluebirdsAirlineDriver {
                        int count = 0;
                        boolean found = false;
                        while(!found){
-                           if(seat.get(count) == null){
+                           if(seat.get(count) == 0){
                                 String insert = "INSERT INTO reservations" + " VALUES (" + custID + ", '" + seatNames.get(count) + "', 1, '" + flightCode + "', 850)" ;
                                 try {
                                     Statement stmt2 = con.createStatement();
@@ -888,7 +905,7 @@ public class BluebirdsAirlineDriver {
             CallableStatement stmt;
             ResultSet resSet;
             String procName = "getEconomySeats";
-            String storedProc = "{call " + procName + " (" + flightCode + ")}";
+            String storedProc = "{call " + procName + " ('" + flightCode + "')}";
             System.out.println("\n");
             try {
                stmt = con.prepareCall(storedProc);
@@ -924,7 +941,7 @@ public class BluebirdsAirlineDriver {
                        int count = 0;
                        boolean found = false;
                        while(!found){
-                           if(seat.get(count) == null){
+                           if(seat.get(count) == 0){
                                 String insert = "INSERT INTO reservations" + " VALUES (" + custID + ", '" + seatNames.get(count) + "', 0, '" + flightCode + "', 450)" ;
                                 try {
                                     Statement stmt2 = con.createStatement();
@@ -967,17 +984,22 @@ public class BluebirdsAirlineDriver {
         int resID = scan.nextInt();
         String storedProc1 = "{call cancelRes('" + resID + "')}";
         String storedProc2 = "{call deleteRes('" + resID + "')}";
-        
         try{
            cState = con.prepareCall(storedProc1);
            
            cState.executeQuery();
            
-           cState = con.prepareCall(storedProc2);
+
+           if (cState.getUpdateCount() == 0) {    
+                System.out.println("There are no reservations under that number"); 
+           }
+           else
+           {
+                cState = con.prepareCall(storedProc2);
+                cState.executeQuery();
+                System.out.println("Reservation canceled");
+           }
            
-           cState.executeQuery();
-           
-           System.out.println("Reservation canceled");
         }
         catch(Exception e){
             e.printStackTrace();
@@ -1000,15 +1022,40 @@ public class BluebirdsAirlineDriver {
            try{
                ResultSetMetaData meta = rSet.getMetaData();
                int columns = meta.getColumnCount();
-               System.out.println("Reservations found for this customer: ");
-             
-               while(rSet.next()){
-                  
-                   for(int i=1;i<columns+1;i++){
-                       System.out.print(rSet.getString(i) + " ");
-                   }
-                   System.out.println("\n");
-               }
+                if (!rSet.isBeforeFirst() ) {    
+                    System.out.println("There are no reservations for that customer"); 
+                }
+                else
+                {
+                    System.out.println("Reservations found for this customer: ");
+                }
+               
+               while (rSet.next()) {
+
+                    for (int i = 1; i < columns + 1; i++) {
+                        System.out.printf("%-20s", meta.getColumnLabel(i) + ": ");
+                        String col = "";
+                        if(meta.getColumnLabel(i).equals("Seat Type"))
+                        {
+                            if(rSet.getString(i).equals("1")){
+                                col = "First Class";
+                            }
+                            else
+                            {
+                                col = "Economy Class";
+                            }
+                               
+                        }
+                        else
+                        {
+                            col = rSet.getString(i);
+                        }
+                        
+                        System.out.printf("%-20s", col);
+                        System.out.println();
+                    }
+                    System.out.println("\n");
+                }
            }
            catch(SQLException e){
                System.out.println("Something went wrong with the SQL");
@@ -1035,7 +1082,13 @@ public class BluebirdsAirlineDriver {
            try{
                ResultSetMetaData meta = rSet.getMetaData();
                int columns = meta.getColumnCount();
-               System.out.println("Flights for this pilot: ");
+                if (!rSet.isBeforeFirst() ) {    
+                    System.out.println("There are no flights with that pilot"); 
+                }
+                else
+                {
+                    System.out.println("Flights for this pilot: ");
+                }
              
                while(rSet.next()){
                   
@@ -1132,7 +1185,7 @@ public class BluebirdsAirlineDriver {
         CallableStatement stmt;
         ResultSet resSet;
         String procName = "GrossIncomeSpec";
-        String storedProc = "{call " + procName + " (" + flightCode + ")}";
+        String storedProc = "{call " + procName + " ('" + flightCode + "')}";
         System.out.println("\n");
         try {
            stmt = con.prepareCall(storedProc);
@@ -1147,7 +1200,7 @@ public class BluebirdsAirlineDriver {
                    int grossIncome = resSet.getInt(2);
                    System.out.println("Flight Code: "+ flightCode + "  Gross Income: " + nf.format(grossIncome));
                } else {
-                   System.out.println("No flight found.");
+                   System.out.println("No flight gross income found.");
                }
            } catch (SQLException e) {
                System.out.println("SQL Exception");
@@ -1181,15 +1234,40 @@ public class BluebirdsAirlineDriver {
            try{
                ResultSetMetaData meta = rSet.getMetaData();
                int columns = meta.getColumnCount();
-               System.out.println("Canceled reservation for this ID: ");
-             
-               while(rSet.next()){
-                  
-                   for(int i=1;i<columns+1;i++){
-                       System.out.print(rSet.getString(i) + " ");
-                   }
-                   System.out.println("\n");
-               }
+                if (!rSet.isBeforeFirst() ) {    
+                    System.out.println("There are no canceled reservations that have that number"); 
+                }
+                else
+                {
+                    System.out.println("Canceled reservation for this ID: ");
+                }
+               
+               while (rSet.next()) {
+
+                    for (int i = 1; i < columns + 1; i++) {
+                        System.out.printf("%-20s", meta.getColumnLabel(i) + ": ");
+                        String col = "";
+                        if(meta.getColumnLabel(i).equals("Seat Type"))
+                        {
+                            if(rSet.getString(i).equals("1")){
+                                col = "First Class";
+                            }
+                            else
+                            {
+                                col = "Economy Class";
+                            }
+                               
+                        }
+                        else
+                        {
+                            col = rSet.getString(i);
+                        }
+                        
+                        System.out.printf("%-20s", col);
+                        System.out.println();
+                    }
+                    System.out.println("\n");
+                }
            }
            catch(SQLException e){
                System.out.println("Something went wrong with the SQL");
@@ -1214,12 +1292,37 @@ public class BluebirdsAirlineDriver {
            try{
                ResultSetMetaData meta = rSet.getMetaData();
                int columns = meta.getColumnCount();
-               System.out.println("Canceled reservations for this customer: ");
-             
+                if (!rSet.isBeforeFirst() ) {    
+                    System.out.println("There are no canceled reservations with that name."); 
+                }
+                else
+                {
+                    System.out.println("Canceled reservations for this customer: ");
+                }
+               
                while(rSet.next()){
                   
                    for(int i=1;i<columns+1;i++){
-                       System.out.print(rSet.getString(i) + " ");
+                        System.out.printf("%-20s", meta.getColumnLabel(i) + ": ");
+                        String col = "";
+                        if(meta.getColumnLabel(i).equals("Seat Type"))
+                        {
+                            if(rSet.getString(i).equals("1")){
+                                col = "First Class";
+                            }
+                            else
+                            {
+                                col = "Economy Class";
+                            }
+                               
+                        }
+                        else
+                        {
+                            col = rSet.getString(i);
+                        }
+                        
+                        System.out.printf("%-20s", col);
+                        System.out.println();
                    }
                    System.out.println("\n");
                }
