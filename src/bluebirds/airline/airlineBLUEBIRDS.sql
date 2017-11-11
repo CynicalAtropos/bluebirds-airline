@@ -192,16 +192,18 @@ AND reservations.custID = customers.custID;
 
 DROP PROCEDURE IF EXISTS grossIncomeEach;
 CREATE PROCEDURE grossIncomeEach()
-SELECT flightCode, SUM(cost) AS GrossIncome
-FROM reservations
-GROUP BY flightCode;
+SELECT f.flightCode, IFNULL(SUM(cost),0) AS GrossIncome
+FROM flights AS f LEFT OUTER JOIN reservations AS r
+ON f.flightCode = r.flightCode
+GROUP BY f.flightCode;
 
 DROP PROCEDURE IF EXISTS grossIncomeSpec;
 CREATE PROCEDURE grossIncomeSpec(flightCodeIn Varchar(6))
-SELECT flightCode, SUM(cost) AS GrossIncome
-FROM reservations
-WHERE reservations.flightCode = flightCodeIn
-GROUP BY flightCode;
+SELECT f.flightCode, IFNULL(SUM(cost),0) AS GrossIncome
+FROM flights AS f LEFT OUTER JOIN reservations AS r
+ON f.flightCode = r.flightCode
+WHERE f.flightCode = flightCodeIn
+GROUP BY f.flightCode;
 
 DROP PROCEDURE IF EXISTS findSeatAvailability;
 CREATE PROCEDURE findSeatAvailability(flightCodeIn Varchar(6))
