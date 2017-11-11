@@ -92,10 +92,12 @@ ALTER TABLE `seatmap`
 
 DROP PROCEDURE IF EXISTS searchReservID;
 CREATE PROCEDURE searchReservID(resNum INT(3))
-SELECT r.resID AS 'Reservation ID', 
-c.customerName AS 'Customer Name', 
+SELECT c.customerName AS 'Customer Name', 
+c.custID AS 'Customer ID',
+r.resID AS 'Reservation ID',
+r.flightCode AS 'Flight Code', 
 r.seatNumber AS 'Seat Number', 
-r.flightCode AS 'Flight Number', 
+r.firstClass AS 'Seat Type',
 r.cost AS 'Cost'
 FROM reservations AS r, customers AS c
 WHERE r.resID = resNum
@@ -151,23 +153,42 @@ where resID = enteredID;
 
 drop procedure if exists getCanceledByName;
 CREATE PROCEDURE  getCanceledByName ( IN  `enteredName` VARCHAR( 32 ) ) 
-SELECT customerName, cost, canceledreservations.custID, firstClass, flightCode, resID, seatNumber
+SELECT customerName AS 'Customer Name', 
+canceledreservations.custID AS 'Customer ID', 
+resID AS 'Reservation ID',
+flightCode AS 'Flight Code',
+seatNumber AS 'Seat Number',
+firstClass AS 'Seat Type', 
+cost AS 'Cost'
 FROM customers, canceledreservations
 WHERE customers.custID = canceledreservations.custID
 AND customers.customerName = enteredName;
 
 drop procedure if exists getCanceledByID;
 CREATE PROCEDURE  `getCanceledByID` ( IN  `enteredID` INT ) 
-SELECT customerName, cost, canceledreservations.custID, firstClass, flightCode, resID, seatNumber
+SELECT customerName AS 'Customer Name', 
+canceledreservations.custID 'Customer ID', 
+resID AS 'Reservation ID', 
+flightCode AS 'Flight Code',
+seatNumber AS 'Seat Number',
+firstClass AS 'Seat Type',
+cost AS 'Cost'
 FROM customers, canceledreservations
 WHERE customers.custID = canceledreservations.custID
 AND resID = enteredID;
 
 drop procedure if exists getCustomerRes;
 create procedure getCustomerRes(in enteredID int)
-select *
-from reservations
-where custID = enteredID;
+select customers.customerName AS 'Customer Name',
+customers.custID AS 'Customer ID',
+resID AS 'Reservation ID',
+flightCode AS 'Flight Code',
+seatNumber AS 'Seat Number',
+firstClass AS 'Seat Type',
+cost AS 'Cost'
+from reservations, customers
+where reservations.custID = enteredID
+AND reservations.custID = customers.custID;
 
 DROP PROCEDURE IF EXISTS grossIncomeEach;
 CREATE PROCEDURE grossIncomeEach()

@@ -156,7 +156,24 @@ public class BluebirdsAirlineDriver {
 
                     for (int i = 1; i < columns + 1; i++) {
                         System.out.printf("%-20s", meta.getColumnLabel(i) + ": ");
-                        System.out.printf("%-20s", resSet.getString(i));
+                        String col = "";
+                        if(meta.getColumnLabel(i).equals("Seat Type"))
+                        {
+                            if(resSet.getString(i).equals("1")){
+                                col = "First Class";
+                            }
+                            else
+                            {
+                                col = "Economy Class";
+                            }
+                               
+                        }
+                        else
+                        {
+                            col = resSet.getString(i);
+                        }
+                        
+                        System.out.printf("%-20s", col);
                         System.out.println();
                     }
                     
@@ -966,17 +983,22 @@ public class BluebirdsAirlineDriver {
         int resID = scan.nextInt();
         String storedProc1 = "{call cancelRes('" + resID + "')}";
         String storedProc2 = "{call deleteRes('" + resID + "')}";
-        
         try{
            cState = con.prepareCall(storedProc1);
            
            cState.executeQuery();
            
-           cState = con.prepareCall(storedProc2);
+
+           if (cState.getUpdateCount() == 0) {    
+                System.out.println("There are no reservations under that number"); 
+           }
+           else
+           {
+                cState = con.prepareCall(storedProc2);
+                cState.executeQuery();
+                System.out.println("Reservation canceled");
+           }
            
-           cState.executeQuery();
-           
-           System.out.println("Reservation canceled");
         }
         catch(Exception e){
             e.printStackTrace();
@@ -999,13 +1021,36 @@ public class BluebirdsAirlineDriver {
            try{
                ResultSetMetaData meta = rSet.getMetaData();
                int columns = meta.getColumnCount();
-               System.out.println("Reservations found for this customer: ");
-             
+                if (!rSet.isBeforeFirst() ) {    
+                    System.out.println("There are no reservations for that customer"); 
+                }
+                else
+                {
+                    System.out.println("Reservations found for this customer: ");
+                }
+               
                while (rSet.next()) {
 
                     for (int i = 1; i < columns + 1; i++) {
                         System.out.printf("%-20s", meta.getColumnLabel(i) + ": ");
-                        System.out.printf("%-20s", rSet.getString(i));
+                        String col = "";
+                        if(meta.getColumnLabel(i).equals("Seat Type"))
+                        {
+                            if(rSet.getString(i).equals("1")){
+                                col = "First Class";
+                            }
+                            else
+                            {
+                                col = "Economy Class";
+                            }
+                               
+                        }
+                        else
+                        {
+                            col = rSet.getString(i);
+                        }
+                        
+                        System.out.printf("%-20s", col);
                         System.out.println();
                     }
                     System.out.println("\n");
@@ -1036,7 +1081,13 @@ public class BluebirdsAirlineDriver {
            try{
                ResultSetMetaData meta = rSet.getMetaData();
                int columns = meta.getColumnCount();
-               System.out.println("Flights for this pilot: ");
+                if (!rSet.isBeforeFirst() ) {    
+                    System.out.println("There are no flights with that pilot"); 
+                }
+                else
+                {
+                    System.out.println("Flights for this pilot: ");
+                }
              
                while(rSet.next()){
                   
@@ -1182,13 +1233,36 @@ public class BluebirdsAirlineDriver {
            try{
                ResultSetMetaData meta = rSet.getMetaData();
                int columns = meta.getColumnCount();
-               System.out.println("Canceled reservation for this ID: ");
-             
+                if (!rSet.isBeforeFirst() ) {    
+                    System.out.println("There are no canceled reservations that have that number"); 
+                }
+                else
+                {
+                    System.out.println("Canceled reservation for this ID: ");
+                }
+               
                while (rSet.next()) {
 
                     for (int i = 1; i < columns + 1; i++) {
                         System.out.printf("%-20s", meta.getColumnLabel(i) + ": ");
-                        System.out.printf("%-20s", rSet.getString(i));
+                        String col = "";
+                        if(meta.getColumnLabel(i).equals("Seat Type"))
+                        {
+                            if(rSet.getString(i).equals("1")){
+                                col = "First Class";
+                            }
+                            else
+                            {
+                                col = "Economy Class";
+                            }
+                               
+                        }
+                        else
+                        {
+                            col = rSet.getString(i);
+                        }
+                        
+                        System.out.printf("%-20s", col);
                         System.out.println();
                     }
                     System.out.println("\n");
@@ -1217,12 +1291,37 @@ public class BluebirdsAirlineDriver {
            try{
                ResultSetMetaData meta = rSet.getMetaData();
                int columns = meta.getColumnCount();
-               System.out.println("Canceled reservations for this customer: ");
-             
+                if (!rSet.isBeforeFirst() ) {    
+                    System.out.println("There are no canceled reservations with that name."); 
+                }
+                else
+                {
+                    System.out.println("Canceled reservations for this customer: ");
+                }
+               
                while(rSet.next()){
                   
                    for(int i=1;i<columns+1;i++){
-                       System.out.print(rSet.getString(i) + " ");
+                        System.out.printf("%-20s", meta.getColumnLabel(i) + ": ");
+                        String col = "";
+                        if(meta.getColumnLabel(i).equals("Seat Type"))
+                        {
+                            if(rSet.getString(i).equals("1")){
+                                col = "First Class";
+                            }
+                            else
+                            {
+                                col = "Economy Class";
+                            }
+                               
+                        }
+                        else
+                        {
+                            col = rSet.getString(i);
+                        }
+                        
+                        System.out.printf("%-20s", col);
+                        System.out.println();
                    }
                    System.out.println("\n");
                }
