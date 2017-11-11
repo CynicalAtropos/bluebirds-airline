@@ -1236,9 +1236,6 @@ public class BluebirdsAirlineDriver {
 
            try {
                System.out.println();
-
-               ResultSetMetaData meta = resSet.getMetaData();
-               int columns = meta.getColumnCount();
                while (resSet.next()) {
                    String flightCode = resSet.getString(1);
                    int grossIncome = resSet.getInt(2);
@@ -1281,7 +1278,7 @@ public class BluebirdsAirlineDriver {
                    int grossIncome = resSet.getInt(2);
                    System.out.println("Flight Code: "+ flightCode + "  Gross Income: " + nf.format(grossIncome));
                } else {
-                   System.out.println("No flight gross income found.");
+                   System.out.println("No flight found.");
                }
            } catch (SQLException e) {
                System.out.println("SQL Exception");
