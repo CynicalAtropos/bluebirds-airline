@@ -1002,7 +1002,7 @@ public class BluebirdsAirlineDriver {
                                 }
                            }
                            count++;
-                           if(count > 7){
+                           if(count > 7 && !found){
                                System.out.println("Sorry there is not room on this flight for your party to sit next to each other.");
                                party = 0;
                            }
