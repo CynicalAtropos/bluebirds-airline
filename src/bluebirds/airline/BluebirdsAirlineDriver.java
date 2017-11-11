@@ -515,8 +515,8 @@ public class BluebirdsAirlineDriver {
         valid = true;
         while (valid) {
             System.out.println("Please select route: "
-                    + "\n[1] Roanoke to Pheonix"
-                    + "\n[2] Pheonix to Roanoke");
+                    + "\n[1] Roanoke to Phoenix"
+                    + "\n[2] Phoenix to Roanoke");
             routeAnswer = scan.nextInt();
 
             if (routeAnswer == 1) {
@@ -564,8 +564,10 @@ public class BluebirdsAirlineDriver {
             System.out.println("How many in your party?: ");
             party = scan.nextInt();
 
-            if (party > 12) {
-                System.out.println("That's too many for one flight.");
+            if (party > 8) {
+                System.out.println("That's too many reservations for one booking.");
+            } else if (party < 1) {
+                System.out.println("That is an invalid choice.");
             } else if (party > 1) {
                 boolean sValid = true;
                 while (sValid) {
@@ -648,7 +650,7 @@ public class BluebirdsAirlineDriver {
                 bookReservation(flightCode, bookClass, custID, party, con);
             }
         } else {
-            System.out.println("The flight for this day is full. Would you like to book a different flight? "
+            System.out.println("There are not enough available seats on this flight. Would you like to book another flight? "
                     + "\n[1] Yes"
                     + "\n[2] No");
             int again = scan.nextInt();
