@@ -979,7 +979,7 @@ public class BluebirdsAirlineDriver {
                    while(party > 0){
                        int count = 0;
                        boolean found = false;
-                       while(!found){
+                       while(!found  && count < 8){
                            if(seat.get(count) == 0){
                                 String insert = "INSERT INTO reservations (custID,seatNumber,firstClass,flightCode,cost)" + " VALUES (" + custID + ", '" + seatNames.get(count) + "', 0, '" + flightCode + "', 450)" ;
                                 try {
@@ -1002,6 +1002,10 @@ public class BluebirdsAirlineDriver {
                                 }
                            }
                            count++;
+                           if(count > 7){
+                               System.out.println("Sorry there is not room on this flight for your party to sit next to each other.");
+                               party = 0;
+                           }
                        }
                    }
 
