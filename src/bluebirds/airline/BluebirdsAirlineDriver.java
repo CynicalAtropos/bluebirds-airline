@@ -410,11 +410,10 @@ public class BluebirdsAirlineDriver {
         int custID = 0;
         try {
             stmt = con.createStatement();
-            stmt.executeUpdate(insert);
-            System.out.println("hey");
-            //ResultSet resSet = stmt.getGeneratedKeys();
-            //System.out.println(resSet.getMetaData().getColumnName(1));
-            //custID = resSet.getInt(1);
+            stmt.executeUpdate(insert, Statement.RETURN_GENERATED_KEYS);
+            ResultSet resSet = stmt.getGeneratedKeys();
+            resSet.next();
+            custID = resSet.getInt(1);
            } // end try
         catch (SQLException e) 
         {
