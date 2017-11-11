@@ -846,6 +846,7 @@ public class BluebirdsAirlineDriver {
                 int answer = scan.nextInt();
                 if (answer == 1) {
                     bookReservation(flightCode, fc, custID, party, con);
+                    valid = false;
                     } 
                 else {
                     while (valid) {
@@ -855,6 +856,7 @@ public class BluebirdsAirlineDriver {
                             answer = scan.nextInt();
                             if (answer == 1) {
                                 selectFlight(con);
+                                valid = false;
                             }
                             else if (answer == 2){
                                 valid = false;
