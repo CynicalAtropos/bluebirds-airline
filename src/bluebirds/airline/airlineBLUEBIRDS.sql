@@ -2,8 +2,6 @@ drop database if exists BlueBirdsAirline;
 create database BlueBirdsAirline;
 USE BlueBirdsAirline;
 
-use BlueBirdsAirline;
-
 drop table if exists canceledreservations;
 drop table if exists customers;
 drop table if exists flights;
