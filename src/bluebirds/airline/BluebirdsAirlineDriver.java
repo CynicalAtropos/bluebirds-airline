@@ -64,7 +64,7 @@ public class BluebirdsAirlineDriver {
         		searchCustID(connect, callSt, resSet);
         	}
         	else if(choice == 3){
-        		cancelRes(connect, callSt, stmt);
+        		cancelRes(connect, callSt, stmt, resSet);
         	}
         	else if(choice == 4){
         		grossIncomeEach(connect);
@@ -978,32 +978,74 @@ public class BluebirdsAirlineDriver {
     
 
     // Cancels a reservation by reservation ID
-    public static void cancelRes(Connection con, CallableStatement cState, Statement stmt) {
+    public static void cancelRes(Connection con, CallableStatement cState, Statement stmt, ResultSet rSet) {
         Scanner scan = new Scanner(System.in);
         System.out.println("Please Enter the Reservation Number: ");
         int resID = scan.nextInt();
+        
+        String selectStmt = "SELECT seatNumber, flightCode "
+                          + "FROM reservations "
+                          + "WHERE resID = " + resID + ";";
+        
         String storedProc1 = "{call cancelRes('" + resID + "')}";
         String storedProc2 = "{call deleteRes('" + resID + "')}";
+        String seatNum = "";
+        String flightCode = "";
+        
         try{
-           cState = con.prepareCall(storedProc1);
+                cState = con.prepareCall(selectStmt);
            
-           cState.executeQuery();
-           
+                rSet = cState.executeQuery();
+               ResultSetMetaData meta = rSet.getMetaData();
+               int columns = meta.getColumnCount();
+                if (!rSet.isBeforeFirst() ) {    
+                    System.out.println("That reservation number is invalid."); 
+                }
+                else{
+                    while (rSet.next()) {
 
-           if (cState.getUpdateCount() == 0) {    
-                System.out.println("There are no reservations under that number"); 
-           }
-           else
-           {
-                cState = con.prepareCall(storedProc2);
+                         for (int i = 1; i < columns + 1; i++) {
+                             if(meta.getColumnLabel(i).equals("seatNumber"))
+                             {
+                                seatNum = rSet.getString(i);
+                             }
+                             else if (meta.getColumnLabel(i).equals("flightCode"))
+                             {
+                                 flightCode = rSet.getString(i);
+                             }
+                         }
+                     }
+                
+
+             try{
+                stmt = con.createStatement();
+                stmt.executeUpdate("UPDATE seatmap SET " + seatNum + " = NULL  "
+                + "WHERE flightCode = '" + flightCode + "';");
+                cState = con.prepareCall(storedProc1);
+
                 cState.executeQuery();
-                System.out.println("Reservation canceled");
-           }
-           
+
+
+                if (cState.getUpdateCount() == 0) {    
+                     System.out.println("There are no reservations under that number"); 
+                }
+                else
+                {
+                     cState = con.prepareCall(storedProc2);
+                     cState.executeQuery();
+                     System.out.println("Reservation canceled");
+                }
+
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+                }
         }
         catch(Exception e){
             e.printStackTrace();
         }
+        
         
     }
 
