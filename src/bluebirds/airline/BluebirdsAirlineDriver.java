@@ -453,13 +453,12 @@ public class BluebirdsAirlineDriver {
         
         String procName = "searchCustID";
         String storedProc = "{call " + procName + " (" + custID + ")}";
-        System.out.println("\n");
         try {
             stmt = con.prepareCall(storedProc);
             resSet = stmt.executeQuery();
             if(resSet.next()){
                 String name = resSet.getString(2);
-                System.out.println("Customer found with the name: " + name);
+                System.out.println("Customer found with the name: " + name + "\n");
                 return custID;
             }
         } // end try
@@ -609,6 +608,7 @@ public class BluebirdsAirlineDriver {
 
            try 
            {
+               resSet.next();
                System.out.println();
                fClass = resSet.getInt(1);
                economy = resSet.getInt(2);
@@ -622,8 +622,8 @@ public class BluebirdsAirlineDriver {
        {
            System.out.println("Stored proc did not work");
        }
-        if (party < fClass + economy) {
-            int bookClass = 0;
+        if (party <= fClass || party <= economy) {
+            int bookClass = 2;
             if (party <= fClass) {
                 boolean valid = true;
                 if((party < 3 || group == 2) && party <= fClass){
@@ -672,7 +672,7 @@ public class BluebirdsAirlineDriver {
             CallableStatement stmt;
             ResultSet resSet;
             String procName = "getFirstClassSeats";
-            String storedProc = "{call " + procName + " (" + flightCode + ")}";
+            String storedProc = "{call " + procName + " ('" + flightCode + "')}";
             System.out.println("\n");
             try {
                 stmt = con.prepareCall(storedProc);
@@ -682,7 +682,6 @@ public class BluebirdsAirlineDriver {
                     System.out.println();
 
                     ResultSetMetaData meta = resSet.getMetaData();
-                    int columns = meta.getColumnCount();
                     //Arraylist of seatNames (Ex: FCA1)
                     ArrayList<String> seatNames = new ArrayList<>();
                     seatNames.add(meta.getColumnName(1));
@@ -691,32 +690,45 @@ public class BluebirdsAirlineDriver {
                     seatNames.add(meta.getColumnName(4));
                     //ArrayList of seat values (Ex: 0=empty or 200 = resID
                     ArrayList<Integer> seat = new ArrayList<>();
+                    resSet.next();
                     seat.add(resSet.getInt(1));
                     seat.add(resSet.getInt(2));
                     seat.add(resSet.getInt(3));
                     seat.add(resSet.getInt(4));
+                    int startCount;
+                    if(seat.get(0) == 0 && seat.get(1) == 0){
+                        startCount = 0;
+                    } else {
+                        startCount = 2;
+                    }
                     if((seat.get(0) == 0 && seat.get(1) == 0) || (seat.get(2) == 0 && seat.get(3) == 0)){
+                        booked = true;
                         while(party > 0){
-                            int count = 0;
+                            int count = startCount;
                             boolean found = false;
                             while(!found){
                                 if(seat.get(count) == 0){
-                                     String insert = "INSERT INTO reservations" + " VALUES (" + custID + ", '" + seatNames.get(count) + "', 1, '" + flightCode + "', 850)" ;
+                                     String insert = "INSERT INTO reservations (custID,seatNumber,firstClass,flightCode,cost)" + " VALUES (" + custID + ", '" + seatNames.get(count) + "', 1, '" + flightCode + "', 850)" ;
                                      try {
-                                         Statement stmt2 = con.createStatement();
-                                         stmt.executeUpdate(insert);
-                                         ResultSet resSet2 = stmt2.getGeneratedKeys();
-                                         int resID = resSet.getInt(1);
-                                         seat.set(count, resID);
-                                         found = true;
-                                         party--;
-                                         System.out.println("Reservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
+                                        Statement stmt2 = con.createStatement();
+                                        stmt2.executeUpdate(insert,Statement.RETURN_GENERATED_KEYS);
+                                        ResultSet resSet2 = stmt2.getGeneratedKeys();
+                                        resSet2.next();
+                                        int resID = resSet2.getInt(1);
+                                        seat.set(count, resID);
+                                        String updateSeatMap = "UPDATE seatmap SET " + seatNames.get(count) + " = " + resID + " WHERE flightCode = '" + flightCode + "'";
+                                        Statement stmt3 = con.createStatement();
+                                        stmt3.executeUpdate(updateSeatMap);
+                                        found = true;
+                                        party--;
+                                        System.out.println("Reservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
                                      } // end try
                                      catch (SQLException e) 
                                      {
                                          System.out.println("Stored proc did not work");
                                      }
                                 }
+                                count++;
                             }
                         }
                     }
@@ -736,61 +748,84 @@ public class BluebirdsAirlineDriver {
             CallableStatement stmt;
             ResultSet resSet;
             String procName = "getEconomySeats";
-            String storedProc = "{call " + procName + " (" + flightCode + ")}";
+            String storedProc = "{call " + procName + " ('" + flightCode + "')}";
             System.out.println("\n");
             try {
                stmt = con.prepareCall(storedProc);
                resSet = stmt.executeQuery();
 
-               try {
-                   System.out.println();
+                try {
+                    System.out.println();
 
-                   ResultSetMetaData meta = resSet.getMetaData();
-                   int columns = meta.getColumnCount();
-                   //Arraylist of seatNames (Ex: FCA1)
-                   ArrayList<String> seatNames = new ArrayList<>();
-                   seatNames.add(meta.getColumnName(1));
-                   seatNames.add(meta.getColumnName(2));
-                   seatNames.add(meta.getColumnName(3));
-                   seatNames.add(meta.getColumnName(4));
-                   seatNames.add(meta.getColumnName(5));
-                   seatNames.add(meta.getColumnName(6));
-                   seatNames.add(meta.getColumnName(7));
-                   seatNames.add(meta.getColumnName(8));
-                   //ArrayList of seat values (Ex: 0=empty or 200 = resID
-                   ArrayList<Integer> seat = new ArrayList<>();
-                   seat.add(resSet.getInt(1));
-                   seat.add(resSet.getInt(2));
-                   seat.add(resSet.getInt(3));
-                   seat.add(resSet.getInt(4));
-                   seat.add(resSet.getInt(5));
-                   seat.add(resSet.getInt(6));
-                   seat.add(resSet.getInt(7));
-                   seat.add(resSet.getInt(8));
-                   
-                   while(party > 0){
-                       int count = 0;
-                       boolean found = false;
-                       while(!found){
-                           if(seat.get(count) == 0){
-                                String insert = "INSERT INTO reservations" + " VALUES (" + custID + ", '" + seatNames.get(count) + "', 0, '" + flightCode + "', 450)" ;
-                                try {
-                                    Statement stmt2 = con.createStatement();
-                                    stmt.executeUpdate(insert);
-                                    ResultSet resSet2 = stmt2.getGeneratedKeys();
-                                    int resID = resSet.getInt(1);
-                                    seat.set(count, resID);
-                                    found = true;
-                                    party--;
-                                    System.out.println("Reservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
-                                } // end try
-                                catch (SQLException e) 
-                                {
-                                    System.out.println("Stored proc did not work");
+                    ResultSetMetaData meta = resSet.getMetaData();
+                    //Arraylist of seatNames (Ex: FCA1)
+                    ArrayList<String> seatNames = new ArrayList<>();
+                    seatNames.add(meta.getColumnName(1));
+                    seatNames.add(meta.getColumnName(2));
+                    seatNames.add(meta.getColumnName(3));
+                    seatNames.add(meta.getColumnName(4));
+                    seatNames.add(meta.getColumnName(5));
+                    seatNames.add(meta.getColumnName(6));
+                    seatNames.add(meta.getColumnName(7));
+                    seatNames.add(meta.getColumnName(8));
+                    //ArrayList of seat values (Ex: 0=empty or 200 = resID
+                    ArrayList<Integer> seat = new ArrayList<>();
+                    resSet.next();
+                    seat.add(resSet.getInt(1));
+                    seat.add(resSet.getInt(2));
+                    seat.add(resSet.getInt(3));
+                    seat.add(resSet.getInt(4));
+                    seat.add(resSet.getInt(5));
+                    seat.add(resSet.getInt(6));
+                    seat.add(resSet.getInt(7));
+                    seat.add(resSet.getInt(8));
+                    int econRowA = 0;
+                    for(int i = 0; i <4;i++){
+                        if(seat.get(i) == 0) econRowA++;
+                    }
+                    int econRowB = 0;
+                    for(int i = 4; i <8;i++){
+                        if(seat.get(i) == 0) econRowB++;
+                    }
+                    int startCount;
+                    if(party <= econRowA){
+                        startCount = 0;
+                    } else if (party <= econRowB){
+                        startCount = 4;
+                    } else {
+                        startCount = -1;
+                    }
+                    if(startCount >=0){
+                        booked = true;
+                        while(party > 0){
+                            int count = startCount;
+                            boolean found = false;
+                            while(!found){
+                                if(seat.get(count) == 0){
+                                     String insert = "INSERT INTO reservations (custID,seatNumber,firstClass,flightCode,cost)" + " VALUES (" + custID + ", '" + seatNames.get(count) + "', 1, '" + flightCode + "', 850)" ;
+                                     try {
+                                        Statement stmt2 = con.createStatement();
+                                        stmt2.executeUpdate(insert,Statement.RETURN_GENERATED_KEYS);
+                                        ResultSet resSet2 = stmt2.getGeneratedKeys();
+                                        resSet2.next();
+                                        int resID = resSet2.getInt(1);
+                                        seat.set(count, resID);
+                                        String updateSeatMap = "UPDATE seatmap SET " + seatNames.get(count) + " = " + resID + " WHERE flightCode = '" + flightCode + "'";
+                                        Statement stmt3 = con.createStatement();
+                                        stmt3.executeUpdate(updateSeatMap);
+                                        found = true;
+                                        party--;
+                                        System.out.println("Reservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
+                                     } // end try
+                                     catch (SQLException e) 
+                                     {
+                                         System.out.println("Stored proc did not work");
+                                     }
                                 }
-                           }
-                       }
-                   }
+                                count++;
+                            }
+                        }
+                    }
 
                } catch (SQLException e) {
                    System.out.println("SQL Exception");
@@ -847,10 +882,7 @@ public class BluebirdsAirlineDriver {
                resSet = stmt.executeQuery();
 
                try {
-                   System.out.println();
-
                    ResultSetMetaData meta = resSet.getMetaData();
-                   int columns = meta.getColumnCount();
                    //Arraylist of seatNames (Ex: FCA1)
                    ArrayList<String> seatNames = new ArrayList<>();
                    seatNames.add(meta.getColumnName(1));
@@ -859,23 +891,27 @@ public class BluebirdsAirlineDriver {
                    seatNames.add(meta.getColumnName(4));
                    //ArrayList of seat values (Ex: 0=empty or 200 = resID
                    ArrayList<Integer> seat = new ArrayList<>();
+                   resSet.next();
                    seat.add(resSet.getInt(1));
                    seat.add(resSet.getInt(2));
                    seat.add(resSet.getInt(3));
                    seat.add(resSet.getInt(4));
-                   
                    while(party > 0){
                        int count = 0;
                        boolean found = false;
                        while(!found){
                            if(seat.get(count) == 0){
-                                String insert = "INSERT INTO reservations" + " VALUES (" + custID + ", '" + seatNames.get(count) + "', 1, '" + flightCode + "', 850)" ;
+                                String insert = "INSERT INTO reservations (custID,seatNumber,firstClass,flightCode,cost)" + " VALUES (" + custID + ", '" + seatNames.get(count) + "', 1, '" + flightCode + "', 850)" ;
                                 try {
                                     Statement stmt2 = con.createStatement();
-                                    stmt.executeUpdate(insert);
+                                    stmt2.executeUpdate(insert,Statement.RETURN_GENERATED_KEYS);
                                     ResultSet resSet2 = stmt2.getGeneratedKeys();
-                                    int resID = resSet.getInt(1);
+                                    resSet2.next();
+                                    int resID = resSet2.getInt(1);
                                     seat.set(count, resID);
+                                    String updateSeatMap = "UPDATE seatmap SET " + seatNames.get(count) + " = " + resID + " WHERE flightCode = '" + flightCode + "'";
+                                    Statement stmt3 = con.createStatement();
+                                    stmt3.executeUpdate(updateSeatMap);
                                     found = true;
                                     party--;
                                     System.out.println("Reservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
@@ -914,7 +950,6 @@ public class BluebirdsAirlineDriver {
                    System.out.println();
 
                    ResultSetMetaData meta = resSet.getMetaData();
-                   int columns = meta.getColumnCount();
                    //Arraylist of seatNames (Ex: FCA1)
                    ArrayList<String> seatNames = new ArrayList<>();
                    seatNames.add(meta.getColumnName(1));
@@ -927,6 +962,7 @@ public class BluebirdsAirlineDriver {
                    seatNames.add(meta.getColumnName(8));
                    //ArrayList of seat values (Ex: 0=empty or 200 = resID
                    ArrayList<Integer> seat = new ArrayList<>();
+                   resSet.next();
                    seat.add(resSet.getInt(1));
                    seat.add(resSet.getInt(2));
                    seat.add(resSet.getInt(3));
@@ -941,13 +977,17 @@ public class BluebirdsAirlineDriver {
                        boolean found = false;
                        while(!found){
                            if(seat.get(count) == 0){
-                                String insert = "INSERT INTO reservations" + " VALUES (" + custID + ", '" + seatNames.get(count) + "', 0, '" + flightCode + "', 450)" ;
+                                String insert = "INSERT INTO reservations (custID,seatNumber,firstClass,flightCode,cost)" + " VALUES (" + custID + ", '" + seatNames.get(count) + "', 0, '" + flightCode + "', 450)" ;
                                 try {
                                     Statement stmt2 = con.createStatement();
-                                    stmt.executeUpdate(insert);
+                                    stmt2.executeUpdate(insert,Statement.RETURN_GENERATED_KEYS);
                                     ResultSet resSet2 = stmt2.getGeneratedKeys();
-                                    int resID = resSet.getInt(1);
+                                    resSet2.next();
+                                    int resID = resSet2.getInt(1);
                                     seat.set(count, resID);
+                                    String updateSeatMap = "UPDATE seatmap SET " + seatNames.get(count) + " = " + resID + " WHERE flightCode = '" + flightCode + "'";
+                                    Statement stmt3 = con.createStatement();
+                                    stmt3.executeUpdate(updateSeatMap);
                                     found = true;
                                     party--;
                                     System.out.println("Reservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
