@@ -148,11 +148,18 @@ public class BlueBirdsJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         int getOption = jComboBox1.getSelectedIndex();
         //if getOption = 0
-            //do this
+            // prime data
         //else if getOption = 1
             //do this
         OptionExample nj = new OptionExample();
         nj.setVisible(true);
+        if (getOption == 6){
+        nj.setJLabel1("What is the pilot id?");
+        }
+        else if (getOption == 2)
+        {
+            nj.getJLabel1().setVisible(false);
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**

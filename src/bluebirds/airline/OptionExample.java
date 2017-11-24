@@ -131,7 +131,18 @@ public class OptionExample extends javax.swing.JFrame {
         // TODO add your handling code here:
         dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
-
+    
+    public javax.swing.JLabel getJLabel1()
+    {
+        return jLabel1;
+    }
+    
+    public void setJLabel1(String text)
+    {
+        jLabel1.setText(text);
+    }
+    
+    
     /**
      * @param args the command line arguments
      */
