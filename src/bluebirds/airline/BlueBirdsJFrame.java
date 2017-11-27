@@ -5,6 +5,9 @@
  */
 package bluebirds.airline;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+
 /**
  *
  * @author Matt
@@ -146,22 +149,77 @@ public class BlueBirdsJFrame extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        int getOption = jComboBox1.getSelectedIndex();
+        
+        int getOption = this.getIndex();
         //if getOption = 0
             // prime data
         //else if getOption = 1
             //do this
         OptionExample nj = new OptionExample();
+        nj.setScreenSize(nj);
         nj.setVisible(true);
-        if (getOption == 6){
-        nj.setJLabel1("What is the pilot id?");
+        
+        if (getOption == 0)
+        {
+            nj.setJLabel1("What is the pilot id?");
+        }
+        else if (getOption == 1)
+        {
+            
         }
         else if (getOption == 2)
         {
-            nj.getJLabel1().setVisible(false);
+            nj.setJLabel1("What is the customer ID?");
+        }
+        else if (getOption == 3)
+        {
+            
+        }
+        else if (getOption == 4)
+        {
+            
+        }
+        else if (getOption == 5)
+        {
+            
+        }
+        else if (getOption == 6)
+        {
+            
+        }
+        else if (getOption == 7)
+        {
+            
+        }
+        else if (getOption == 8)
+        {
+            nj.setJLabel1("What is the reservation number?");
+            
+        }
+        else if (getOption == 9)
+        {
+            
+        }
+        else if (getOption == 10)
+        {
+            nj.setJLabel1("Please Enter the flight code: ");
+            
+            
         }
     }//GEN-LAST:event_jButton2ActionPerformed
-
+    
+    public int getIndex()
+    {
+        int getOption = jComboBox1.getSelectedIndex();
+        return getOption;
+    }
+    public void setScreenSize(BlueBirdsJFrame newFrame)
+    {
+        Toolkit tool = Toolkit.getDefaultToolkit();
+        Dimension size = tool.getScreenSize();
+        newFrame.setBounds((size.width - newFrame.getWidth())/2, (size.height - newFrame.getHeight())/2, newFrame.getWidth(), newFrame.getHeight());
+        
+    }
     /**
      * @param args the command line arguments
      */

@@ -5,6 +5,8 @@
  */
 package bluebirds.airline;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -46,8 +48,10 @@ public class BluebirdsAirlineDriver {
         ResultSet resSet = null;
         Statement stmt = null;
         connect = connect(connect);
-        
-        while (true)
+        BlueBirdsJFrame newFrame = new BlueBirdsJFrame();
+        newFrame.setScreenSize(newFrame);
+        newFrame.setVisible(true);
+        /*while (true)
         {
         	int choice = menu();
         	if(choice == 0){
@@ -91,7 +95,7 @@ public class BluebirdsAirlineDriver {
         		System.out.println("\nGOOD BYE!!!");
         		System.exit(0);
         	}
-        }  
+        }  */
     }
     
     public static Connection connect(Connection connect)

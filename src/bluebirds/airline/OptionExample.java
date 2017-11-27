@@ -5,6 +5,9 @@
  */
 package bluebirds.airline;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+
 /**
  *
  * @author Matt
@@ -125,12 +128,23 @@ public class OptionExample extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        BluebirdsAirlineDriver newDriver = new BluebirdsAirlineDriver();
+        
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         dispose();
+        
     }//GEN-LAST:event_jButton1ActionPerformed
+    
+    public void setScreenSize(OptionExample newFrame)
+    {
+        Toolkit tool = Toolkit.getDefaultToolkit();
+        Dimension size = tool.getScreenSize();
+        newFrame.setBounds((size.width - newFrame.getWidth())/2, (size.height - newFrame.getHeight())/2, newFrame.getWidth(), newFrame.getHeight());
+        
+    }
     
     public javax.swing.JLabel getJLabel1()
     {
