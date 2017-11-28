@@ -74,6 +74,10 @@ public class BluebirdsAirlineDriver {
                 else if (getOption == 2)
                 {
                     nj.setJLabel1("What is the customer ID?");
+                    nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(java.awt.event.ActionEvent event) {
+                        nj.setJTextArea1("Customer info");
+                    }});
                 }
                 else if (getOption == 3)
                 {
@@ -98,6 +102,10 @@ public class BluebirdsAirlineDriver {
                 else if (getOption == 8)
                 {
                     nj.setJLabel1("What is the reservation number?");
+                    nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(java.awt.event.ActionEvent event) {
+                        nj.setJTextArea1("Customer Reservation");
+                    }});
 
                 }
                 else if (getOption == 9)
@@ -110,11 +118,7 @@ public class BluebirdsAirlineDriver {
                     nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent event) {
                         nj.setJTextArea1("Flight seat map");
-                    }
-                });
-
-
-
+                    }});
 
                 }
             }
