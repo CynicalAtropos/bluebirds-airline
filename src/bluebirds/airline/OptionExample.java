@@ -57,11 +57,6 @@ public class OptionExample extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTextArea1);
 
         jButton2.setText("Search");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -126,12 +121,6 @@ public class OptionExample extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-        BluebirdsAirlineDriver newDriver = new BluebirdsAirlineDriver();
-        
-    }//GEN-LAST:event_jButton2ActionPerformed
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         dispose();
@@ -156,6 +145,30 @@ public class OptionExample extends javax.swing.JFrame {
         jLabel1.setText(text);
     }
     
+    public javax.swing.JTextField getJTextField1()
+    {
+        return jTextField1;
+    }
+    
+    public void setJTextField1(String text)
+    {
+        jTextField1.setText(text);
+    }
+    
+    public javax.swing.JButton getJButton2()
+    {
+        return jButton2;
+    }
+    
+    public javax.swing.JTextArea getJTextArea1()
+    {
+        return jTextArea1;
+    }
+    
+    public void setJTextArea1(String text)
+    {
+        jTextArea1.setText(text);
+    }
     
     /**
      * @param args the command line arguments

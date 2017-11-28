@@ -103,11 +103,6 @@ public class BlueBirdsJFrame extends javax.swing.JFrame {
         });
 
         jButton2.setText("Ok");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -146,72 +141,15 @@ public class BlueBirdsJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-        
-        int getOption = this.getIndex();
-        //if getOption = 0
-            // prime data
-        //else if getOption = 1
-            //do this
-        OptionExample nj = new OptionExample();
-        nj.setScreenSize(nj);
-        nj.setVisible(true);
-        
-        if (getOption == 0)
-        {
-            nj.setJLabel1("What is the pilot id?");
-        }
-        else if (getOption == 1)
-        {
-            
-        }
-        else if (getOption == 2)
-        {
-            nj.setJLabel1("What is the customer ID?");
-        }
-        else if (getOption == 3)
-        {
-            
-        }
-        else if (getOption == 4)
-        {
-            
-        }
-        else if (getOption == 5)
-        {
-            
-        }
-        else if (getOption == 6)
-        {
-            
-        }
-        else if (getOption == 7)
-        {
-            
-        }
-        else if (getOption == 8)
-        {
-            nj.setJLabel1("What is the reservation number?");
-            
-        }
-        else if (getOption == 9)
-        {
-            
-        }
-        else if (getOption == 10)
-        {
-            nj.setJLabel1("Please Enter the flight code: ");
-            
-            
-        }
-    }//GEN-LAST:event_jButton2ActionPerformed
     
-    public int getIndex()
+    public javax.swing.JButton getJButton2()
     {
-        int getOption = jComboBox1.getSelectedIndex();
-        return getOption;
+        return jButton2;
+    }
+
+    public javax.swing.JComboBox<String> getJComboBox1()
+    {
+        return jComboBox1;
     }
     public void setScreenSize(BlueBirdsJFrame newFrame)
     {

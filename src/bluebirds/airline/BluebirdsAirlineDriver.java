@@ -51,6 +51,74 @@ public class BluebirdsAirlineDriver {
         BlueBirdsJFrame newFrame = new BlueBirdsJFrame();
         newFrame.setScreenSize(newFrame);
         newFrame.setVisible(true);
+        newFrame.getJButton2().addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent event) {
+                        
+                int getOption = newFrame.getJComboBox1().getSelectedIndex();
+                //if getOption = 0
+                    // prime data
+                //else if getOption = 1
+                    //do this
+                OptionExample nj = new OptionExample();
+                nj.setScreenSize(nj);
+                nj.setVisible(true);
+
+                if (getOption == 0)
+                {
+                    nj.setJLabel1("What is the pilot id?");
+                }
+                else if (getOption == 1)
+                {
+
+                }
+                else if (getOption == 2)
+                {
+                    nj.setJLabel1("What is the customer ID?");
+                }
+                else if (getOption == 3)
+                {
+
+                }
+                else if (getOption == 4)
+                {
+
+                }
+                else if (getOption == 5)
+                {
+
+                }
+                else if (getOption == 6)
+                {
+
+                }
+                else if (getOption == 7)
+                {
+
+                }
+                else if (getOption == 8)
+                {
+                    nj.setJLabel1("What is the reservation number?");
+
+                }
+                else if (getOption == 9)
+                {
+
+                }
+                else if (getOption == 10)
+                {
+                    nj.setJLabel1("Please Enter the flight code: ");
+                    nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(java.awt.event.ActionEvent event) {
+                        nj.setJTextArea1("Flight seat map");
+                    }
+                });
+
+
+
+
+                }
+            }
+        });
         /*while (true)
         {
         	int choice = menu();
