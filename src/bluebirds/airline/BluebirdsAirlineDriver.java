@@ -580,6 +580,9 @@ public class BluebirdsAirlineDriver {
         String address = scan.nextLine();
         System.out.println("What is your phone number? ex: 5409770923");
         String phone = scan.nextLine();
+        
+        BookReservation createCust = new BookReservation();
+        createCust.setVisible(true);
         String insert = "INSERT INTO customers (customerName, address, phone)" + " VALUES ('" + name + "', '" + address + "', '" + phone + "')";
         int custID = 0;
         try {
@@ -835,13 +838,13 @@ public class BluebirdsAirlineDriver {
                 
             }
         }
-
+        //return "";
     }
 
     // Books a reservation for parties that want to sit togeather
-    public static void bookTogether(String flightCode, int fc, int custID, int party, Connection con) {
+    public static String bookTogether(String flightCode, int fc, int custID, int party, Connection con) {
         Scanner scan = new Scanner(System.in);
-        
+        String results = "\n";
         boolean booked = false;
         int emptySeats = 0;
         if (fc == 1) {
@@ -897,6 +900,7 @@ public class BluebirdsAirlineDriver {
                                         stmt3.executeUpdate(updateSeatMap);
                                         found = true;
                                         party--;
+                                        results = results + ("Reservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
                                         System.out.println("Reservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
                                      } // end try
                                      catch (SQLException e) 
@@ -991,6 +995,7 @@ public class BluebirdsAirlineDriver {
                                         stmt3.executeUpdate(updateSeatMap);
                                         found = true;
                                         party--;
+                                        results = results + ("Reservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
                                         System.out.println("Reservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
                                      } // end try
                                      catch (SQLException e) 
@@ -1044,6 +1049,7 @@ public class BluebirdsAirlineDriver {
                 }
             }
         }
+        return results;
 }
 
     //Books a reservation
