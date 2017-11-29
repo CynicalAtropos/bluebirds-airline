@@ -5,6 +5,9 @@
  */
 package bluebirds.airline;
 
+import java.awt.Font;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -74,7 +77,7 @@ public class BluebirdsAirlineDriver {
                     //do this
                 OptionExample nj = new OptionExample();
                 nj.setScreenSize(nj);
-                nj.setVisible(true);
+                //nj.setVisible(true);
 
                 if (getOption == 0)
                 {
@@ -83,11 +86,12 @@ public class BluebirdsAirlineDriver {
                     customerAL = primeCustomers(conn, stmt, customerAL);
                     reservationAL = primeReservations(conn, stmt, reservationAL, flightAL, customerAL);
                     primeSeatMap(conn, stmt, flightAL);
-                    nj.setVisible(false);
+                    
                     JOptionPane.showMessageDialog(null, "The data has been primed","Primed data",1);
                 }
                 else if (getOption == 1)
                 {
+                    nj.setVisible(true);
                     nj.setJLabel1("Please Enter the flight code: ");
                     nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent event) {
@@ -98,10 +102,23 @@ public class BluebirdsAirlineDriver {
                 }
                 else if (getOption == 2)
                 {
+                    nj.setVisible(true);
+                    newFrame.setEnabled(false);
+                    nj.addWindowListener( new WindowAdapter() {
+                    
+                    public void windowClosed(WindowEvent we) {
+                        newFrame.setEnabled(true);
+                        newFrame.toFront();
+                        
+                    }
+                    } );
                     nj.setJLabel1("What is the customer ID?");
                     nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent event) {
                         int custID = Integer.parseInt(nj.getJTextField1().getText());
+                        
+                        //set font
+                        nj.getJTextArea1().setFont(new Font("Courier New", Font.PLAIN, 12));
                         String results = searchCustID(conn, custID);
                         nj.setJTextArea1(results);
                         //nj.setJTextArea1("Customer info for cust ID " + custID + ":");
@@ -109,6 +126,7 @@ public class BluebirdsAirlineDriver {
                 }
                 else if (getOption == 3)
                 {
+                    nj.setVisible(true);
                     nj.setJLabel1("Enter the reservation ID to cancel.");
                     nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent event) {
@@ -120,6 +138,7 @@ public class BluebirdsAirlineDriver {
                 }
                 else if (getOption == 4)
                 {
+                    nj.setVisible(true);
                     nj.setJLabel1("Please Confirm: ");
                     nj.getJTextField1().setVisible(false);
                     nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
@@ -132,6 +151,7 @@ public class BluebirdsAirlineDriver {
                 }
                 else if (getOption == 5)
                 {
+                    nj.setVisible(true);
                     nj.setJLabel1("Please Enter the flight code: ");
                     nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent event) {
@@ -142,6 +162,7 @@ public class BluebirdsAirlineDriver {
                 }
                 else if (getOption == 6)
                 {
+                    nj.setVisible(true);
                     nj.setJLabel1("Please Enter the pilot ID: ");
                     nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent event) {
@@ -157,12 +178,25 @@ public class BluebirdsAirlineDriver {
                 }
                 else if (getOption == 8)
                 {
+                    nj.setVisible(true);
+                    newFrame.setEnabled(false);
+                    nj.addWindowListener( new WindowAdapter() {
+                    
+                    public void windowClosed(WindowEvent we) {
+                        newFrame.setEnabled(true);
+                        newFrame.toFront();
+                        
+                    }
+                    } );
                     nj.setJLabel1("What is the reservation number?");
       
                     //on click of search button
                     nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent event) {
                         int resNum = Integer.parseInt(nj.getJTextField1().getText());
+                        
+                        //set font
+                        nj.getJTextArea1().setFont(new Font("Courier New", Font.PLAIN, 12));
                         String results = searchReservID(conn, resNum);
                         nj.setJTextArea1(results);
                        // nj.setJTextArea1("Reservation information for reservation number " + resNum + ":");
@@ -175,13 +209,26 @@ public class BluebirdsAirlineDriver {
                 }
                 else if (getOption == 10)
                 {
+                    nj.setVisible(true);
+                    newFrame.setEnabled(false);
+                    nj.addWindowListener( new WindowAdapter() {
+                    
+                    public void windowClosed(WindowEvent we) {
+                        newFrame.setEnabled(true);
+                        newFrame.toFront();
+                    }
+                    } );
                     nj.setJLabel1("Please Enter the flight code: ");
                     nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent event) {
                         String flightCode = nj.getJTextField1().getText();
                         String results = printFlightSeats(conn,flightCode);
+                        
+                        //set font
+                        nj.getJTextArea1().setFont(new Font("Courier New", Font.PLAIN, 12));
                         nj.setJTextArea1(results);
-                        //nj.setJTextArea1("Flight seat map for flight code " + flightCode + ":");
+                        System.out.println(nj.getJTextArea1().getFont());
+                        
                     }});
                     
                 }
@@ -300,7 +347,7 @@ public class BluebirdsAirlineDriver {
 
                     for (int i = 1; i < columns + 1; i++) {
                         //System.out.printf("%-20s", meta.getColumnLabel(i) + ": ");
-                        results = results + meta.getColumnLabel(i) + ": ";
+                        results = results + String.format("%-20s", meta.getColumnLabel(i) + ":") ;
                         String col = "";
                         if(meta.getColumnLabel(i).equals("Seat Type"))
                         {
@@ -319,7 +366,7 @@ public class BluebirdsAirlineDriver {
                         }
                         
                         //System.out.printf("%-20s", col);
-                        results = results +  col + "\n";
+                        results = results +  String.format("%-20s", col) + "\n";
                        // System.out.println();
                     }
                     
@@ -374,9 +421,9 @@ public class BluebirdsAirlineDriver {
 
                     for (int i = 1; i < columns + 1; i++) {
                         //System.out.printf("%-20s", meta.getColumnLabel(i) + ": ");
-                        results = results + meta.getColumnLabel(i) + ": ";
+                        results = results + String.format("%-20s", meta.getColumnLabel(i) + ":");
                         //System.out.printf("%-20s", resSet.getString(i));
-                        results = results + resSet.getString(i) + "\n";
+                        results = results + String.format("%-20s", resSet.getString(i)) + "\n";
                         //System.out.println();
                     }
                     
@@ -1743,7 +1790,8 @@ public class BluebirdsAirlineDriver {
                             results = results + "\n";
                         }
                         //System.out.printf("%-20s", seat);
-                        results = results + seat + "  ";
+                        //results = results + seat + "  ";
+                        results = results + String.format("%-20s", seat);
                     }
 
                     //System.out.println();
