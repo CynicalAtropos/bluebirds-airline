@@ -74,7 +74,7 @@ public class BluebirdsAirlineDriver {
                     //do this
                 OptionExample nj = new OptionExample();
                 nj.setScreenSize(nj);
-                nj.setVisible(true);
+                //nj.setVisible(true);
 
                 if (getOption == 0)
                 {
@@ -83,11 +83,12 @@ public class BluebirdsAirlineDriver {
                     customerAL = primeCustomers(conn, stmt, customerAL);
                     reservationAL = primeReservations(conn, stmt, reservationAL, flightAL, customerAL);
                     primeSeatMap(conn, stmt, flightAL);
-                    nj.setVisible(false);
+                    
                     JOptionPane.showMessageDialog(null, "The data has been primed","Primed data",1);
                 }
                 else if (getOption == 1)
                 {
+                    nj.setVisible(true);
                     nj.setJLabel1("Please Enter the flight code: ");
                     nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent event) {
@@ -98,6 +99,7 @@ public class BluebirdsAirlineDriver {
                 }
                 else if (getOption == 2)
                 {
+                    nj.setVisible(true);
                     nj.setJLabel1("What is the customer ID?");
                     nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent event) {
@@ -109,6 +111,7 @@ public class BluebirdsAirlineDriver {
                 }
                 else if (getOption == 3)
                 {
+                    nj.setVisible(true);
                     nj.setJLabel1("Enter the reservation ID to cancel.");
                     nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent event) {
@@ -120,6 +123,7 @@ public class BluebirdsAirlineDriver {
                 }
                 else if (getOption == 4)
                 {
+                    nj.setVisible(true);
                     nj.setJLabel1("Please Confirm: ");
                     nj.getJTextField1().setVisible(false);
                     nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
@@ -131,6 +135,7 @@ public class BluebirdsAirlineDriver {
                 }
                 else if (getOption == 5)
                 {
+                    nj.setVisible(true);
                     nj.setJLabel1("Please Enter the flight code: ");
                     nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent event) {
@@ -141,6 +146,7 @@ public class BluebirdsAirlineDriver {
                 }
                 else if (getOption == 6)
                 {
+                    nj.setVisible(true);
                     nj.setJLabel1("Please Enter the pilot ID: ");
                     nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent event) {
@@ -156,6 +162,7 @@ public class BluebirdsAirlineDriver {
                 }
                 else if (getOption == 8)
                 {
+                    nj.setVisible(true);
                     nj.setJLabel1("What is the reservation number?");
       
                     //on click of search button
@@ -174,6 +181,7 @@ public class BluebirdsAirlineDriver {
                 }
                 else if (getOption == 10)
                 {
+                    nj.setVisible(true);
                     nj.setJLabel1("Please Enter the flight code: ");
                     nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent event) {
