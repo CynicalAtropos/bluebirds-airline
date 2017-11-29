@@ -5,8 +5,6 @@
  */
 package bluebirds.airline;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -18,9 +16,8 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -33,26 +30,42 @@ public class BluebirdsAirlineDriver {
         
         
         
-        ArrayList<Customer> customerAL = new ArrayList<Customer>();
+       // ArrayList<Customer> customerAL = new ArrayList<Customer>();
 
-        ArrayList<Flight> flightAL = new ArrayList<Flight>();
+       // ArrayList<Flight> flightAL = new ArrayList<Flight>();
 
-        ArrayList<Pilot> pilotAL = new ArrayList<Pilot>();
+       // ArrayList<Pilot> pilotAL = new ArrayList<Pilot>();
 
-        ArrayList<Reservation> reservationAL = new ArrayList<Reservation>();
+       // ArrayList<Reservation> reservationAL = new ArrayList<Reservation>();
         
-        ArrayList<Reservation> canceledResAL = new ArrayList<Reservation>();
+       // ArrayList<Reservation> canceledResAL = new ArrayList<Reservation>();
         
-        Connection connect = null;
-        CallableStatement callSt = null;
-        ResultSet resSet = null;
-        Statement stmt = null;
-        connect = connect(connect);
+       // Connection connect = null;
+       // CallableStatement callSt = null;
+       // ResultSet resSet = null;
+       // Statement stmt = null;
+       // connect = connect(connect);
         BlueBirdsJFrame newFrame = new BlueBirdsJFrame();
         newFrame.setScreenSize(newFrame);
         newFrame.setVisible(true);
         newFrame.getJButton2().addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent event) {
+                
+                ArrayList<Customer> customerAL = new ArrayList<Customer>();
+
+                ArrayList<Flight> flightAL = new ArrayList<Flight>();
+
+                ArrayList<Pilot> pilotAL = new ArrayList<Pilot>();
+
+                ArrayList<Reservation> reservationAL = new ArrayList<Reservation>();
+        
+                ArrayList<Reservation> canceledResAL = new ArrayList<Reservation>();
+                
+                Connection connect = null;
+                CallableStatement callSt = null;
+                ResultSet resSet = null;
+                Statement stmt = null;
+                connect = connect(connect);
                         
                 int getOption = newFrame.getJComboBox1().getSelectedIndex();
                 //if getOption = 0
@@ -65,7 +78,14 @@ public class BluebirdsAirlineDriver {
 
                 if (getOption == 0)
                 {
-                    nj.setJLabel1("What is the pilot id?");
+                    pilotAL = primePilots(connect, stmt, pilotAL);
+                    flightAL = primeFlights(connect, stmt, pilotAL, flightAL);
+                    customerAL = primeCustomers(connect, stmt, customerAL);
+                    reservationAL = primeReservations(connect, stmt, reservationAL, flightAL, customerAL);
+                    primeSeatMap(connect, stmt, flightAL);
+                    //nj.setJLabel1("What is the pilot id?");
+                    nj.setVisible(false);
+                    JOptionPane.showMessageDialog(null, "The data has been primed","Primed data",1);
                 }
                 else if (getOption == 1)
                 {
