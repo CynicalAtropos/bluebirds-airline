@@ -41,7 +41,7 @@ public class BluebirdsAirlineDriver {
        // ArrayList<Reservation> canceledResAL = new ArrayList<Reservation>();
         
         Connection connect = null;
-        CallableStatement callSt = null;
+        CallableStatement callSt;
         ResultSet resSet = null;
         Statement stmt = null;
         connect = connect(connect);
@@ -62,11 +62,10 @@ public class BluebirdsAirlineDriver {
         
                 ArrayList<Reservation> canceledResAL = new ArrayList<Reservation>();
                 
-                Connection connect = null;
+                
                 CallableStatement callSt = null;
                 ResultSet resSet = null;
                 Statement stmt = null;
-                connect = connect(connect);
                         
                 int getOption = newFrame.getJComboBox1().getSelectedIndex();
                 //if getOption = 0
@@ -79,12 +78,11 @@ public class BluebirdsAirlineDriver {
 
                 if (getOption == 0)
                 {
-                    pilotAL = primePilots(connect, stmt, pilotAL);
-                    flightAL = primeFlights(connect, stmt, pilotAL, flightAL);
-                    customerAL = primeCustomers(connect, stmt, customerAL);
-                    reservationAL = primeReservations(connect, stmt, reservationAL, flightAL, customerAL);
-                    primeSeatMap(connect, stmt, flightAL);
-                    //nj.setJLabel1("What is the pilot id?");
+                    pilotAL = primePilots(conn, stmt, pilotAL);
+                    flightAL = primeFlights(conn, stmt, pilotAL, flightAL);
+                    customerAL = primeCustomers(conn, stmt, customerAL);
+                    reservationAL = primeReservations(conn, stmt, reservationAL, flightAL, customerAL);
+                    primeSeatMap(conn, stmt, flightAL);
                     nj.setVisible(false);
                     JOptionPane.showMessageDialog(null, "The data has been primed","Primed data",1);
                 }
@@ -104,11 +102,20 @@ public class BluebirdsAirlineDriver {
                     nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent event) {
                         int custID = Integer.parseInt(nj.getJTextField1().getText());
-                        nj.setJTextArea1("Customer info for cust ID " + custID + ":");
+                        String results = searchCustID(conn, custID);
+                        nj.setJTextArea1(results);
+                        //nj.setJTextArea1("Customer info for cust ID " + custID + ":");
                     }});
                 }
                 else if (getOption == 3)
                 {
+                    nj.setJLabel1("Enter the reservation ID to cancel.");
+                    nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(java.awt.event.ActionEvent event) {
+                        String resID = nj.getJTextField1().getText();
+                        cancelRes(conn, callSt, stmt, resSet, resID);
+                        
+                    }});
 
                 }
                 else if (getOption == 4)
@@ -135,7 +142,14 @@ public class BluebirdsAirlineDriver {
                 }
                 else if (getOption == 6)
                 {
-
+                    nj.setJLabel1("Please Enter the pilot ID: ");
+                    nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(java.awt.event.ActionEvent event) {
+                        String pilotID = nj.getJTextField1().getText();                      
+                        String results = printSchedule(conn, pilotID);
+                        nj.setJTextArea1(results);
+                    }});
+                    
                 }
                 else if (getOption == 7)
                 {
@@ -149,8 +163,8 @@ public class BluebirdsAirlineDriver {
                     nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent event) {
                         int resNum = Integer.parseInt(nj.getJTextField1().getText());
-                        //String results = searchReservID(connect, resNum);
-                        //nj.setJTextArea1(results);
+                        String results = searchReservID(conn, resNum);
+                        nj.setJTextArea1(results);
                        // nj.setJTextArea1("Reservation information for reservation number " + resNum + ":");
                     }});
 
@@ -165,8 +179,9 @@ public class BluebirdsAirlineDriver {
                     nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent event) {
                         String flightCode = nj.getJTextField1().getText();
-                        //String results = grossIncomeEach(conn);
-                        nj.setJTextArea1("Flight seat map for flight code " + flightCode + ":");
+                        String results = printFlightSeats(conn,flightCode);
+                        nj.setJTextArea1(results);
+                        //nj.setJTextArea1("Flight seat map for flight code " + flightCode + ":");
                     }});
                     
                 }
@@ -253,11 +268,9 @@ public class BluebirdsAirlineDriver {
     public static String searchReservID(Connection connect, int resNum)
     {
         String results = "";
-        //Scanner scan = new Scanner(System.in);
-        String procName = "searchReservID";
-        //System.out.println("What is the reservation number?");
-       // int resNum = scan.nextInt();
         
+        String procName = "searchReservID";
+     
         CallableStatement callSt;
         ResultSet resSet;
 
@@ -268,23 +281,26 @@ public class BluebirdsAirlineDriver {
             resSet = callSt.executeQuery();
             
             try {
-                System.out.println(" ");
+               // System.out.println(" ");
 
                 ResultSetMetaData meta = resSet.getMetaData();
                 
                 int columns = meta.getColumnCount();
                 if (!resSet.isBeforeFirst() ) {    
-                    System.out.println("There is no reservation with that id"); 
+                    //System.out.println("There is no reservation with that id"); 
+                    results = results + "There is no reservation with that id";
                 }
                 else
                 {
-                    System.out.println("We found that reservation:");
+                    //System.out.println("We found that reservation:");
+                    results = results + "We found that reservation:\n\n";
                 }
-                System.out.println();
+                //System.out.println();
                 while (resSet.next()) {
 
                     for (int i = 1; i < columns + 1; i++) {
-                        System.out.printf("%-20s", meta.getColumnLabel(i) + ": ");
+                        //System.out.printf("%-20s", meta.getColumnLabel(i) + ": ");
+                        results = results + meta.getColumnLabel(i) + ": ";
                         String col = "";
                         if(meta.getColumnLabel(i).equals("Seat Type"))
                         {
@@ -302,31 +318,37 @@ public class BluebirdsAirlineDriver {
                             col = resSet.getString(i);
                         }
                         
-                        System.out.printf("%-20s", col);
-                        System.out.println();
+                        //System.out.printf("%-20s", col);
+                        results = results +  col + "\n";
+                       // System.out.println();
                     }
                     
                 }
             } catch (SQLException e) {
-                System.out.println("SQL Exception");
+                //System.out.println("SQL Exception");
+                results = results + "SQL Exception";
             }
 
         } // end try
         catch (SQLException e) 
         {
-            System.out.println("stored proc did not work");
+            //System.out.println("stored proc did not work");
+            results = results + "Stored procedure did not work";
         }
-        System.out.println();
+        //System.out.println();
         return results;
     }
     
-    public static void searchCustID(Connection connect, CallableStatement callSt, ResultSet resSet)
+    public static String searchCustID(Connection connect, int custNum)
     {
-        Scanner scan = new Scanner(System.in);
+       // Scanner scan = new Scanner(System.in);
         String procName = "searchCustID";
-        System.out.println("What is the customer ID?");
-        int custNum = scan.nextInt();
+        //System.out.println("What is the customer ID?");
+        //int custNum = scan.nextInt();
+        String results = "";
 
+        CallableStatement callSt;
+        ResultSet resSet;
         String storedProc = "{call " + procName + " (" + custNum + ")}";
 
         try {
@@ -334,38 +356,44 @@ public class BluebirdsAirlineDriver {
             resSet = callSt.executeQuery();
             
             try {
-                System.out.println(" ");
+                //System.out.println(" ");
 
                 ResultSetMetaData meta = resSet.getMetaData();
                 int columns = meta.getColumnCount();
                 if (!resSet.isBeforeFirst() ) {    
-                    System.out.println("That customer does not exist");
+                    //System.out.println("That customer does not exist");
+                    results = results + "That customer does not exist";
                 }
                 else
                 {
-                    System.out.println("We found that customer:");
+                    //System.out.println("We found that customer:");
+                    results = results + "We found that customer:\n\n";
                 }
-                System.out.println();
+                //System.out.println();
                 while (resSet.next()) {
 
                     for (int i = 1; i < columns + 1; i++) {
-                        System.out.printf("%-20s", meta.getColumnLabel(i) + ": ");
-                        System.out.printf("%-20s", resSet.getString(i));
-                        System.out.println();
+                        //System.out.printf("%-20s", meta.getColumnLabel(i) + ": ");
+                        results = results + meta.getColumnLabel(i) + ": ";
+                        //System.out.printf("%-20s", resSet.getString(i));
+                        results = results + resSet.getString(i) + "\n";
+                        //System.out.println();
                     }
                     
                 }
             } catch (SQLException e) {
-                System.out.println("SQL Exception");
+                //System.out.println("SQL Exception");
+                results = results + "SQL Exception";
             }
 
         } // end try
         catch (SQLException e) 
         {
-            System.out.println("stored proc did not work");
+            //System.out.println("stored proc did not work");
+            results = results + "Stored procedure did not work";
         }
-        System.out.println();
-        
+        //System.out.println();
+        return results;
     }
 
     public static ArrayList<Pilot> primePilots(Connection con, Statement stmt, ArrayList<Pilot> pilots)
@@ -1175,10 +1203,10 @@ public class BluebirdsAirlineDriver {
     
 
     // Cancels a reservation by reservation ID
-    public static void cancelRes(Connection con, CallableStatement cState, Statement stmt, ResultSet rSet) {
-        Scanner scan = new Scanner(System.in);
-        System.out.println("Please Enter the Reservation Number: ");
-        int resID = scan.nextInt();
+    public static void cancelRes(Connection con, CallableStatement cState, Statement stmt, ResultSet rSet, String resID) {
+        //Scanner scan = new Scanner(System.in);
+       // System.out.println("Please Enter the Reservation Number: ");
+        //int resID = scan.nextInt();
         
         String selectStmt = "SELECT seatNumber, flightCode "
                           + "FROM reservations "
@@ -1196,7 +1224,7 @@ public class BluebirdsAirlineDriver {
                ResultSetMetaData meta = rSet.getMetaData();
                int columns = meta.getColumnCount();
                 if (!rSet.isBeforeFirst() ) {    
-                    System.out.println("That reservation number is invalid."); 
+                    JOptionPane.showMessageDialog(null, "There are no reservations for that number","Invalid Reservation ID",1); 
                 }
                 else{
                     while (rSet.next()) {
@@ -1223,15 +1251,12 @@ public class BluebirdsAirlineDriver {
                 cState.executeQuery();
 
 
-                if (cState.getUpdateCount() == 0) {    
-                     System.out.println("There are no reservations under that number"); 
-                }
-                else
-                {
+                
                      cState = con.prepareCall(storedProc2);
                      cState.executeQuery();
-                     System.out.println("Reservation canceled");
-                }
+                    // System.out.println("Reservation canceled");
+                    JOptionPane.showMessageDialog(null, "The reservation has been canceled","Reservation Canceled",1);
+                
 
             }
             catch(Exception e){
@@ -1307,11 +1332,12 @@ public class BluebirdsAirlineDriver {
 
 
     // prints out a pilots schedule for the week
-    public static void printSchedule(Connection con, CallableStatement cState, ResultSet rSet) {
-        Scanner scan = new Scanner(System.in);
-        System.out.println("What is the pilot's ID?");
-        int pilotID = scan.nextInt();
-        
+    public static String printSchedule(Connection con, String pilotID) {
+       // Scanner scan = new Scanner(System.in);
+        //System.out.println("What is the pilot's ID?");
+        //int pilotID = scan.nextInt();
+        CallableStatement cState;
+        ResultSet rSet;
         String storedProc = "{call getSchedule('" + pilotID + "')}";
         try{
            cState = con.prepareCall(storedProc);
@@ -1328,21 +1354,22 @@ public class BluebirdsAirlineDriver {
                 {
                     System.out.println("Flights for this pilot: ");
                 }
-             
+             String result = "Upcoming flights for this pilot: \n\n";
                while(rSet.next()){
                   
                    for(int i=1;i<columns+1;i++){
-                       System.out.print(rSet.getString(i) + " ");
+                      result += rSet.getString(i) + " ";
                    }
-                   System.out.println("\n");
+                   result += "\n";
                }
+               return result;
            }
            catch(SQLException e){
-               System.out.println("Something went wrong with the SQL");
+               return "Something went wrong with the SQL";
            }
         }
         catch(SQLException e){
-            System.out.println("Something went wrong with the SQL");
+            return "Something went wrong with the SQL";
         }
         
     }
@@ -1577,12 +1604,15 @@ public class BluebirdsAirlineDriver {
         }
     }
     
-    public static void printFlightSeats(Connection connect, CallableStatement callSt, ResultSet resSet)
+    public static String printFlightSeats(Connection connect, String flightCode)
     {
-        Scanner scan = new Scanner(System.in);
+        String results = "";
+        //Scanner scan = new Scanner(System.in);
+        CallableStatement callSt; 
+        ResultSet resSet;
         
-        System.out.println("Please Enter the flight code: ");
-        String flightCode = scan.nextLine().trim();
+       // System.out.println("Please Enter the flight code: ");
+        //String flightCode = scan.nextLine().trim();
         
         String procName = "printFirstClass";
         String procName2 = "printEconomyClass";
@@ -1598,19 +1628,21 @@ public class BluebirdsAirlineDriver {
             resSet = callSt.executeQuery();
             
             try {
-                System.out.println(" ");
+                //System.out.println(" ");
 
                 ResultSetMetaData meta = resSet.getMetaData();
                 int columns = meta.getColumnCount();
                 if (!resSet.isBeforeFirst() ) {    
-                    System.out.println("There is no flight with that code"); 
+                   // System.out.println("There is no flight with that code"); 
+                   results = results + "There is no flight with that code";
                 }
                 else
                 {
-                    System.out.println("First Class:");
+                    //System.out.println("First Class:");
+                    results = results + "First Class:\n";
                 }
                 
-                System.out.println();
+                //System.out.println();
                 while (resSet.next()) {
 
                     for (int i = 1; i < columns + 1; i++) {
@@ -1636,9 +1668,15 @@ public class BluebirdsAirlineDriver {
                         }
                         if(i == 3)
                         {
-                            System.out.println();
+                            //System.out.println();
+                            results = results + "\n";
                         }
-                        System.out.printf("%-20s", seat);
+                        //System.out.printf("%-20s", seat);
+                        
+                        results = results + String.format("%-20s", seat);
+                       // System.out.println(results);
+                        
+                        
                     }
      
                 }
@@ -1651,24 +1689,25 @@ public class BluebirdsAirlineDriver {
         {
             System.out.println("stored proc did not work");
         }
-        System.out.println();
-        
-        
+        //System.out.println();
+        System.out.println(results);
+        results = results + "\n\n";
         //Print Economy Class
         try {
             callSt = connect.prepareCall(storedProc2);
             resSet = callSt.executeQuery();
             
             try {
-                System.out.println(" ");
+                //System.out.println(" ");
 
                 ResultSetMetaData meta = resSet.getMetaData();
                 int columns = meta.getColumnCount();
                 if (resSet.isBeforeFirst() ) {    
-                    System.out.println("Economy Class:");
+                    //System.out.println("Economy Class:");
+                    results = results + "Economy Class:\n";
                 }
                 
-                System.out.println();
+               // System.out.println();
                 while (resSet.next()) {
 
                     for (int i = 1; i < columns + 1; i++) {
@@ -1694,12 +1733,14 @@ public class BluebirdsAirlineDriver {
                         }
                         if(i == 5)
                         {
-                            System.out.println();
+                            //System.out.println();
+                            results = results + "\n";
                         }
-                        System.out.printf("%-20s", seat);
+                        //System.out.printf("%-20s", seat);
+                        results = results + seat + "  ";
                     }
 
-                    System.out.println();
+                    //System.out.println();
                 }
             } catch (SQLException e) {
                 System.out.println("SQL Exception");
@@ -1710,7 +1751,7 @@ public class BluebirdsAirlineDriver {
         {
             System.out.println("stored proc did not work");
         }
-        System.out.println();
-
+        //System.out.println();
+        return results;
     }
 }
