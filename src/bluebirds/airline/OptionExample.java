@@ -52,7 +52,7 @@ public class OptionExample extends javax.swing.JFrame {
         jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
-        jTextArea1.setText("Display the output from checkpoint 3 here");
+        jTextArea1.setText(" ");
         jScrollPane1.setViewportView(jTextArea1);
 
         jButton2.setText("Search");
