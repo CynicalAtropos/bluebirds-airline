@@ -76,7 +76,8 @@ public class BluebirdsAirlineDriver {
                     nj.setJLabel1("What is the customer ID?");
                     nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent event) {
-                        nj.setJTextArea1("Customer info");
+                        int custID = Integer.parseInt(nj.getJTextField1().getText());
+                        nj.setJTextArea1("Customer info for cust ID " + custID + ":");
                     }});
                 }
                 else if (getOption == 3)
@@ -102,9 +103,14 @@ public class BluebirdsAirlineDriver {
                 else if (getOption == 8)
                 {
                     nj.setJLabel1("What is the reservation number?");
+      
+                    //on click of search button
                     nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent event) {
-                        nj.setJTextArea1("Customer Reservation");
+                        int resNum = Integer.parseInt(nj.getJTextField1().getText());
+                        String results = searchReservID(connect, resNum);
+                        nj.setJTextArea1(results);
+                       // nj.setJTextArea1("Reservation information for reservation number " + resNum + ":");
                     }});
 
                 }
@@ -117,9 +123,10 @@ public class BluebirdsAirlineDriver {
                     nj.setJLabel1("Please Enter the flight code: ");
                     nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent event) {
-                        nj.setJTextArea1("Flight seat map");
+                        String flightCode = nj.getJTextField1().getText();
+                        nj.setJTextArea1("Flight seat map for flight code " + flightCode + ":");
                     }});
-
+                    
                 }
             }
         });
@@ -201,12 +208,16 @@ public class BluebirdsAirlineDriver {
 	return connect;
     }
     
-    public static void searchReservID(Connection connect, CallableStatement callSt, ResultSet resSet)
+    public static String searchReservID(Connection connect, int resNum)
     {
-        Scanner scan = new Scanner(System.in);
+        String results = "";
+        //Scanner scan = new Scanner(System.in);
         String procName = "searchReservID";
-        System.out.println("What is the reservation number?");
-        int resNum = scan.nextInt();
+        //System.out.println("What is the reservation number?");
+       // int resNum = scan.nextInt();
+        
+        CallableStatement callSt;
+        ResultSet resSet;
 
         String storedProc = "{call " + procName + " (" + resNum + ")}";
 
@@ -264,7 +275,7 @@ public class BluebirdsAirlineDriver {
             System.out.println("stored proc did not work");
         }
         System.out.println();
-
+        return results;
     }
     
     public static void searchCustID(Connection connect, CallableStatement callSt, ResultSet resSet)
