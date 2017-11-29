@@ -108,8 +108,8 @@ public class BluebirdsAirlineDriver {
                     nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent event) {
                         int resNum = Integer.parseInt(nj.getJTextField1().getText());
-                        String results = searchReservID(connect, resNum);
-                        nj.setJTextArea1(results);
+                        //String results = searchReservID(connect, resNum);
+                        //nj.setJTextArea1(results);
                        // nj.setJTextArea1("Reservation information for reservation number " + resNum + ":");
                     }});
 
