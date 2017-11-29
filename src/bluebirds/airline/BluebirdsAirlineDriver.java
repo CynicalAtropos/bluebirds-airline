@@ -48,6 +48,7 @@ public class BluebirdsAirlineDriver {
         ResultSet resSet = null;
         Statement stmt = null;
         connect = connect(connect);
+        final Connection conn = connect;
         BlueBirdsJFrame newFrame = new BlueBirdsJFrame();
         newFrame.setScreenSize(newFrame);
         newFrame.setVisible(true);
@@ -69,7 +70,13 @@ public class BluebirdsAirlineDriver {
                 }
                 else if (getOption == 1)
                 {
-
+                    nj.setJLabel1("Please Enter the flight code: ");
+                    nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(java.awt.event.ActionEvent event) {
+                        String flightCode = nj.getJTextField1().getText();                      
+                        String results = grossIncomeSpec(conn,flightCode);
+                        nj.setJTextArea1(results + "Check");
+                    }});
                 }
                 else if (getOption == 2)
                 {
@@ -86,11 +93,24 @@ public class BluebirdsAirlineDriver {
                 }
                 else if (getOption == 4)
                 {
-
+                    nj.setJLabel1("Please Confirm: ");
+                    nj.getJTextField1().setVisible(false);
+                    nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(java.awt.event.ActionEvent event) {
+                        String flightCode = nj.getJTextField1().getText();                      
+                        String results = grossIncomeEach(conn);
+                        nj.setJTextArea1(results + "Check");
+                    }});
                 }
                 else if (getOption == 5)
                 {
-
+                    nj.setJLabel1("Please Enter the flight code: ");
+                    nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(java.awt.event.ActionEvent event) {
+                        String flightCode = nj.getJTextField1().getText();                      
+                        String results = grossIncomeSpec(conn,flightCode);
+                        nj.setJTextArea1(results + "Check");
+                    }});
                 }
                 else if (getOption == 6)
                 {
@@ -124,6 +144,7 @@ public class BluebirdsAirlineDriver {
                     nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent event) {
                         String flightCode = nj.getJTextField1().getText();
+                        //String results = grossIncomeEach(conn);
                         nj.setJTextArea1("Flight seat map for flight code " + flightCode + ":");
                     }});
                     
@@ -1318,43 +1339,43 @@ public class BluebirdsAirlineDriver {
         }
     }
     
-    public static void grossIncomeEach(Connection con){
+    public static String grossIncomeEach(Connection con){
         NumberFormat nf = NumberFormat.getCurrencyInstance();
         CallableStatement stmt;
         ResultSet resSet;
         String procName = "GrossIncomeEach";
         String storedProc = "{call " + procName +"}";
-        System.out.println("\n");
+        //System.out.println("\n");
+        String results = "\n";
         try {
            stmt = con.prepareCall(storedProc);
            resSet = stmt.executeQuery();
 
            try {
-               System.out.println();
+               //System.out.println();
                while (resSet.next()) {
                    String flightCode = resSet.getString(1);
                    int grossIncome = resSet.getInt(2);
-                   System.out.println("Flight Code: "+ flightCode + "  Gross Income: " + nf.format(grossIncome));
+                   results.concat("\nFlight Code: "+ flightCode + "  Gross Income: " + nf.format(grossIncome));
+                   //System.out.println("Flight Code: "+ flightCode + "  Gross Income: " + nf.format(grossIncome));
                }
            } catch (SQLException e) {
-               System.out.println("SQL Exception");
+               //System.out.println("SQL Exception");
            }
 
        } // end try
        catch (SQLException e) 
        {
-           System.out.println("Stored proc did not work");
+           //System.out.println("Stored proc did not work");
        }
+        return results;
             
             
     }
     
-    public static void grossIncomeSpec(Connection con){
+    public static String grossIncomeSpec(Connection con, String flightCode){
+        String results = "\n";
         NumberFormat nf = NumberFormat.getCurrencyInstance();
-        Scanner scan = new Scanner(System.in);
-        
-        System.out.println("Please Enter the flight code: ");
-        String flightCode = scan.nextLine().trim();
         CallableStatement stmt;
         ResultSet resSet;
         String procName = "GrossIncomeSpec";
@@ -1371,6 +1392,7 @@ public class BluebirdsAirlineDriver {
                if(resSet.next()) {
                    flightCode = resSet.getString(1);
                    int grossIncome = resSet.getInt(2);
+                   results.concat("Flight Code: "+ flightCode + "  Gross Income: " + nf.format(grossIncome));
                    System.out.println("Flight Code: "+ flightCode + "  Gross Income: " + nf.format(grossIncome));
                } else {
                    System.out.println("No flight found.");
@@ -1384,6 +1406,8 @@ public class BluebirdsAirlineDriver {
        {
            System.out.println("Stored proc did not work");
        }
+       
+        return results;
             
             
     }
