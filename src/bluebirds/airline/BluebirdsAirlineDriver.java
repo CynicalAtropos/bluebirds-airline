@@ -864,7 +864,7 @@ public class BluebirdsAirlineDriver {
                 
             }
         }
-        //return "";
+        return "";
     }
 
     // Books a reservation for parties that want to sit togeather
@@ -1229,6 +1229,7 @@ public class BluebirdsAirlineDriver {
                System.out.println("Stored proc did not work");
            }
         }
+        return "";
     }
 
 
