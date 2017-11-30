@@ -125,7 +125,8 @@ public class BluebirdsAirlineDriver {
                     public void actionPerformed(java.awt.event.ActionEvent event) {
                         String flightCode = nj.getJTextField1().getText();                      
                         String results = grossIncomeEach(conn);
-                        nj.setJTextArea1(results + "Check");
+                        System.out.println(results);
+                        nj.setJTextArea1(results);
                     }});
                 }
                 else if (getOption == 5)
@@ -136,7 +137,7 @@ public class BluebirdsAirlineDriver {
                     public void actionPerformed(java.awt.event.ActionEvent event) {
                         String flightCode = nj.getJTextField1().getText();                      
                         String results = grossIncomeSpec(conn,flightCode);
-                        nj.setJTextArea1(results + "Check");
+                        nj.setJTextArea1(results);
                     }});
                 }
                 else if (getOption == 6)
@@ -605,6 +606,9 @@ public class BluebirdsAirlineDriver {
         String address = scan.nextLine();
         System.out.println("What is your phone number? ex: 5409770923");
         String phone = scan.nextLine();
+        
+        BookReservation createCust = new BookReservation();
+        createCust.setVisible(true);
         String insert = "INSERT INTO customers (customerName, address, phone)" + " VALUES ('" + name + "', '" + address + "', '" + phone + "')";
         int custID = 0;
         try {
@@ -653,7 +657,7 @@ public class BluebirdsAirlineDriver {
     }
 
     // Gets paramaters for a flight from the user and passes them to a method
-    public static void selectFlight(Connection con) {
+    public static String selectFlight(Connection con) {
         Scanner scan = new Scanner(System.in);
         int group = 2;
         int custID = 0;
@@ -771,11 +775,11 @@ public class BluebirdsAirlineDriver {
         }
 
 
-        searchFlight(flightCode, party, custID, group, con);
+        return searchFlight(flightCode, party, custID, group, con);
     }
 
     // Searches for a flight based on the customers parameters
-    public static void searchFlight(String flightCode, int party, int custID, int group, Connection con) {
+    public static String searchFlight(String flightCode, int party, int custID, int group, Connection con) {
         Scanner scan = new Scanner(System.in);
 
         // searches for a flight matching the customers parameters
@@ -812,6 +816,7 @@ public class BluebirdsAirlineDriver {
                 boolean valid = true;
                 if((party < 3 || group == 2) && party <= fClass){
                 while (valid) {
+                    /*
                     System.out.println("There are first class seats available. Would you like first class? "
                             + "\n[1] yes"
                             + "\n[2] no");
@@ -820,16 +825,25 @@ public class BluebirdsAirlineDriver {
                         valid = false;
                     } else {
                         System.out.println("Please enter 1 or 2. ");
+                    }*/
+                    int reply = JOptionPane.showConfirmDialog(null, "There are first class seats available. Would you like first class?", "First Class Select", JOptionPane.YES_NO_OPTION);
+                    if (reply == JOptionPane.YES_OPTION) {
+                        bookClass = 1;
+                    }
+                    else {
+                        bookClass = 2;
                     }
                 }
                 }
 
+            } else {
+                JOptionPane.showMessageDialog(null, "There are no first class seats available","First Class",1);
             }
            
             if (group == 1) {
-                bookTogether(flightCode, bookClass, custID, party, con);
+                return bookTogether(flightCode, bookClass, custID, party, con);
             } else {
-                bookReservation(flightCode, bookClass, custID, party, con);
+                return bookReservation(flightCode, bookClass, custID, party, con);
             }
         } else {
             System.out.println("There are not enough available seats on this flight. Would you like to book another flight? "
@@ -838,18 +852,25 @@ public class BluebirdsAirlineDriver {
             int again = scan.nextInt();
 
             if (again == 1) {
-                selectFlight(con);
+                return selectFlight(con);
             } else if (again != 2) {
                 System.out.println("Please enter 1 or 2. ");
             }
+            int reply = JOptionPane.showConfirmDialog(null, "There are first class seats available. Would you like first class?", "First Class Select", JOptionPane.YES_NO_OPTION);
+            if (reply == JOptionPane.YES_OPTION) {
+                return selectFlight(con);
+            }
+            else {
+                
+            }
         }
-
+        //return "";
     }
 
     // Books a reservation for parties that want to sit togeather
-    public static void bookTogether(String flightCode, int fc, int custID, int party, Connection con) {
+    public static String bookTogether(String flightCode, int fc, int custID, int party, Connection con) {
         Scanner scan = new Scanner(System.in);
-        
+        String results = "\n";
         boolean booked = false;
         int emptySeats = 0;
         if (fc == 1) {
@@ -905,6 +926,7 @@ public class BluebirdsAirlineDriver {
                                         stmt3.executeUpdate(updateSeatMap);
                                         found = true;
                                         party--;
+                                        results = results + ("Reservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
                                         System.out.println("Reservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
                                      } // end try
                                      catch (SQLException e) 
@@ -999,6 +1021,7 @@ public class BluebirdsAirlineDriver {
                                         stmt3.executeUpdate(updateSeatMap);
                                         found = true;
                                         party--;
+                                        results = results + ("Reservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
                                         System.out.println("Reservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
                                      } // end try
                                      catch (SQLException e) 
@@ -1052,10 +1075,12 @@ public class BluebirdsAirlineDriver {
                 }
             }
         }
+        return results;
 }
 
     //Books a reservation
-    public static void bookReservation(String flightCode, int fc, int custID, int party, Connection con) {
+    public static String bookReservation(String flightCode, int fc, int custID, int party, Connection con) {
+        String results = "\n";
         // adds a first class reservation
         if (fc == 1) {
             CallableStatement stmt;
@@ -1100,6 +1125,7 @@ public class BluebirdsAirlineDriver {
                                     stmt3.executeUpdate(updateSeatMap);
                                     found = true;
                                     party--;
+                                    results = results + ("Reservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
                                     System.out.println("Reservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
                                 } // end try
                                 catch (SQLException e) 
@@ -1176,6 +1202,7 @@ public class BluebirdsAirlineDriver {
                                     stmt3.executeUpdate(updateSeatMap);
                                     found = true;
                                     party--;
+                                    results = results + ("Reservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
                                     System.out.println("Reservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
                                 } // end try
                                 catch (SQLException e) 
@@ -1186,6 +1213,7 @@ public class BluebirdsAirlineDriver {
                            count++;
                            if(count > 7 && !found){
                                System.out.println("Sorry there is not room on this flight for your party to sit next to each other.");
+                               JOptionPane.showMessageDialog(null, "Sorry there is not room on this flight for your party to sit next to each other.","Seat Together Availablility",1);
                                party = 0;
                            }
                        }
@@ -1429,7 +1457,7 @@ public class BluebirdsAirlineDriver {
                while (resSet.next()) {
                    String flightCode = resSet.getString(1);
                    int grossIncome = resSet.getInt(2);
-                   results.concat("\nFlight Code: "+ flightCode + "  Gross Income: " + nf.format(grossIncome));
+                   results = results + ("\nFlight Code: "+ flightCode + "  Gross Income: " + nf.format(grossIncome));
                    //System.out.println("Flight Code: "+ flightCode + "  Gross Income: " + nf.format(grossIncome));
                }
            } catch (SQLException e) {
@@ -1465,7 +1493,7 @@ public class BluebirdsAirlineDriver {
                if(resSet.next()) {
                    flightCode = resSet.getString(1);
                    int grossIncome = resSet.getInt(2);
-                   results.concat("Flight Code: "+ flightCode + "  Gross Income: " + nf.format(grossIncome));
+                   results = results + ("Flight Code: "+ flightCode + "  Gross Income: " + nf.format(grossIncome));
                    System.out.println("Flight Code: "+ flightCode + "  Gross Income: " + nf.format(grossIncome));
                } else {
                    System.out.println("No flight found.");
@@ -1479,7 +1507,6 @@ public class BluebirdsAirlineDriver {
        {
            System.out.println("Stored proc did not work");
        }
-       
         return results;
             
             
