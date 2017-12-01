@@ -9,8 +9,12 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 
 /**
- *
- * @author Matt
+ * OptionExample class is the JFrame that pops up when
+ * the ok button on the first frame is clicked
+ * 
+ * @author Matthew Sluder
+ * @author Josh Whitt
+ * @author Timothy Alligood
  */
 public class OptionExample extends javax.swing.JFrame {
 
@@ -42,12 +46,6 @@ public class OptionExample extends javax.swing.JFrame {
         setResizable(false);
 
         jLabel1.setText("What is the customer's ID? :");
-
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
-            }
-        });
 
         jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
@@ -116,16 +114,19 @@ public class OptionExample extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
-
+/**
+ *  handles the event click of the close button
+ */
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         dispose();
         
     }//GEN-LAST:event_jButton1ActionPerformed
     
+    /**
+     * Sets the frame in the middle of the screen
+     * @param newFrame the frame
+     */
     public void setScreenSize(OptionExample newFrame)
     {
         Toolkit tool = Toolkit.getDefaultToolkit();
@@ -134,76 +135,70 @@ public class OptionExample extends javax.swing.JFrame {
         
     }
     
+    /**
+     * Returns the jLabel
+     * @return the j label
+     */
     public javax.swing.JLabel getJLabel1()
     {
         return jLabel1;
     }
     
+    /**
+     * Sets the text of the j label
+     * @param text the j label's text
+     */
     public void setJLabel1(String text)
     {
         jLabel1.setText(text);
     }
     
+    /**
+     * Returns the text field 
+     * @return the text field
+     */
     public javax.swing.JTextField getJTextField1()
     {
         return jTextField1;
     }
     
+    /**
+     * Sets the text of the text field
+     * @param text the text  field text
+     */
     public void setJTextField1(String text)
     {
         jTextField1.setText(text);
     }
     
+    /**
+     * Returns the Search button 
+     * @return the search button
+     */
     public javax.swing.JButton getJButton2()
     {
         return jButton2;
     }
     
+    /**
+     * Returns the text area object
+     * @return the text area
+     */
     public javax.swing.JTextArea getJTextArea1()
     {
         return jTextArea1;
     }
     
+    /**
+     * Sets the text of the text area
+     * @param text the text area text
+     */
     public void setJTextArea1(String text)
     {
         jTextArea1.setText(text);
     }
     
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(OptionExample.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(OptionExample.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(OptionExample.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(OptionExample.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new OptionExample().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

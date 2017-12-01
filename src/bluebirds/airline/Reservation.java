@@ -1,5 +1,9 @@
 package bluebirds.airline;
 
+/**
+ *
+ * @author Matt
+ */
 public class Reservation {
 	
 	private Flight flight;
@@ -10,10 +14,19 @@ public class Reservation {
         
         private int reservationNum;
 	
-        public static int num = 200;
+    /**
+     *
+     */
+    public static int num = 200;
         
-        
-	public Reservation(Flight f, Customer c, String s, boolean fc)
+    /**
+     *
+     * @param f
+     * @param c
+     * @param s
+     * @param fc
+     */
+    public Reservation(Flight f, Customer c, String s, boolean fc)
 	{
 		flight = f;
 		customer = c;
@@ -32,7 +45,10 @@ public class Reservation {
 		
 	}
 	
-	public Reservation()
+    /**
+     *
+     */
+    public Reservation()
 	{
             reservationNum = num;
             num++;
@@ -40,6 +56,15 @@ public class Reservation {
 	}
         
         // for reading from a file
+
+    /**
+     *
+     * @param f
+     * @param c
+     * @param s
+     * @param fc
+     * @param resNum
+     */
         public Reservation(Flight f, Customer c, String s, boolean fc, int resNum)
         {
             flight = f;
@@ -63,52 +88,100 @@ public class Reservation {
 		return "The reservation " + reservationNum + " for " + customer.getName() + " of seat number " + seatNumber + " on " + flight.getFlightCode() + " which cost " + cost + ".";
 	}
 
-	public Flight getFlight() {
+    /**
+     *
+     * @return
+     */
+    public Flight getFlight() {
 		return flight;
 	}
 
-	public void setFlight(Flight flight) {
+    /**
+     *
+     * @param flight
+     */
+    public void setFlight(Flight flight) {
 		this.flight = flight;
 	}
 
-	public Customer getCustomer() {
+    /**
+     *
+     * @return
+     */
+    public Customer getCustomer() {
 		return customer;
 	}
 
-	public void setCustomer(Customer customer) {
+    /**
+     *
+     * @param customer
+     */
+    public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
         
-        public boolean getFirstClass() {
+    /**
+     *
+     * @return
+     */
+    public boolean getFirstClass() {
 		return firstClass;
 	}
 
-	public void setFirstClass(boolean firstClass) {
+    /**
+     *
+     * @param firstClass
+     */
+    public void setFirstClass(boolean firstClass) {
 		this.firstClass = firstClass;
 	}
 
-	public String getSeatNumber() {
+    /**
+     *
+     * @return
+     */
+    public String getSeatNumber() {
 		return seatNumber;
 	}
 
-	public void setSeatNumber(String seatNumber) {
+    /**
+     *
+     * @param seatNumber
+     */
+    public void setSeatNumber(String seatNumber) {
 		this.seatNumber = seatNumber;
 	}
 
-	public int getCost() {
+    /**
+     *
+     * @return
+     */
+    public int getCost() {
 		return cost;
 	}
 
-	public void setCost(int cost) {
+    /**
+     *
+     * @param cost
+     */
+    public void setCost(int cost) {
 		this.cost = cost;
 	}
         
-        public int getReservationNum()
+    /**
+     *
+     * @return
+     */
+    public int getReservationNum()
         {
             return reservationNum;
         }
         
-        public void setReservationNum(int reservationNum)
+    /**
+     *
+     * @param reservationNum
+     */
+    public void setReservationNum(int reservationNum)
         {
             this.reservationNum = reservationNum;
         }

@@ -2,12 +2,40 @@ package bluebirds.airline;
 
 import java.util.ArrayList;
 
+/**
+ * Customer class extends Person
+ * has two fields customerId and reservation list
+ * 
+ * @author Matthew Sluder
+ * @author Josh Whitt
+ * @author Timothy Alligood
+ */
 public class Customer extends Person{
+    
+        /**
+         * The auto generated unique customerId
+         */
 	private int customerId;
+        
+        /**
+        * The customer's list of reservations
+        */
         private ArrayList<Reservation> reservationList;
-        public static int num = 100;
+
+    /**
+     * number to iterate customerId
+     */
+    public static int num = 100;
 	
-	public Customer(String name, String address, String phoneNumber)
+    /**
+     * Customer takes in three parameters
+     * and creates new arrayList of Reservations
+     * @param name              the customer name
+     * @param address           the customer address
+     * @param phoneNumber       the customer phone number
+     * 
+     */
+    public Customer(String name, String address, String phoneNumber)
 	{
 		super(name,address,phoneNumber);
 		customerId = num;
@@ -15,42 +43,71 @@ public class Customer extends Person{
                 reservationList = new ArrayList<Reservation>();
 	}
 	
-	public Customer()
+    /**
+     * Empty constructor
+     */
+    public Customer()
 	{
             customerId = num;
             num++;
             
 		
 	}
-	
+	/**
+         * Prints the Customer info
+         * @return customer info
+         */
 	public String toString()
 	{
 		return super.toString() + " is a Customer with the Customer ID: " + customerId;
 	}
 
-	public int getCustomerId() 
+    /**
+     * Returns the customerId
+     * @return  the customerId
+     */
+    public int getCustomerId() 
 	{
 		return customerId;
 	}
 
-	public void setCustomerId(int customerId)
+    /**
+     * Sets the customerId
+     * @param customerId the customerId
+     */
+    public void setCustomerId(int customerId)
 	{
 		this.customerId = customerId;
 	}
         
-        public ArrayList<Reservation> getReservationList(){
+    /**
+     * Returns the customer's list of reservations
+     * @return list of reservations
+     */
+    public ArrayList<Reservation> getReservationList(){
             return this.reservationList;
         }
         
-        public void setReservationList(ArrayList<Reservation> rList){
+    /**
+     * Sets the customer's list of reservations
+     * @param rList the list of reservations
+     */
+    public void setReservationList(ArrayList<Reservation> rList){
             this.reservationList = rList;
         }
 	
-        public void addRes(Reservation r) {
+    /**
+     * Adds a reservation to the customer list
+     * @param r  the new reservation to add
+     */
+    public void addRes(Reservation r) {
             this.reservationList.add(r);
         }
         
-        public void printRes(){
+    /**
+     * Prints all of the reservations for the customer
+     */
+    public void printRes(){
             System.out.println("\nReservations for " + this.name);
             for(int i = 0; i < this.reservationList.size(); i++){
                 System.out.println(this.reservationList.get(i).toString());

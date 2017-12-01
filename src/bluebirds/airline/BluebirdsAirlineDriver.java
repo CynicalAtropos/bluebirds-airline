@@ -28,6 +28,10 @@ import javax.swing.JOptionPane;
  */
 public class BluebirdsAirlineDriver {
 
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         // TODO code application logic here
         
@@ -217,6 +221,11 @@ public class BluebirdsAirlineDriver {
         }  */
     }
     
+    /**
+     *
+     * @param connect
+     * @return
+     */
     public static Connection connect(Connection connect)
     {
 	
@@ -248,6 +257,11 @@ public class BluebirdsAirlineDriver {
 	return connect;
     }
     
+    /**
+     *
+     * @param connect
+     * @param newFrame
+     */
     public static void searchReservID(Connection connect, BlueBirdsJFrame newFrame )
     {
         OptionExample nj = new OptionExample();
@@ -345,6 +359,11 @@ public class BluebirdsAirlineDriver {
 
     }
     
+    /**
+     *
+     * @param connect
+     * @param newFrame
+     */
     public static void searchCustID(Connection connect, BlueBirdsJFrame newFrame)
     {
         OptionExample nj = new OptionExample();
@@ -422,6 +441,13 @@ public class BluebirdsAirlineDriver {
             }});
     }
 
+    /**
+     *
+     * @param con
+     * @param stmt
+     * @param pilots
+     * @return
+     */
     public static ArrayList<Pilot> primePilots(Connection con, Statement stmt, ArrayList<Pilot> pilots)
     {
         pilots.add(new Pilot("Chesley Sullenberger", "2801 Franklin Rd SW, Roanoke, VA 24014", "5403454434"));
@@ -445,6 +471,15 @@ public class BluebirdsAirlineDriver {
         
         return pilots;
     }
+
+    /**
+     *
+     * @param con
+     * @param stmt
+     * @param pilots
+     * @param flights
+     * @return
+     */
     public static ArrayList<Flight> primeFlights(Connection con, Statement stmt, ArrayList<Pilot> pilots, ArrayList<Flight> flights) {
 
         flights.add(new Flight("12RPAM", LocalDate.of(2017, Month.NOVEMBER, 12), "8:00 a.m.", "Roanoke to Phoenix", pilots.get(0)));
@@ -501,6 +536,13 @@ public class BluebirdsAirlineDriver {
 
     }
     
+    /**
+     *
+     * @param con
+     * @param stmt
+     * @param customers
+     * @return
+     */
     public static ArrayList<Customer> primeCustomers(Connection con, Statement stmt, ArrayList<Customer> customers)
     {
         customers.add(new Customer("Rick Sanchez","2072 Apperson Dr, Salem, VA 24153", "5407746295"));
@@ -524,6 +566,15 @@ public class BluebirdsAirlineDriver {
         return customers;
     }
     
+    /**
+     *
+     * @param con
+     * @param stmt
+     * @param reservations
+     * @param flights
+     * @param customers
+     * @return
+     */
     public static ArrayList<Reservation> primeReservations(Connection con, Statement stmt, ArrayList<Reservation> reservations, ArrayList<Flight> flights, ArrayList<Customer> customers)
     {
         int fc = 0;
@@ -566,6 +617,12 @@ public class BluebirdsAirlineDriver {
         return reservations;
     }
     
+    /**
+     *
+     * @param connect
+     * @param stmt
+     * @param flights
+     */
     public static void primeSeatMap(Connection connect, Statement stmt, ArrayList<Flight> flights)
     {
         try{
@@ -596,6 +653,11 @@ public class BluebirdsAirlineDriver {
         }
     }
     
+    /**
+     *
+     * @param con
+     * @return
+     */
     public static int createNewCustomer(Connection con)
     {
         Statement stmt;
@@ -629,6 +691,12 @@ public class BluebirdsAirlineDriver {
     }
     
     // Finds the customer for the reservation
+
+    /**
+     *
+     * @param con
+     * @return
+     */
     public static int findCustomer(Connection con){
         Scanner scan = new Scanner(System.in);
         CallableStatement stmt;
@@ -657,6 +725,12 @@ public class BluebirdsAirlineDriver {
     }
 
     // Gets paramaters for a flight from the user and passes them to a method
+
+    /**
+     *
+     * @param con
+     * @return
+     */
     public static String selectFlight(Connection con) {
         Scanner scan = new Scanner(System.in);
         int group = 2;
@@ -779,6 +853,16 @@ public class BluebirdsAirlineDriver {
     }
 
     // Searches for a flight based on the customers parameters
+
+    /**
+     *
+     * @param flightCode
+     * @param party
+     * @param custID
+     * @param group
+     * @param con
+     * @return
+     */
     public static String searchFlight(String flightCode, int party, int custID, int group, Connection con) {
         Scanner scan = new Scanner(System.in);
 
@@ -868,6 +952,16 @@ public class BluebirdsAirlineDriver {
     }
 
     // Books a reservation for parties that want to sit togeather
+
+    /**
+     *
+     * @param flightCode
+     * @param fc
+     * @param custID
+     * @param party
+     * @param con
+     * @return
+     */
     public static String bookTogether(String flightCode, int fc, int custID, int party, Connection con) {
         Scanner scan = new Scanner(System.in);
         String results = "\n";
@@ -1079,6 +1173,16 @@ public class BluebirdsAirlineDriver {
 }
 
     //Books a reservation
+
+    /**
+     *
+     * @param flightCode
+     * @param fc
+     * @param custID
+     * @param party
+     * @param con
+     * @return
+     */
     public static String bookReservation(String flightCode, int fc, int custID, int party, Connection con) {
         String results = "\n";
         // adds a first class reservation
@@ -1236,6 +1340,15 @@ public class BluebirdsAirlineDriver {
     
 
     // Cancels a reservation by reservation ID
+
+    /**
+     *
+     * @param con
+     * @param cState
+     * @param stmt
+     * @param rSet
+     * @param resID
+     */
     public static void cancelRes(Connection con, CallableStatement cState, Statement stmt, ResultSet rSet, String resID) {
         //Scanner scan = new Scanner(System.in);
        // System.out.println("Please Enter the Reservation Number: ");
@@ -1305,6 +1418,13 @@ public class BluebirdsAirlineDriver {
     }
 
     // prints a customers reservation according to the customer ID
+
+    /**
+     *
+     * @param con
+     * @param cState
+     * @param rSet
+     */
     public static void printRes(Connection con, CallableStatement cState, ResultSet rSet) {
         Scanner scan = new Scanner(System.in);
         System.out.println("What is the customer ID?");
@@ -1365,6 +1485,13 @@ public class BluebirdsAirlineDriver {
 
 
     // prints out a pilots schedule for the week
+
+    /**
+     *
+     * @param con
+     * @param pilotID
+     * @return
+     */
     public static String printSchedule(Connection con, String pilotID) {
        // Scanner scan = new Scanner(System.in);
         //System.out.println("What is the pilot's ID?");
@@ -1407,6 +1534,10 @@ public class BluebirdsAirlineDriver {
         
     }
     
+    /**
+     *
+     * @return
+     */
     public static int menu()
     {
     	Scanner scan = new Scanner(System.in);
@@ -1441,6 +1572,11 @@ public class BluebirdsAirlineDriver {
         }
     }
     
+    /**
+     *
+     * @param con
+     * @return
+     */
     public static String grossIncomeEach(Connection con){
         NumberFormat nf = NumberFormat.getCurrencyInstance();
         CallableStatement stmt;
@@ -1475,6 +1611,12 @@ public class BluebirdsAirlineDriver {
             
     }
     
+    /**
+     *
+     * @param con
+     * @param flightCode
+     * @return
+     */
     public static String grossIncomeSpec(Connection con, String flightCode){
         String results = "\n";
         NumberFormat nf = NumberFormat.getCurrencyInstance();
@@ -1513,6 +1655,12 @@ public class BluebirdsAirlineDriver {
             
     }
     
+    /**
+     *
+     * @param con
+     * @param cState
+     * @param rSet
+     */
     public static void searchCanceledRes(Connection con, CallableStatement cState, ResultSet rSet){
         Scanner scan = new Scanner(System.in);
         System.out.println("Would you like to search for canceled reservations by reservation number (1) or customer name (2)?");
@@ -1637,6 +1785,11 @@ public class BluebirdsAirlineDriver {
         }
     }
     
+    /**
+     *
+     * @param connect
+     * @param newFrame
+     */
     public static void printFlightSeats(Connection connect, BlueBirdsJFrame newFrame)
     {
         OptionExample nj = new OptionExample();
