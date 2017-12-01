@@ -98,52 +98,7 @@ public class BluebirdsAirlineDriver {
                 }
                 else if (getOption == 1)
                 {
-                    BookReservation brFrame = new BookReservation();
-                    brFrame.setVisible(true);
-                    brFrame.getjButton1().addActionListener(new java.awt.event.ActionListener() {
-                    public void actionPerformed(java.awt.event.ActionEvent event) {
-                        
-                        String flightDate = brFrame.getjTextField1().getText();
-                        int route = brFrame.getjComboBox1().getSelectedIndex();
-                        String flightRoute = "";
-                        if(route == 0){
-                            flightRoute = "RP";
-                        } else {
-                            flightRoute = "PR";
-                        }
-                        String flightTime = brFrame.getjTextField3().getText();
-                        String flightCode = flightDate + flightRoute + flightTime;
-                        int partySize = Integer.parseInt(brFrame.getjTextField4().getText()); 
-                        int group = 2;
-                        if(brFrame.getjCheckBox1().isSelected()){
-                            group = 1;
-                        }
-                        String custIDInput = brFrame.getjTextField2().getText();
-                        int custID = 0;
-                        boolean validCust = false;
-                        try{
-                            custID = Integer.parseInt(custIDInput);
-                            validCust = findCustomer(conn,custID);
-                            System.out.println(validCust);
-                        } catch (NumberFormatException ne) {
-                        }
-                        if(!validCust){
-                            brFrame.dispose();
-                            createNewCustomer(conn, nj, flightCode, partySize, group);
-                        }
-                        if(validCust){
-                            brFrame.dispose();
-                            String flightResults = searchFlight(flightCode, partySize, custID, group, conn);
-                            if(flightResults != ""){
-                                nj.getJLabel1().setVisible(false);
-                                nj.getJButton2().setVisible(false);
-                                nj.getJTextField1().setVisible(false);
-                                nj.setVisible(true);
-                                nj.setJTextArea1(flightResults);
-                            } 
-                        }
-
-                    }});
+                    selectFlightOldCust(conn, newFrame);
                 }
                 else if (getOption == 2)
                 {
@@ -163,16 +118,7 @@ public class BluebirdsAirlineDriver {
                 }
                 else if (getOption == 4)
                 {
-                    nj.setVisible(true);
-                    nj.setJLabel1("Please Confirm: ");
-                    nj.getJTextField1().setVisible(false);
-                    nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
-                    public void actionPerformed(java.awt.event.ActionEvent event) {
-                        String flightCode = nj.getJTextField1().getText();                      
-                        String results = grossIncomeEach(conn);
-                        System.out.println(results);
-                        nj.setJTextArea1(results);
-                    }});
+                    grossIncomeEach(conn, newFrame);
                 }
                 else if (getOption == 5)
                 {
@@ -226,7 +172,7 @@ public class BluebirdsAirlineDriver {
                         primeSeatMap(connect, stmt, flightAL);
         	}
         	else if(choice == 1){
-        		selectFlight(connect);
+        		selectFlightOldCust(connect);
         	}
         	else if(choice == 2){
         		searchCustID(connect, callSt, resSet);
@@ -694,7 +640,7 @@ public class BluebirdsAirlineDriver {
      * @return
      */
     private static int custIDGlobal = 0;
-    public static void createNewCustomer(Connection con, OptionExample nj, String flightCode, int partySize, int group)
+    public static void selectFlightNewCust(Connection con, OptionExample nj, String flightCode, int partySize, int group)
     {
         BookReservation createCust = new BookReservation();
         createCust.getjCheckBox1().setVisible(false);
@@ -731,13 +677,16 @@ public class BluebirdsAirlineDriver {
                 custIDGlobal = 0;
                 JOptionPane.showMessageDialog(null, "Customer has been created with custID of " + custID,"Created Customer",1);
                 String flightResults = searchFlight(flightCode, partySize, custID, group, con);        
-                if(flightResults.length() > 5){
-                    nj.getJLabel1().setVisible(false);
-                    nj.getJButton2().setVisible(false);
-                    nj.getJTextField1().setVisible(false);
-                    nj.setVisible(true);
+                
+                nj.getJLabel1().setVisible(false);
+                nj.getJButton2().setVisible(false);
+                nj.getJTextField1().setVisible(false);
+                if(flightResults != null) {
                     nj.setJTextArea1(flightResults);
-                } 
+                } else {
+                    nj.setJTextArea1("No reservations were made.");
+                }
+                nj.setVisible(true);
             }});
         createCust.setScreenSize(createCust);
         createCust.setVisible(true);
@@ -750,7 +699,7 @@ public class BluebirdsAirlineDriver {
      * @param con
      * @return
      */
-    public static boolean findCustomer(Connection con, int custID){
+    public static boolean validateCustomer(Connection con, int custID){
         Scanner scan = new Scanner(System.in);
         CallableStatement stmt;
         ResultSet resSet;
@@ -847,6 +796,68 @@ public class BluebirdsAirlineDriver {
             JOptionPane.showMessageDialog(null, "There are not enough available seats on this flight.","Not Enough Seats",1);
             return null;
         }
+    }
+    
+    public static void selectFlightOldCust(Connection conn, BlueBirdsJFrame newFrame){
+        OptionExample nj = new OptionExample();
+        nj.setScreenSize(nj);
+        newFrame.setEnabled(false);
+        nj.addWindowListener( new WindowAdapter() {
+            public void windowClosed(WindowEvent we) {
+                newFrame.setEnabled(true);
+                newFrame.toFront();
+                        
+            }} );
+        BookReservation brFrame = new BookReservation();
+        brFrame.setScreenSize(brFrame);
+        brFrame.setVisible(true);
+        brFrame.getjButton1().addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent event) {
+
+            String flightDate = brFrame.getjTextField1().getText();
+            int route = brFrame.getjComboBox1().getSelectedIndex();
+            String flightRoute = "";
+            if(route == 0){
+                flightRoute = "RP";
+            } else {
+                flightRoute = "PR";
+            }
+            String flightTime = brFrame.getjTextField3().getText();
+            String flightCode = flightDate + flightRoute + flightTime;
+            int partySize = Integer.parseInt(brFrame.getjTextField4().getText()); 
+            int group = 2;
+            if(brFrame.getjCheckBox1().isSelected()){
+                group = 1;
+            }
+            String custIDInput = brFrame.getjTextField2().getText();
+            int custID = 0;
+            boolean validCust = false;
+            try{
+                custID = Integer.parseInt(custIDInput);
+                validCust = validateCustomer(conn,custID);
+                System.out.println(validCust);
+            } catch (NumberFormatException ne) {
+            }
+            if(!validCust){
+                brFrame.dispose();
+                selectFlightNewCust(conn, nj, flightCode, partySize, group);
+            }
+            if(validCust){
+                brFrame.dispose();
+                String flightResults = searchFlight(flightCode, partySize, custID, group, conn);
+                nj.getJLabel1().setVisible(false);
+                nj.getJButton2().setVisible(false);
+                nj.getJTextField1().setVisible(false);
+                if(flightResults != "") {
+                    nj.setJTextArea1(flightResults);
+                } else {
+                    nj.setJTextArea1("No reservations were made.");
+                }
+                nj.setVisible(true);
+                 
+            }
+
+        }});
     }
 
     // Books a reservation for parties that want to sit togeather
@@ -1456,7 +1467,19 @@ public class BluebirdsAirlineDriver {
      * @param con
      * @return
      */
-    public static String grossIncomeEach(Connection con){
+    public static void grossIncomeEach(Connection con, BlueBirdsJFrame newFrame){
+        OptionExample nj = new OptionExample();
+        
+        nj.getJLabel1().setVisible(false);
+        nj.getJButton2().setVisible(false);
+        nj.getJTextField1().setVisible(false);
+        nj.setScreenSize(nj);
+        newFrame.setEnabled(false);
+        nj.addWindowListener( new WindowAdapter() {
+            public void windowClosed(WindowEvent we) {
+                newFrame.setEnabled(true);
+                newFrame.toFront();    
+        }} );                 
         NumberFormat nf = NumberFormat.getCurrencyInstance();
         CallableStatement stmt;
         ResultSet resSet;
@@ -1476,6 +1499,8 @@ public class BluebirdsAirlineDriver {
                    results = results + ("\nFlight Code: "+ flightCode + "  Gross Income: " + nf.format(grossIncome));
                    //System.out.println("Flight Code: "+ flightCode + "  Gross Income: " + nf.format(grossIncome));
                }
+               nj.setJTextArea1(results);
+               nj.setVisible(true);  
            } catch (SQLException e) {
                //System.out.println("SQL Exception");
            }
@@ -1485,9 +1510,6 @@ public class BluebirdsAirlineDriver {
        {
            //System.out.println("Stored proc did not work");
        }
-        return results;
-            
-            
     }
     
     /**
