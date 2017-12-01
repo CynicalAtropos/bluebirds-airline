@@ -123,10 +123,8 @@ public class BluebirdsAirlineDriver {
                         createNewCustomer(conn, nj, flightCode, partySize, group);
                     }
                     if(validCust){
-                    custID = custIDGlobal;
                     brFrame.dispose();
                         String flightResults = searchFlight(flightCode, partySize, custID, group, conn);
-                        custIDGlobal = 0;
                         if(flightResults != ""){
                             nj.getJLabel1().setVisible(false);
                             nj.getJButton2().setVisible(false);
