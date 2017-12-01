@@ -1,19 +1,53 @@
 package bluebirds.airline;
 
+/**
+ * Reservation class has fields flight, customer
+ * seatNumber, firstClass, cost, and resNum
+ * 
+ * @author Matthew Sluder
+ * @author Josh Whitt
+ * @author Timothy Alligood
+ */
 public class Reservation {
 	
+    /**
+     * the flight
+     */
 	private Flight flight;
+    /**
+     * the customer
+     */
 	private Customer customer;
+    /**
+     * the seat number
+     */
 	private String seatNumber;
+    /**
+     * true for firstClass false if economy
+     */
         private boolean firstClass;
+    /**
+     * the cost
+     */
 	private int cost;
-        
+    /**
+     * the reservation number
+     */
         private int reservationNum;
 	
-        public static int num = 200;
+    /**
+     * used to iterate for the reservation number
+     */
+    public static int num = 200;
         
-        
-	public Reservation(Flight f, Customer c, String s, boolean fc)
+    /**
+     * Creates new Reservation with all parameters
+     * @param f the flight
+     * @param c the customer
+     * @param s the seatNumber
+     * @param fc the seatType 
+     */
+    public Reservation(Flight f, Customer c, String s, boolean fc)
 	{
 		flight = f;
 		customer = c;
@@ -32,14 +66,24 @@ public class Reservation {
 		
 	}
 	
-	public Reservation()
+    /**
+     * Empty Constructor
+     */
+    public Reservation()
 	{
             reservationNum = num;
             num++;
 		
 	}
-        
-        // for reading from a file
+
+    /**
+     * Reads the reservation from a file
+     * @param f the flight 
+     * @param c the customer
+     * @param s the seatNumber
+     * @param fc the seatType
+     * @param resNum the Reservation number
+     */
         public Reservation(Flight f, Customer c, String s, boolean fc, int resNum)
         {
             flight = f;
@@ -57,58 +101,109 @@ public class Reservation {
             reservationNum = resNum;
             
         }
-	
+    /**
+     * Returns the reservation info
+     * @return the reservation info
+     */
 	public String toString()
 	{
 		return "The reservation " + reservationNum + " for " + customer.getName() + " of seat number " + seatNumber + " on " + flight.getFlightCode() + " which cost " + cost + ".";
 	}
 
-	public Flight getFlight() {
+    /**
+     * Returns the flight 
+     * @return the flight 
+     */
+    public Flight getFlight() {
 		return flight;
 	}
 
-	public void setFlight(Flight flight) {
+    /**
+     * Sets the flight
+     * @param flight the flight
+     */
+    public void setFlight(Flight flight) {
 		this.flight = flight;
 	}
 
-	public Customer getCustomer() {
+    /**
+     * Returns the customer
+     * @return the customer
+     */
+    public Customer getCustomer() {
 		return customer;
 	}
 
-	public void setCustomer(Customer customer) {
+    /**
+     * Sets the customer
+     * @param customer the customer
+     */
+    public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
         
-        public boolean getFirstClass() {
+    /**
+     * Returns the seatType
+     * @return true or false for seatType
+     */
+    public boolean getFirstClass() {
 		return firstClass;
 	}
 
-	public void setFirstClass(boolean firstClass) {
+    /**
+     * Sets the seatType
+     * @param firstClass true or false for seatType
+     */
+    public void setFirstClass(boolean firstClass) {
 		this.firstClass = firstClass;
 	}
 
-	public String getSeatNumber() {
+    /**
+     * Returns the seatNumber
+     * @return the seatNumber
+     */
+    public String getSeatNumber() {
 		return seatNumber;
 	}
 
-	public void setSeatNumber(String seatNumber) {
+    /**
+     * Sets the seatNumber
+     * @param seatNumber the seat number
+     */
+    public void setSeatNumber(String seatNumber) {
 		this.seatNumber = seatNumber;
 	}
 
-	public int getCost() {
+    /**
+     * Returns the cost
+     * @return the cost
+     */
+    public int getCost() {
 		return cost;
 	}
 
-	public void setCost(int cost) {
+    /**
+     * Sets the cost
+     * @param cost the cost
+     */
+    public void setCost(int cost) {
 		this.cost = cost;
 	}
         
-        public int getReservationNum()
+    /**
+     * Returns the Reservation number
+     * @return the reservation number
+     */
+    public int getReservationNum()
         {
             return reservationNum;
         }
         
-        public void setReservationNum(int reservationNum)
+    /**
+     * Sets the reservation number
+     * @param reservationNum the reservation number
+     */
+    public void setReservationNum(int reservationNum)
         {
             this.reservationNum = reservationNum;
         }

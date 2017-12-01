@@ -9,8 +9,11 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 
 /**
- *
- * @author Matt
+ * The main Jframe that appears when the driver is run
+ * 
+ * @author Matthew Sluder
+ * @author Josh Whitt
+ * @author Timothy Alligood
  */
 public class BlueBirdsJFrame extends javax.swing.JFrame {
 
@@ -72,11 +75,6 @@ public class BlueBirdsJFrame extends javax.swing.JFrame {
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Options", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 12))); // NOI18N
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "0.  Prime the data.", "1.  Book a Reservation.", "2.  Search for Customer by their ID Number.", "3.  Cancel a Reservation.", "4.  Print Gross Income for Each Flight.", "5.  Print Gross Income for a Specific Flight", "6.  Print a Pilot's Weekly Schedule.", "7.  Find All Reservations Made Under a Specific Customer ID Number.", "8.  Search for Reservation by Reservation Number.", "9.  Search Canceled Reservations By Reservation Number or Customer Name.", "10. Print Seat Layout for Specified Flight." }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -133,24 +131,36 @@ public class BlueBirdsJFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
-
+ /**
+ * Ends the program if the close button is clicked
+ */
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_jButton1ActionPerformed
     
+    /**
+     *Returns the ok button
+     * @return the ok button
+     */
     public javax.swing.JButton getJButton2()
     {
         return jButton2;
     }
 
+    /**
+     *Returns the Combo box
+     * @return the combo box
+     */
     public javax.swing.JComboBox<String> getJComboBox1()
     {
         return jComboBox1;
     }
+
+    /**
+     * Sets the frame so it appears in the middle of the screen
+     * @param newFrame the frame to be set
+     */
     public void setScreenSize(BlueBirdsJFrame newFrame)
     {
         Toolkit tool = Toolkit.getDefaultToolkit();
@@ -158,43 +168,7 @@ public class BlueBirdsJFrame extends javax.swing.JFrame {
         newFrame.setBounds((size.width - newFrame.getWidth())/2, (size.height - newFrame.getHeight())/2, newFrame.getWidth(), newFrame.getHeight());
         
     }
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(BlueBirdsJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(BlueBirdsJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(BlueBirdsJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(BlueBirdsJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new BlueBirdsJFrame().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
