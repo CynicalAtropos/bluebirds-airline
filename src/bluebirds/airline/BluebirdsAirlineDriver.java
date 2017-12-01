@@ -91,14 +91,52 @@ public class BluebirdsAirlineDriver {
                 }
                 else if (getOption == 1)
                 {
-                    nj.setVisible(true);
-                    nj.setJLabel1("Please Enter the flight code: ");
-                    nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
+                    BookReservation brFrame = new BookReservation();
+                    brFrame.setVisible(true);
+                    brFrame.getjButton1().addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent event) {
-                        String flightCode = nj.getJTextField1().getText();                      
-                        String results = grossIncomeSpec(conn,flightCode);
-                        nj.setJTextArea1(results + "Check");
-                    }});
+                    String flightDate = brFrame.getjTextField1().getText();
+                    int route = brFrame.getjComboBox1().getSelectedIndex();
+                    String flightRoute = "";
+                    if(route == 0){
+                        flightRoute = "RP";
+                    } else {
+                        flightRoute = "PR";
+                    }
+                    String flightTime = brFrame.getjTextField3().getText();
+                    String flightCode = flightDate + flightRoute + flightTime;
+                    int partySize = Integer.parseInt(brFrame.getjTextField4().getText()); 
+                    int group = 2;
+                    if(brFrame.getjCheckBox1().isSelected()){
+                        group = 1;
+                    }
+                    String custIDInput = brFrame.getjTextField2().getText();
+                    int custID = 0;
+                    boolean validCust = false;
+                    try{
+                        custID = Integer.parseInt(custIDInput);
+                        validCust = findCustomer(conn,custID);
+                    } catch (NumberFormatException ne) {
+                    }
+                    if(!validCust){
+                        final Object lock = new Object();
+                        createNewCustomer(conn, nj, flightCode, partySize, group);
+                    }
+                    if(validCust){
+                    custID = custIDGlobal;
+                    brFrame.dispose();
+                        String flightResults = searchFlight(flightCode, partySize, custID, group, conn);
+                        custIDGlobal = 0;
+                        if(flightResults != ""){
+                            nj.getJLabel1().setVisible(false);
+                            nj.getJButton2().setVisible(false);
+                            nj.getJTextField1().setVisible(false);
+                            nj.setVisible(true);
+                            nj.setJTextArea1(flightResults + "Check");
+                        } 
+                    }
+                    
+                }});
                 }
                 else if (getOption == 2)
                 {
@@ -595,47 +633,61 @@ public class BluebirdsAirlineDriver {
             e.printStackTrace();
         }
     }
-    
-    public static int createNewCustomer(Connection con)
+    private static int custIDGlobal =0;
+    public static void createNewCustomer(Connection con, OptionExample nj, String flightCode, int partySize, int group)
     {
-        Statement stmt;
-        Scanner scan = new Scanner(System.in);
-        System.out.println("What is your name? ex: First Last");
-        String name = scan.nextLine();
-        System.out.println("What is your address? ex: StreetNumber Street Name, City, ST ZipCode");
-        String address = scan.nextLine();
-        System.out.println("What is your phone number? ex: 5409770923");
-        String phone = scan.nextLine();
-        
         BookReservation createCust = new BookReservation();
+        createCust.getjCheckBox1().setVisible(false);
+        createCust.getjComboBox1().setVisible(false);
+        createCust.getjTextField2().setVisible(false);
+        createCust.getjLabel6().setVisible(false);
+        createCust.getjLabel5().setText("Create a New Customer");
+        createCust.getjLabel1().setText("Name: ");
+        createCust.getjLabel3().setText("Address: ");
+        createCust.getjLabel4().setText("Phone Number: ");
+        createCust.pack();
+        createCust.getjButton1().addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent event) {
+                String name = createCust.getjTextField1().getText();
+                String address = createCust.getjTextField3().getText();
+                String phone = createCust.getjTextField4().getText();
+
+                String insert = "INSERT INTO customers (customerName, address, phone)" + " VALUES ('" + name + "', '" + address + "', '" + phone + "')";
+                int custID = 0;
+                try {
+                    Statement stmt = con.createStatement();
+                    stmt.executeUpdate(insert, Statement.RETURN_GENERATED_KEYS);
+                    ResultSet resSet = stmt.getGeneratedKeys();
+                    resSet.next();
+                    custIDGlobal = resSet.getInt(1);
+                   } // end try
+                catch (SQLException e) 
+                {
+                    System.out.println("Stored proc did not work");
+                }
+
+                createCust.setVisible(false);
+                custID = custIDGlobal;
+                custIDGlobal = 0;
+                JOptionPane.showMessageDialog(null, "Customer has been created with custID of " + custID,"Created Customer",1);
+                String flightResults = searchFlight(flightCode, partySize, custID, group, con);
+                        
+                        if(flightResults != ""){
+                            nj.getJLabel1().setVisible(false);
+                            nj.getJButton2().setVisible(false);
+                            nj.getJTextField1().setVisible(false);
+                            nj.setVisible(true);
+                            nj.setJTextArea1(flightResults);
+                        } 
+            }});
         createCust.setVisible(true);
-        String insert = "INSERT INTO customers (customerName, address, phone)" + " VALUES ('" + name + "', '" + address + "', '" + phone + "')";
-        int custID = 0;
-        try {
-            stmt = con.createStatement();
-            stmt.executeUpdate(insert, Statement.RETURN_GENERATED_KEYS);
-            ResultSet resSet = stmt.getGeneratedKeys();
-            resSet.next();
-            custID = resSet.getInt(1);
-           } // end try
-        catch (SQLException e) 
-        {
-            System.out.println("Stored proc did not work");
-        }
-        
-        
-        System.out.println("Your customer ID is " + custID);
-        return custID;
     }
     
     // Finds the customer for the reservation
-    public static int findCustomer(Connection con){
+    public static boolean findCustomer(Connection con, int custID){
         Scanner scan = new Scanner(System.in);
         CallableStatement stmt;
         ResultSet resSet;
-        
-        System.out.println("Enter your ID number:");
-        int custID = scan.nextInt();
         
         String procName = "searchCustID";
         String storedProc = "{call " + procName + " (" + custID + ")}";
@@ -645,7 +697,7 @@ public class BluebirdsAirlineDriver {
             if(resSet.next()){
                 String name = resSet.getString(2);
                 System.out.println("Customer found with the name: " + name + "\n");
-                return custID;
+                return true;
             }
         } // end try
         catch (SQLException e) 
@@ -653,131 +705,10 @@ public class BluebirdsAirlineDriver {
             System.out.println("Stored proc did not work");
         }
                 System.out.println("Customer not found. Create new customer please.");
-                return createNewCustomer(con);    
+                return false;    
     }
 
-    // Gets paramaters for a flight from the user and passes them to a method
-    public static String selectFlight(Connection con) {
-        Scanner scan = new Scanner(System.in);
-        int group = 2;
-        int custID = 0;
-        // Determines if the customer is new or returning
-        int custAnswer = 0;
-        boolean valid = true;
-        while (valid) {
-            System.out.println("Are you a returning customer?: "
-                    + "\n[1] Yes"
-                    + "\n[2] No");
-            custAnswer = scan.nextInt();
-            if (custAnswer == 1) {
-                custID = findCustomer(con);
-                valid = false;
-            }
-        else if (custAnswer == 2) {
-                custID = createNewCustomer(con);
-                valid = false;
-        }
-        else
-            System.out.println("Please enter 1 or 2.");
-        }
-        
-        String flightCode = "";
-        //Determines Day
-        int day = 0;
-        valid = true;
-        while (valid) {
-            System.out.println("Please select your date of flight for the week of November 12-18 (enter 12-18)");
-            day = scan.nextInt();
-
-            if (day < 12 || day > 18) {
-                System.out.println("Please enter 12-18");
-            } else {
-                valid = false;
-                flightCode = flightCode + day;
-            }
-        }
-        // Determines the route
-        int routeAnswer = 0;
-        valid = true;
-        while (valid) {
-            System.out.println("Please select route: "
-                    + "\n[1] Roanoke to Phoenix"
-                    + "\n[2] Phoenix to Roanoke");
-            routeAnswer = scan.nextInt();
-
-            if (routeAnswer == 1) {
-                System.out.println("You have selected Roanoke to Phoenix.");
-                valid = false;
-                flightCode = flightCode + "RP";
-
-            } else if (routeAnswer == 2) {
-                System.out.println("You have selected Phoenix to Roanoke.");
-                valid = false;
-                flightCode = flightCode + "PR";
-
-            } else {
-                System.out.println("Please enter 1 or 2.");
-            }
-        }
-
-        // Determines time of flight
-        int timeAnswer = 0;
-        valid = true;
-        while (valid) {
-            System.out.println("Please select time: "
-                    + "\n[1] Morning"
-                    + "\n[2] Evening");
-            timeAnswer = scan.nextInt();
-
-            if (timeAnswer == 1) {
-                System.out.println("You have selected Morning.");
-                valid = false;
-                flightCode = flightCode + "AM";
-
-            } else if (timeAnswer == 2) {
-                System.out.println("You have selected Evening.");
-                valid = false;
-                flightCode = flightCode + "PM";
-            } else {
-                System.out.println("Please enter 1 or 2.");
-            }
-        }
-
-        // Determines party size for the reservation
-        int party = 0;
-        valid = true;
-        while (valid) {
-            System.out.println("How many in your party?: ");
-            party = scan.nextInt();
-
-            if (party > 8) {
-                System.out.println("That's too many reservations for one booking.");
-            } else if (party < 1) {
-                System.out.println("That is an invalid choice.");
-            } else if (party > 1) {
-                boolean sValid = true;
-                while (sValid) {
-                    // Let's the customer request that the party sit together
-                    System.out.println("Is it mandatory your party sit together? (answering yes will effect flight availability): ");
-                    System.out.println("[1] yes"
-                                    + "\n[2] no");
-                    group = scan.nextInt();
-                    if (group == 1 || group == 2) {
-                        sValid = false;
-                        valid = false;
-                    } else {
-                        System.out.println("Please enter 1 or 2. ");
-                    }
-                }
-            } else {
-                valid = false;
-            }
-        }
-
-
-        return searchFlight(flightCode, party, custID, group, con);
-    }
-
+    
     // Searches for a flight based on the customers parameters
     public static String searchFlight(String flightCode, int party, int custID, int group, Connection con) {
         Scanner scan = new Scanner(System.in);
@@ -815,17 +746,7 @@ public class BluebirdsAirlineDriver {
             if (party <= fClass) {
                 boolean valid = true;
                 if((party < 3 || group == 2) && party <= fClass){
-                while (valid) {
-                    /*
-                    System.out.println("There are first class seats available. Would you like first class? "
-                            + "\n[1] yes"
-                            + "\n[2] no");
-                    bookClass = scan.nextInt();
-                    if (bookClass > 0 && bookClass < 3) {
-                        valid = false;
-                    } else {
-                        System.out.println("Please enter 1 or 2. ");
-                    }*/
+
                     int reply = JOptionPane.showConfirmDialog(null, "There are first class seats available. Would you like first class?", "First Class Select", JOptionPane.YES_NO_OPTION);
                     if (reply == JOptionPane.YES_OPTION) {
                         bookClass = 1;
@@ -833,9 +754,8 @@ public class BluebirdsAirlineDriver {
                     else {
                         bookClass = 2;
                     }
+                
                 }
-                }
-
             } else {
                 JOptionPane.showMessageDialog(null, "There are no first class seats available","First Class",1);
             }
@@ -846,25 +766,9 @@ public class BluebirdsAirlineDriver {
                 return bookReservation(flightCode, bookClass, custID, party, con);
             }
         } else {
-            System.out.println("There are not enough available seats on this flight. Would you like to book another flight? "
-                    + "\n[1] Yes"
-                    + "\n[2] No");
-            int again = scan.nextInt();
-
-            if (again == 1) {
-                return selectFlight(con);
-            } else if (again != 2) {
-                System.out.println("Please enter 1 or 2. ");
-            }
-            int reply = JOptionPane.showConfirmDialog(null, "There are first class seats available. Would you like first class?", "First Class Select", JOptionPane.YES_NO_OPTION);
-            if (reply == JOptionPane.YES_OPTION) {
-                return selectFlight(con);
-            }
-            else {
-                
-            }
+            int reply = JOptionPane.showConfirmDialog(null, "There are not enough available seats on this flight.", "Not Enough Seats", JOptionPane.OK_OPTION);
+            return null;
         }
-        //return "";
     }
 
     // Books a reservation for parties that want to sit togeather
@@ -926,7 +830,7 @@ public class BluebirdsAirlineDriver {
                                         stmt3.executeUpdate(updateSeatMap);
                                         found = true;
                                         party--;
-                                        results = results + ("Reservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
+                                        results = results + ("\nReservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
                                         System.out.println("Reservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
                                      } // end try
                                      catch (SQLException e) 
@@ -1021,7 +925,7 @@ public class BluebirdsAirlineDriver {
                                         stmt3.executeUpdate(updateSeatMap);
                                         found = true;
                                         party--;
-                                        results = results + ("Reservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
+                                        results = results + ("\nReservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
                                         System.out.println("Reservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
                                      } // end try
                                      catch (SQLException e) 
@@ -1045,38 +949,19 @@ public class BluebirdsAirlineDriver {
            }
         }
         if (!booked){
-            boolean valid = true;
-            while (valid) {
-                System.out.println("Sorry. Your party will not be able to sit together. Book this flight anyway? "
-                    + "\n[1] Yes"
-                    + "\n[2] No");
-                int answer = scan.nextInt();
-                if (answer == 1) {
-                    bookReservation(flightCode, fc, custID, party, con);
-                    valid = false;
-                    } 
-                else {
-                    while (valid) {
-                        System.out.println("Would you like to try to book a different flight? "
-                            + "\n[1] Yes"
-                            + "\n[2] No");
-                            answer = scan.nextInt();
-                            if (answer == 1) {
-                                selectFlight(con);
-                                valid = false;
-                            }
-                            else if (answer == 2){
-                                valid = false;
-                            }
-                            else{
-                                System.out.println("Please enter 1 or 2.");
-                        }
+            int reply = JOptionPane.showConfirmDialog(null, "Sorry, your party will not be able to sit together on this flight  Would you like to book anyways?", "Book Separate", JOptionPane.YES_NO_OPTION);
+                    if (reply == JOptionPane.YES_OPTION) {
+                        return bookReservation(flightCode, fc, custID, party, con);
                     }
-                }
-            }
+                    else {
+                        JOptionPane.showConfirmDialog(null, "There are not enough available seats on this flight.", "Not Enough Seats", JOptionPane.OK_OPTION);
+                    return null;
+                    }
+
+            } else return results;
+        
         }
-        return results;
-}
+
 
     //Books a reservation
     public static String bookReservation(String flightCode, int fc, int custID, int party, Connection con) {
@@ -1125,7 +1010,7 @@ public class BluebirdsAirlineDriver {
                                     stmt3.executeUpdate(updateSeatMap);
                                     found = true;
                                     party--;
-                                    results = results + ("Reservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
+                                    results = results + ("\nReservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
                                     System.out.println("Reservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
                                 } // end try
                                 catch (SQLException e) 
@@ -1202,7 +1087,7 @@ public class BluebirdsAirlineDriver {
                                     stmt3.executeUpdate(updateSeatMap);
                                     found = true;
                                     party--;
-                                    results = results + ("Reservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
+                                    results = results + ("\nReservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
                                     System.out.println("Reservation " + resID + " created with seat number " + seatNames.get(count) + " on flight " + flightCode + ".");
                                 } // end try
                                 catch (SQLException e) 
@@ -1212,8 +1097,8 @@ public class BluebirdsAirlineDriver {
                            }
                            count++;
                            if(count > 7 && !found){
-                               System.out.println("Sorry there is not room on this flight for your party to sit next to each other.");
-                               JOptionPane.showMessageDialog(null, "Sorry there is not room on this flight for your party to sit next to each other.","Seat Together Availablility",1);
+                               System.out.println("Sorry there is not room on this flight for your party.");
+                               JOptionPane.showMessageDialog(null, "Sorry there is not room on this flight for your party..","Seat Availablility",1);
                                party = 0;
                            }
                        }
@@ -1229,6 +1114,7 @@ public class BluebirdsAirlineDriver {
                System.out.println("Stored proc did not work");
            }
         }
+        return results;
     }
 
 
