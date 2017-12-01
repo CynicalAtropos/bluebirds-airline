@@ -119,7 +119,6 @@ public class BluebirdsAirlineDriver {
                     } catch (NumberFormatException ne) {
                     }
                     if(!validCust){
-                        final Object lock = new Object();
                         createNewCustomer(conn, nj, flightCode, partySize, group);
                     }
                     if(validCust){
@@ -130,7 +129,7 @@ public class BluebirdsAirlineDriver {
                             nj.getJButton2().setVisible(false);
                             nj.getJTextField1().setVisible(false);
                             nj.setVisible(true);
-                            nj.setJTextArea1(flightResults + "Check");
+                            nj.setJTextArea1(flightResults);
                         } 
                     }
                     
@@ -668,15 +667,14 @@ public class BluebirdsAirlineDriver {
                 custID = custIDGlobal;
                 custIDGlobal = 0;
                 JOptionPane.showMessageDialog(null, "Customer has been created with custID of " + custID,"Created Customer",1);
-                String flightResults = searchFlight(flightCode, partySize, custID, group, con);
-                        
-                        if(flightResults != ""){
-                            nj.getJLabel1().setVisible(false);
-                            nj.getJButton2().setVisible(false);
-                            nj.getJTextField1().setVisible(false);
-                            nj.setVisible(true);
-                            nj.setJTextArea1(flightResults);
-                        } 
+                String flightResults = searchFlight(flightCode, partySize, custID, group, con);        
+                if(flightResults != ""){
+                    nj.getJLabel1().setVisible(false);
+                    nj.getJButton2().setVisible(false);
+                    nj.getJTextField1().setVisible(false);
+                    nj.setVisible(true);
+                    nj.setJTextArea1(flightResults);
+                } 
             }});
         createCust.setVisible(true);
     }
