@@ -36,20 +36,6 @@ public class BluebirdsAirlineDriver {
      * @param args
      */
     public static void main(String[] args) {
-        // TODO code application logic here
-        
-        
-        
-       // ArrayList<Customer> customerAL = new ArrayList<Customer>();
-
-       // ArrayList<Flight> flightAL = new ArrayList<Flight>();
-
-       // ArrayList<Pilot> pilotAL = new ArrayList<Pilot>();
-
-       // ArrayList<Reservation> reservationAL = new ArrayList<Reservation>();
-        
-       // ArrayList<Reservation> canceledResAL = new ArrayList<Reservation>();
-        
         Connection connect = null;
         CallableStatement callSt;
         ResultSet resSet = null;
@@ -78,13 +64,8 @@ public class BluebirdsAirlineDriver {
                 Statement stmt = null;
                         
                 int getOption = newFrame.getJComboBox1().getSelectedIndex();
-                //if getOption = 0
-                    // prime data
-                //else if getOption = 1
-                    //do this
                 OptionExample nj = new OptionExample();
                 nj.setScreenSize(nj);
-                //nj.setVisible(true);
 
                 if (getOption == 0)
                 {
@@ -122,14 +103,7 @@ public class BluebirdsAirlineDriver {
                 }
                 else if (getOption == 5)
                 {
-                    nj.setVisible(true);
-                    nj.setJLabel1("Please Enter the flight code: ");
-                    nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
-                    public void actionPerformed(java.awt.event.ActionEvent event) {
-                        String flightCode = nj.getJTextField1().getText();                      
-                        String results = grossIncomeSpec(conn,flightCode);
-                        nj.setJTextArea1(results);
-                    }});
+                    grossIncomeSpec(conn, newFrame);
                 }
                 else if (getOption == 6)
                 {
@@ -161,51 +135,6 @@ public class BluebirdsAirlineDriver {
                 }
             }
         });
-        /*while (true)
-        {
-        	int choice = menu();
-        	if(choice == 0){
-                        pilotAL = primePilots(connect, stmt, pilotAL);
-                        flightAL = primeFlights(connect, stmt, pilotAL, flightAL);
-                        customerAL = primeCustomers(connect, stmt, customerAL);
-                        reservationAL = primeReservations(connect, stmt, reservationAL, flightAL, customerAL);
-                        primeSeatMap(connect, stmt, flightAL);
-        	}
-        	else if(choice == 1){
-        		selectFlightOldCust(connect);
-        	}
-        	else if(choice == 2){
-        		searchCustID(connect, callSt, resSet);
-        	}
-        	else if(choice == 3){
-        		cancelRes(connect, callSt, stmt, resSet);
-        	}
-        	else if(choice == 4){
-        		grossIncomeEach(connect);
-        	}
-        	else if(choice == 5){
-        		grossIncomeSpec(connect);
-        	}
-        	else if (choice == 6){
-        		printSchedule(connect, callSt, resSet);
-        	}
-        	else if(choice == 7){
-        		printRes(connect, callSt, resSet);
-        	}
-        	else if(choice == 8){
-        		searchReservID(connect, callSt, resSet);
-        	}
-        	else if(choice == 9){
-        		searchCanceledRes(connect, callSt, resSet);
-        	}
-        	else if(choice == 10){
-        		printFlightSeats(connect, callSt, resSet);
-        	}
-        	else if(choice == 11){
-        		System.out.println("\nGOOD BYE!!!");
-        		System.exit(0);
-        	}
-        }  */
     }
     
     /**
@@ -639,7 +568,6 @@ public class BluebirdsAirlineDriver {
      * @param con
      * @return
      */
-    private static int custIDGlobal = 0;
     public static void selectFlightNewCust(Connection con, OptionExample nj, String flightCode, int partySize, int group)
     {
         BookReservation createCust = new BookReservation();
@@ -665,7 +593,7 @@ public class BluebirdsAirlineDriver {
                     stmt.executeUpdate(insert, Statement.RETURN_GENERATED_KEYS);
                     ResultSet resSet = stmt.getGeneratedKeys();
                     resSet.next();
-                    custIDGlobal = resSet.getInt(1);
+                    custID = resSet.getInt(1);
                    } // end try
                 catch (SQLException e) 
                 {
@@ -673,8 +601,6 @@ public class BluebirdsAirlineDriver {
                 }
 
                 createCust.setVisible(false);
-                custID = custIDGlobal;
-                custIDGlobal = 0;
                 JOptionPane.showMessageDialog(null, "Customer has been created with custID of " + custID,"Created Customer",1);
                 String flightResults = searchFlight(flightCode, partySize, custID, group, con);        
                 
@@ -1424,53 +1350,17 @@ public class BluebirdsAirlineDriver {
         
     }
     
-    /**
-     *
-     * @return
-     */
-    public static int menu()
-    {
-    	Scanner scan = new Scanner(System.in);
-    	System.out.println("\n0.  Prime the data.");
-        System.out.println("1.  Book a Reservation.");
-        System.out.println("2.  Search for Customer by their ID Number.");
-        System.out.println("3.  Cancel a Reservation.");
-        System.out.println("4.  Print Gross Income for Each Flight.");
-        System.out.println("5.  Print Gross Income for a Specific Flight");
-        System.out.println("6.  Print a Pilot's Weekly Schedule.");
-        System.out.println("7.  Find All Reservations Made Under a Specific Customer ID Number.");
-        System.out.println("8.  Search for Reservation by Reservation Number.");
-        System.out.println("9.  Search Canceled Reservations By Reservation Number or Customer Name.");
-        System.out.println("10. Print Seat Layout for Specified Flight.");
-        System.out.println("11. Exit."); 
-        System.out.print("Choice: ");
-        
-        try{
-        	int choice = scan.nextInt();
-        	
-        	if(choice < 0 || choice > 11){
-            	System.out.println("\nThat is not a valid choice!"); 
-            	return menu();
-            }
-            else{
-            	return choice;
-            }
-        }
-        catch(Exception t){
-        	System.out.println("\nThat is not a valid choice!"); 
-        	return menu();
-        }
-    }
     
     /**
-     *
-     * @param con
+     * Calculates and displays the gross income for each flight.
+     * @param con the connection
+     * @param newFrame the initial frame
      * @return
      */
     public static void grossIncomeEach(Connection con, BlueBirdsJFrame newFrame){
         OptionExample nj = new OptionExample();
         
-        nj.getJLabel1().setVisible(false);
+        nj.getJLabel1().setText("Gross Income For Each Flight");
         nj.getJButton2().setVisible(false);
         nj.getJTextField1().setVisible(false);
         nj.setScreenSize(nj);
@@ -1486,7 +1376,7 @@ public class BluebirdsAirlineDriver {
         String procName = "GrossIncomeEach";
         String storedProc = "{call " + procName +"}";
         //System.out.println("\n");
-        String results = "\n";
+        String results = "";
         try {
            stmt = con.prepareCall(storedProc);
            resSet = stmt.executeQuery();
@@ -1513,47 +1403,58 @@ public class BluebirdsAirlineDriver {
     }
     
     /**
-     *
-     * @param con
-     * @param flightCode
+     * Calculates and displays the gross income for a specific flight.
+     * @param con the connection
+     * @param newFrame the initial frame
      * @return
      */
-    public static String grossIncomeSpec(Connection con, String flightCode){
-        String results = "\n";
-        NumberFormat nf = NumberFormat.getCurrencyInstance();
-        CallableStatement stmt;
-        ResultSet resSet;
-        String procName = "GrossIncomeSpec";
-        String storedProc = "{call " + procName + " ('" + flightCode + "')}";
-        System.out.println("\n");
-        try {
-           stmt = con.prepareCall(storedProc);
-           resSet = stmt.executeQuery();
+    public static void grossIncomeSpec(Connection con, BlueBirdsJFrame newFrame){
+        OptionExample nj = new OptionExample();
+        nj.setScreenSize(nj);
+        newFrame.setEnabled(false);
+        nj.addWindowListener( new WindowAdapter() {
+            public void windowClosed(WindowEvent we) {
+                newFrame.setEnabled(true);
+                newFrame.toFront();    
+        }} ); 
+        nj.setVisible(true);
+        nj.setJLabel1("Please Enter the flight code: ");
+        nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent event) {
+            String flightCode = nj.getJTextField1().getText();                      
+            String results = "\n";
+            NumberFormat nf = NumberFormat.getCurrencyInstance();
+            CallableStatement stmt;
+            ResultSet resSet;
+            String procName = "GrossIncomeSpec";
+            String storedProc = "{call " + procName + " ('" + flightCode + "')}";
+            System.out.println("\n");
+            try {
+               stmt = con.prepareCall(storedProc);
+               resSet = stmt.executeQuery();
 
-           try {
-               System.out.println();
+               try {
+                   System.out.println();
 
-               ResultSetMetaData meta = resSet.getMetaData();
-               if(resSet.next()) {
-                   flightCode = resSet.getString(1);
-                   int grossIncome = resSet.getInt(2);
-                   results = results + ("Flight Code: "+ flightCode + "  Gross Income: " + nf.format(grossIncome));
-                   System.out.println("Flight Code: "+ flightCode + "  Gross Income: " + nf.format(grossIncome));
-               } else {
-                   System.out.println("No flight found.");
+                   ResultSetMetaData meta = resSet.getMetaData();
+                   if(resSet.next()) {
+                       flightCode = resSet.getString(1);
+                       int grossIncome = resSet.getInt(2);
+                       results = results + ("Flight Code: "+ flightCode + "  Gross Income: " + nf.format(grossIncome));
+                       System.out.println("Flight Code: "+ flightCode + "  Gross Income: " + nf.format(grossIncome));
+                   } else {
+                       System.out.println("No flight found.");
+                   }
+               } catch (SQLException e) {
+                   System.out.println("SQL Exception");
                }
-           } catch (SQLException e) {
-               System.out.println("SQL Exception");
-           }
-
-       } // end try
-       catch (SQLException e) 
-       {
-           System.out.println("Stored proc did not work");
-       }
-        return results;
-            
-            
+            } // end try
+            catch (SQLException e) 
+            {
+                System.out.println("Stored proc did not work");
+            }
+            nj.setJTextArea1(results);
+        }});           
     }
     
     /**
