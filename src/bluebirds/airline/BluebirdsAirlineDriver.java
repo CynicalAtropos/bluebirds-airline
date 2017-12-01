@@ -99,45 +99,48 @@ public class BluebirdsAirlineDriver {
                     brFrame.setVisible(true);
                     brFrame.getjButton1().addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent event) {
-                    String flightDate = brFrame.getjTextField1().getText();
-                    int route = brFrame.getjComboBox1().getSelectedIndex();
-                    String flightRoute = "";
-                    if(route == 0){
-                        flightRoute = "RP";
-                    } else {
-                        flightRoute = "PR";
-                    }
-                    String flightTime = brFrame.getjTextField3().getText();
-                    String flightCode = flightDate + flightRoute + flightTime;
-                    int partySize = Integer.parseInt(brFrame.getjTextField4().getText()); 
-                    int group = 2;
-                    if(brFrame.getjCheckBox1().isSelected()){
-                        group = 1;
-                    }
-                    String custIDInput = brFrame.getjTextField2().getText();
-                    int custID = 0;
-                    boolean validCust = false;
-                    try{
-                        custID = Integer.parseInt(custIDInput);
-                        validCust = findCustomer(conn,custID);
-                    } catch (NumberFormatException ne) {
-                    }
-                    if(!validCust){
-                        createNewCustomer(conn, nj, flightCode, partySize, group);
-                    }
-                    if(validCust){
-                    brFrame.dispose();
-                        String flightResults = searchFlight(flightCode, partySize, custID, group, conn);
-                        if(flightResults != ""){
-                            nj.getJLabel1().setVisible(false);
-                            nj.getJButton2().setVisible(false);
-                            nj.getJTextField1().setVisible(false);
-                            nj.setVisible(true);
-                            nj.setJTextArea1(flightResults);
-                        } 
-                    }
-                    
-                }});
+                        
+                        String flightDate = brFrame.getjTextField1().getText();
+                        int route = brFrame.getjComboBox1().getSelectedIndex();
+                        String flightRoute = "";
+                        if(route == 0){
+                            flightRoute = "RP";
+                        } else {
+                            flightRoute = "PR";
+                        }
+                        String flightTime = brFrame.getjTextField3().getText();
+                        String flightCode = flightDate + flightRoute + flightTime;
+                        int partySize = Integer.parseInt(brFrame.getjTextField4().getText()); 
+                        int group = 2;
+                        if(brFrame.getjCheckBox1().isSelected()){
+                            group = 1;
+                        }
+                        String custIDInput = brFrame.getjTextField2().getText();
+                        int custID = 0;
+                        boolean validCust = false;
+                        try{
+                            custID = Integer.parseInt(custIDInput);
+                            validCust = findCustomer(conn,custID);
+                            System.out.println(validCust);
+                        } catch (NumberFormatException ne) {
+                        }
+                        if(!validCust){
+                            brFrame.dispose();
+                            createNewCustomer(conn, nj, flightCode, partySize, group);
+                        }
+                        if(validCust){
+                            brFrame.dispose();
+                            String flightResults = searchFlight(flightCode, partySize, custID, group, conn);
+                            if(flightResults != ""){
+                                nj.getJLabel1().setVisible(false);
+                                nj.getJButton2().setVisible(false);
+                                nj.getJTextField1().setVisible(false);
+                                nj.setVisible(true);
+                                nj.setJTextArea1(flightResults);
+                            } 
+                        }
+
+                    }});
                 }
                 else if (getOption == 2)
                 {
@@ -700,12 +703,12 @@ public class BluebirdsAirlineDriver {
         createCust.getjCheckBox1().setVisible(false);
         createCust.getjComboBox1().setVisible(false);
         createCust.getjTextField2().setVisible(false);
+        createCust.getjLabel2().setVisible(false);
         createCust.getjLabel6().setVisible(false);
         createCust.getjLabel5().setText("Create a New Customer");
         createCust.getjLabel1().setText("Name: ");
         createCust.getjLabel3().setText("Address: ");
         createCust.getjLabel4().setText("Phone Number: ");
-        createCust.pack();
         createCust.getjButton1().addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent event) {
                 String name = createCust.getjTextField1().getText();
@@ -731,7 +734,7 @@ public class BluebirdsAirlineDriver {
                 custIDGlobal = 0;
                 JOptionPane.showMessageDialog(null, "Customer has been created with custID of " + custID,"Created Customer",1);
                 String flightResults = searchFlight(flightCode, partySize, custID, group, con);        
-                if(flightResults != ""){
+                if(flightResults.length() > 5){
                     nj.getJLabel1().setVisible(false);
                     nj.getJButton2().setVisible(false);
                     nj.getJTextField1().setVisible(false);
@@ -739,6 +742,7 @@ public class BluebirdsAirlineDriver {
                     nj.setJTextArea1(flightResults);
                 } 
             }});
+        createCust.setScreenSize(createCust);
         createCust.setVisible(true);
     }
     
@@ -843,7 +847,7 @@ public class BluebirdsAirlineDriver {
                 return bookReservation(flightCode, bookClass, custID, party, con);
             }
         } else {
-            int reply = JOptionPane.showConfirmDialog(null, "There are not enough available seats on this flight.", "Not Enough Seats", JOptionPane.OK_OPTION);
+            JOptionPane.showMessageDialog(null, "There are not enough available seats on this flight.","Not Enough Seats",1);
             return null;
         }
     }
@@ -1041,7 +1045,7 @@ public class BluebirdsAirlineDriver {
                         return bookReservation(flightCode, fc, custID, party, con);
                     }
                     else {
-                        JOptionPane.showConfirmDialog(null, "There are not enough available seats on this flight.", "Not Enough Seats", JOptionPane.OK_OPTION);
+                        JOptionPane.showMessageDialog(null, "There are not enough available seats on this flight.","Not Enough Seats",1);
                     return null;
                     }
 
