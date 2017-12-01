@@ -170,6 +170,13 @@ public class BluebirdsAirlineDriver {
                 }
                 else if (getOption == 9)
                 {
+                    nj.setJLabel1("Please enter the reservation number: ");
+                    nj.getJButton2().addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(java.awt.event.ActionEvent event) {
+                        String pilotID = nj.getJTextField1().getText();                      
+                        String results = printSchedule(conn, pilotID);
+                        nj.setJTextArea1(results);
+                    }});
 
                 }
                 else if (getOption == 10)
