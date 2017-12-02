@@ -242,7 +242,7 @@ public class BookReservation extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jLabel1.setText("Flight Date (12-19)");
+        jLabel1.setText("Flight Date (12-18)");
 
         jLabel2.setText("Flight Route");
 

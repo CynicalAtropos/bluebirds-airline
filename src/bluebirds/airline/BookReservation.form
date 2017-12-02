@@ -102,7 +102,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Flight Date (12-19)"/>
+        <Property name="text" type="java.lang.String" value="Flight Date (12-18)"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
