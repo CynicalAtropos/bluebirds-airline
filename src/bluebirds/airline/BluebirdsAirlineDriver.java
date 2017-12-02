@@ -1427,6 +1427,7 @@ public class BluebirdsAirlineDriver {
                             //System.out.println("Flight Code: " + flightCode + "  Gross Income: " + nf.format(grossIncome));
                         } else {
                             //System.out.println("No flight found.");
+                            results = results + "No flight found.";
                         }
                     } catch (SQLException e) {
                         //System.out.println("SQL Exception");
