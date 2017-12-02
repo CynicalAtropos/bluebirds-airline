@@ -497,7 +497,7 @@ public class BluebirdsAirlineDriver {
                 nj.getJTextField1().setVisible(false);
                 if(flightResults ==(null) || flightResults.isEmpty()) {
                     flightResults = "No reservations were made.";
-                } System.out.println(flightResults);
+                } 
                 nj.setJTextArea1(custAlert + flightResults);
                 /*} else {
                     nj.setJTextArea1(custAlert + "\nNo reservations were made.");
