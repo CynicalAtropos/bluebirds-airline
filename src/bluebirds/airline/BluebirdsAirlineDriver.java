@@ -602,16 +602,16 @@ public class BluebirdsAirlineDriver {
                 }
 
                 createCust.setVisible(false);
-                JOptionPane.showMessageDialog(null, "Customer has been created with custID of " + custID,"Created Customer",1);
+                //JOptionPane.showMessageDialog(null, "Customer has been created with custID of " + custID,"Created Customer",1);
                 String flightResults = searchFlight(flightCode, partySize, custID, group, con);        
-                
+                String custAlert = "Reservations for CustomerID " + custID;
                 nj.getJLabel1().setVisible(false);
                 nj.getJButton2().setVisible(false);
                 nj.getJTextField1().setVisible(false);
                 if(flightResults != null) {
-                    nj.setJTextArea1(flightResults);
+                    nj.setJTextArea1(custAlert + flightResults);
                 } else {
-                    nj.setJTextArea1("No reservations were made.");
+                    nj.setJTextArea1(custAlert + "\nNo reservations were made.");
                 }
                 nj.setVisible(true);
             }});
@@ -750,40 +750,69 @@ public class BluebirdsAirlineDriver {
                 flightRoute = "PR";
             }
             String flightTime = brFrame.getjTextField3().getText();
-            String flightCode = flightDate + flightRoute + flightTime;
-            int partySize = Integer.parseInt(brFrame.getjTextField4().getText()); 
+            int partySize = 0;
+            try{
+                partySize = Integer.parseInt(brFrame.getjTextField4().getText());
+            } catch (NumberFormatException ne){}
             int group = 2;
             if(brFrame.getjCheckBox1().isSelected()){
                 group = 1;
             }
             String custIDInput = brFrame.getjTextField2().getText();
-            int custID = 0;
-            boolean validCust = false;
-            try{
-                custID = Integer.parseInt(custIDInput);
-                validCust = validateCustomer(conn,custID);
-                System.out.println(validCust);
-            } catch (NumberFormatException ne) {
-            }
-            if(!validCust){
-                brFrame.dispose();
-                selectFlightNewCust(conn, nj, flightCode, partySize, group);
-            }
-            if(validCust){
-                brFrame.dispose();
-                String flightResults = searchFlight(flightCode, partySize, custID, group, conn);
-                nj.getJLabel1().setVisible(false);
-                nj.getJButton2().setVisible(false);
-                nj.getJTextField1().setVisible(false);
-                if(flightResults != "") {
-                    nj.setJTextArea1(flightResults);
-                } else {
-                    nj.setJTextArea1("No reservations were made.");
+            boolean dataValid = true;
+            if(dataValid){
+                try{
+                    int flightDateInt = Integer.parseInt(flightDate);
+                    if(flightDateInt > 19 || flightDateInt < 12){
+                        dataValid = false;
+                        JOptionPane.showMessageDialog(null, "Flight Date Inputted Was Out of Range.  Please try again.","Invalid Flight Date",1);
+                        brFrame.dispose();
+                        selectFlightOldCust(conn, newFrame);
+                    }
+                } catch(NumberFormatException ne){
+                    JOptionPane.showMessageDialog(null, "Flight Date Inputted Was Invalid.  Please try again.","Invalid Flight Date",1);
+                    dataValid = false;
+                    brFrame.dispose();
+                    selectFlightOldCust(conn, newFrame);
                 }
-                nj.setVisible(true);
-                 
+            }else if(!flightTime.equalsIgnoreCase("AM") || !flightTime.equalsIgnoreCase("PM")){
+                JOptionPane.showMessageDialog(null, "Flight Time Inputted Was Invalid.  Please try again.","Invalid Flight Time",1);
+                dataValid = false;
+                brFrame.dispose();
+                selectFlightOldCust(conn, newFrame);
+            } else if(partySize < 1){
+                JOptionPane.showMessageDialog(null, "Party Size Inputted Must Be a Postive Integer.  Please try again.","Invalid Party Size",1);
+                dataValid = false;
+                brFrame.dispose();
+                selectFlightOldCust(conn, newFrame);
+            } else if(dataValid){
+                String flightCode = flightDate + flightRoute + flightTime;
+                int custID = 0;
+                boolean validCust = false;
+                try{
+                    custID = Integer.parseInt(custIDInput);
+                    validCust = validateCustomer(conn,custID);
+                    if(!validCust) JOptionPane.showMessageDialog(null, "There is no existing customer with the inputted id. Please create a new customer.","Invalid CustomerID",1);
+                    System.out.println(validCust);
+                } catch (NumberFormatException ne) {}
+                if(!validCust){
+                    brFrame.dispose();
+                    selectFlightNewCust(conn, nj, flightCode, partySize, group);
+                }else if(validCust){
+                    brFrame.dispose();
+                    String custAlert = "Reservations for CustomerID " + custID;
+                    String flightResults = searchFlight(flightCode, partySize, custID, group, conn);
+                    nj.getJLabel1().setVisible(false);
+                    nj.getJButton2().setVisible(false);
+                    nj.getJTextField1().setVisible(false);
+                    if(flightResults != "") {
+                        nj.setJTextArea1(custAlert + flightResults);
+                    } else {
+                        nj.setJTextArea1(custAlert + "\nNo reservations were made.");
+                    }
+                    nj.setVisible(true);
+                }
             }
-
         }});
     }
 
@@ -1236,6 +1265,7 @@ public class BluebirdsAirlineDriver {
 
     // prints a customers reservation according to the customer ID
     public static void printRes(Connection con, BlueBirdsJFrame newFrame) {
+        /*
         Scanner scan = new Scanner(System.in);
         System.out.println("What is the customer ID?");
         int custNum = scan.nextInt();
@@ -1290,7 +1320,7 @@ public class BluebirdsAirlineDriver {
         }
         catch(Exception e){
             System.out.println("Something went wrong with the SQL");
-        }
+        }*/
     }
 
 
