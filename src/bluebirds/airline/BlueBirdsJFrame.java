@@ -133,6 +133,7 @@ public class BlueBirdsJFrame extends javax.swing.JFrame {
 
  /**
  * Ends the program if the close button is clicked
+ * @param evt the click event
  */
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
