@@ -591,6 +591,8 @@ public class BluebirdsAirlineDriver {
                         bookClass = 2;
                     }
 
+                } else {
+                JOptionPane.showMessageDialog(null, "There are no first class seats available", "First Class", 1);
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "There are no first class seats available", "First Class", 1);
