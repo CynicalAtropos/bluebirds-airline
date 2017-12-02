@@ -657,7 +657,7 @@ public class BluebirdsAirlineDriver {
             if(dataValid){
                 try{
                     int flightDateInt = Integer.parseInt(flightDate);
-                    if(flightDateInt > 19 || flightDateInt < 12){
+                    if(flightDateInt > 18 || flightDateInt < 12){
                         dataValid = false;
                         JOptionPane.showMessageDialog(null, "Flight Date Inputted Was Out of Range.  Please try again.","Invalid Flight Date",1);
                         brFrame.dispose();
@@ -916,7 +916,7 @@ public class BluebirdsAirlineDriver {
                 return bookReservation(flightCode, fc, custID, party, con);
             } else {
                 JOptionPane.showMessageDialog(null, "There are not enough available seats on this flight.", "Not Enough Seats", 1);
-                return null;
+                return "";
             }
 
         } else {
