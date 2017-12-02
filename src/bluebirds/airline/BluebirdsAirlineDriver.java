@@ -37,11 +37,7 @@ public class BluebirdsAirlineDriver {
      */
     public static void main(String[] args) {
         Connection connect = null;
-        CallableStatement callSt;
-        ResultSet resSet = null;
-        Statement stmt = null;
-        connect = connect(connect);
-        final Connection conn = connect;
+        final Connection conn = connect(connect);
         BlueBirdsJFrame newFrame = new BlueBirdsJFrame();
         newFrame.setScreenSize(newFrame);
         newFrame.setVisible(true);
@@ -104,8 +100,8 @@ public class BluebirdsAirlineDriver {
     /**
      * Creates the connection to the bluebirds database
      *
-     * @param connect the connection
-     * @return the connection
+     * @param connect  the connection to database
+     * @return  the connection to database
      */
     public static Connection connect(Connection connect) {
 
@@ -134,7 +130,7 @@ public class BluebirdsAirlineDriver {
     /**
      * Searches for a reservation by resId
      *
-     * @param connect the connection
+     * @param connect  the connection to database
      * @param newFrame the initial frame
      */
     public static void searchReservID(Connection connect, BlueBirdsJFrame newFrame) {
@@ -220,7 +216,7 @@ public class BluebirdsAirlineDriver {
     /**
      * Searches for a customer by customerId
      *
-     * @param connect the connection
+     * @param connect  the connection to database
      * @param newFrame the initial frame
      */
     public static void searchCustID(Connection connect, BlueBirdsJFrame newFrame) {
@@ -450,9 +446,14 @@ public class BluebirdsAirlineDriver {
     }
 
     /**
+     * Selects a flight from given data and creates a new customer
      *
-     * @param con
-     * @return
+     * @param con  the connection to database
+     * @param nj the results frame
+     * @param flightCode the flight code
+     * @param partySize the size of the party
+     * @param group an integer specifying whether or not the party must be grouped together (1 = true, 2 = false)
+     * 
      */
     public static void selectFlightNewCust(Connection con, OptionExample nj, String flightCode, int partySize, int group) {
         BookReservation createCust = new BookReservation();
@@ -503,11 +504,11 @@ public class BluebirdsAirlineDriver {
         createCust.setVisible(true);
     }
 
-    // Finds the customer for the reservation
     /**
-     *
-     * @param con
-     * @return
+     * Determines if a inputted custID is valid
+     * @param con  the connection to database
+     * @param custID the customer ID number
+     * @return true if valid custID, false if invalid custID
      */
     public static boolean validateCustomer(Connection con, int custID) {
         Scanner scan = new Scanner(System.in);
@@ -533,15 +534,14 @@ public class BluebirdsAirlineDriver {
     }
 
     /**
-     *
-     * @param flightCode
-     * @param party
-     * @param custID
-     * @param group
-     * @param con
-     * @return
+     * Searches for a flight based on the customers parameters
+     * @param flightCode the flight code
+     * @param party the size of the party
+     * @param custID the customer id number
+     * @param group an integer specifying whether or not the party must be grouped together (1 = true, 2 = false)
+     * @param con  the connection to database
+     * @return a string with all reservations successfully made
      */
-    // Searches for a flight based on the customers parameters
     public static String searchFlight(String flightCode, int party, int custID, int group, Connection con) {
         Scanner scan = new Scanner(System.in);
 
@@ -588,7 +588,7 @@ public class BluebirdsAirlineDriver {
                 JOptionPane.showMessageDialog(null, "There are no first class seats available", "First Class", 1);
             }
 
-            if (group == 1) {
+            if (group == 1 && party > 1) {
                 return bookTogether(flightCode, bookClass, custID, party, con);
             } else {
                 return bookReservation(flightCode, bookClass, custID, party, con);
@@ -598,7 +598,12 @@ public class BluebirdsAirlineDriver {
             return null;
         }
     }
-
+    /**
+     * Selects a flight as well as a customer if specified 
+     *
+     * @param conn  the connection to database
+     * @param newFrame the initial frame
+     */
     public static void selectFlightOldCust(Connection conn, BlueBirdsJFrame newFrame) {
         OptionExample nj = new OptionExample();
         nj.setScreenSize(nj);
@@ -607,10 +612,14 @@ public class BluebirdsAirlineDriver {
             public void windowClosed(WindowEvent we) {
                 newFrame.setEnabled(true);
                 newFrame.toFront();
-
             }
         });
         BookReservation brFrame = new BookReservation();
+        brFrame.addWindowListener(new WindowAdapter() {
+            public void windowClosed(WindowEvent we) {
+                newFrame.setEnabled(true);
+            }
+        });
         brFrame.setScreenSize(brFrame);
         brFrame.setVisible(true);
         brFrame.getjButton1().addActionListener(new java.awt.event.ActionListener() {
@@ -628,7 +637,9 @@ public class BluebirdsAirlineDriver {
             int partySize = 0;
             try{
                 partySize = Integer.parseInt(brFrame.getjTextField4().getText());
+                System.out.println(partySize);
             } catch (NumberFormatException ne){}
+                System.out.println(partySize);
             int group = 2;
             if(brFrame.getjCheckBox1().isSelected()){
                 group = 1;
@@ -642,26 +653,33 @@ public class BluebirdsAirlineDriver {
                         dataValid = false;
                         JOptionPane.showMessageDialog(null, "Flight Date Inputted Was Out of Range.  Please try again.","Invalid Flight Date",1);
                         brFrame.dispose();
+                        //nj.dispose();
                         selectFlightOldCust(conn, newFrame);
                     }
                 } catch(NumberFormatException ne){
                     JOptionPane.showMessageDialog(null, "Flight Date Inputted Was Invalid.  Please try again.","Invalid Flight Date",1);
                     dataValid = false;
                     brFrame.dispose();
+                    //nj.dispose();
                     selectFlightOldCust(conn, newFrame);
                 }
-            }else if(!flightTime.equalsIgnoreCase("AM") || !flightTime.equalsIgnoreCase("PM")){
+            }
+            if(!dataValid){}
+            else if(!(flightTime.equalsIgnoreCase("AM") || flightTime.equalsIgnoreCase("PM")) ){
                 JOptionPane.showMessageDialog(null, "Flight Time Inputted Was Invalid.  Please try again.","Invalid Flight Time",1);
                 dataValid = false;
                 brFrame.dispose();
+                //nj.dispose();
                 selectFlightOldCust(conn, newFrame);
             } else if(partySize < 1){
                 JOptionPane.showMessageDialog(null, "Party Size Inputted Must Be a Postive Integer.  Please try again.","Invalid Party Size",1);
                 dataValid = false;
                 brFrame.dispose();
+                //nj.dispose();
                 selectFlightOldCust(conn, newFrame);
-            } else if(dataValid){
-                String flightCode = flightDate + flightRoute + flightTime;
+            }
+            if(dataValid){
+                String flightCode = flightDate + flightRoute + flightTime.toUpperCase();
                 int custID = 0;
                 boolean validCust = false;
                 try{
@@ -688,18 +706,19 @@ public class BluebirdsAirlineDriver {
                     nj.setVisible(true);
                 }
             }
+            //brFrame.dispose();
+            //nj.dispose();
         }});
     }
 
-    // Books a reservation for parties that want to sit togeather
     /**
-     *
-     * @param flightCode
-     * @param fc
-     * @param custID
-     * @param party
-     * @param con
-     * @return
+     * Books reservations for parties that want to sit together
+     * @param flightCode the flight code
+     * @param fc whether it is first class (0 = economy, 1 = first class)
+     * @param custID the customer id number
+     * @param party the size of the party
+     * @param con the connection to database
+     * @return a string with all reservations successfully made
      */
     public static String bookTogether(String flightCode, int fc, int custID, int party, Connection con) {
         Scanner scan = new Scanner(System.in);
@@ -891,15 +910,14 @@ public class BluebirdsAirlineDriver {
 
     }
 
-    //Books a reservation
     /**
-     *
-     * @param flightCode
-     * @param fc
-     * @param custID
-     * @param party
-     * @param con
-     * @return
+     * Books reservations
+     * @param flightCode the flight code
+     * @param fc whether it is first class (0 = economy, 1 = first class)
+     * @param custID the customer id number
+     * @param party the size of the party
+     * @param con the connection to database
+     * @return a string with all reservations successfully made
      */
     public static String bookReservation(String flightCode, int fc, int custID, int party, Connection con) {
         String results = "\n";
@@ -1300,9 +1318,8 @@ public class BluebirdsAirlineDriver {
     /**
      * Calculates and displays the gross income for each flight.
      *
-     * @param con the connection
+     * @param con  the connection to database
      * @param newFrame the initial frame
-     * @return
      */
     public static void grossIncomeEach(Connection con, BlueBirdsJFrame newFrame) {
         OptionExample nj = new OptionExample();
@@ -1352,9 +1369,8 @@ public class BluebirdsAirlineDriver {
     /**
      * Calculates and displays the gross income for a specific flight.
      *
-     * @param con the connection
+     * @param con  the connection to database
      * @param newFrame the initial frame
-     * @return
      */
     public static void grossIncomeSpec(Connection con, BlueBirdsJFrame newFrame) {
         OptionExample nj = new OptionExample();
@@ -1603,7 +1619,7 @@ public class BluebirdsAirlineDriver {
     /**
      * Prints out the seat map for a certain flight
      *
-     * @param connect the connection
+     * @param connect  the connection to database
      * @param newFrame the initial frame
      */
     public static void printFlightSeats(Connection connect, BlueBirdsJFrame newFrame) {
