@@ -1130,7 +1130,7 @@ public class BluebirdsAirlineDriver {
                     ResultSetMetaData meta = rSet.getMetaData();
                     int columns = meta.getColumnCount();
                     if (!rSet.isBeforeFirst()) {
-                        JOptionPane.showMessageDialog(null, "There are no reservations for that number", "Invalid Reservation ID", 1);
+                        nj.setJTextArea1("There are no reservations for that number");
                     } else {
                         while (rSet.next()) {
 
@@ -1158,7 +1158,7 @@ public class BluebirdsAirlineDriver {
                     cState = con.prepareCall(storedProc2);
                     cState.executeQuery();
                     // System.out.println("Reservation canceled");
-                    JOptionPane.showMessageDialog(null, "The reservation has been canceled", "Reservation Canceled", 1);
+                    nj.setJTextArea1("The reservation has been canceled");
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1242,6 +1242,7 @@ public class BluebirdsAirlineDriver {
                                 //System.out.printf("%-20s", col);
                                 results = results + String.format("%-20s", col) + "\n";
                             }
+                            results += "\n";
 
                         }
                     } catch (SQLException e) {
@@ -1529,6 +1530,7 @@ public class BluebirdsAirlineDriver {
                                     results = results + String.format("%-20s", col) + "\n";
                                     // System.out.println();
                                 }
+                                
 
                             }
                         } catch (SQLException e) {
@@ -1614,6 +1616,7 @@ public class BluebirdsAirlineDriver {
                                     //System.out.printf("%-20s", col);
                                     results = results + String.format("%-20s", col) + "\n";
                                 }
+                                results += "\n";
 
                             }
                         } catch (SQLException e) {
