@@ -495,9 +495,9 @@ public class BluebirdsAirlineDriver {
                 nj.getJLabel1().setVisible(false);
                 nj.getJButton2().setVisible(false);
                 nj.getJTextField1().setVisible(false);
-                if(flightResults == "") {
+                if(flightResults ==(null) || flightResults.isEmpty()) {
                     flightResults = "No reservations were made.";
-                }
+                } System.out.println(flightResults);
                 nj.setJTextArea1(custAlert + flightResults);
                 /*} else {
                     nj.setJTextArea1(custAlert + "\nNo reservations were made.");
@@ -603,7 +603,7 @@ public class BluebirdsAirlineDriver {
             }
         } else {
             JOptionPane.showMessageDialog(null, "There are not enough available seats on this flight.", "Not Enough Seats", 1);
-            return sqlError + null;
+            return sqlError;
         }
     }
     /**
@@ -705,7 +705,7 @@ public class BluebirdsAirlineDriver {
                     nj.getJLabel1().setVisible(false);
                     nj.getJButton2().setVisible(false);
                     nj.getJTextField1().setVisible(false);
-                    if(flightResults == "") {
+                    if(flightResults == (null) || flightResults.isEmpty()) {
                         flightResults = "No reservations were made.";
                     }
                     nj.setJTextArea1(custAlert + flightResults);
