@@ -296,6 +296,7 @@ public class BluebirdsAirlineDriver {
         ArrayList<Reservation> reservations = new ArrayList<Reservation>();
 
         Statement stmt;
+        boolean sqlError = false;
         
         pilots.add(new Pilot("Chesley Sullenberger", "2801 Franklin Rd SW, Roanoke, VA 24014", "5403454434"));
         pilots.add(new Pilot("Amelia Earhart", "15240 N 32nd St, Phoenix, AZ 85032", "6024937404"));
@@ -312,7 +313,7 @@ public class BluebirdsAirlineDriver {
                         + p.getPhoneNumber() + "')");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            sqlError = true;
         }
 
         flights.add(new Flight("12RPAM", LocalDate.of(2017, Month.NOVEMBER, 12), "8:00 a.m.", "Roanoke to Phoenix", pilots.get(0)));
@@ -361,7 +362,7 @@ public class BluebirdsAirlineDriver {
                         + f.getPilot().getPilotId() + "')");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            sqlError = true;
         }
 
         customers.add(new Customer("Rick Sanchez", "2072 Apperson Dr, Salem, VA 24153", "5407746295"));
@@ -378,7 +379,7 @@ public class BluebirdsAirlineDriver {
                         + c.getPhoneNumber() + "')");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            sqlError = true;
         }
 
         int fc = 0;
@@ -413,7 +414,7 @@ public class BluebirdsAirlineDriver {
                         + r.getCost() + "')");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            sqlError = true;
         }
 
         try {
@@ -423,7 +424,7 @@ public class BluebirdsAirlineDriver {
                         + " VALUES ('" + f.getFlightCode() + "')");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            sqlError = true;
         }
 
         try {
@@ -438,9 +439,12 @@ public class BluebirdsAirlineDriver {
                     + "WHERE flightCode = '12RPAM'");
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            sqlError = true;
         }
-        JOptionPane.showMessageDialog(null, "The data has been primed", "Primed data", 1);
+        if (sqlError)
+            JOptionPane.showMessageDialog(null, "Couldn't prime the data due to an error", "Error", 2);
+        else
+            JOptionPane.showMessageDialog(null, "The data has been primed", "Primed data", 1);
     }
 
     /**
